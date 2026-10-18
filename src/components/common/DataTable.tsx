@@ -215,9 +215,9 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           {onBack && (
             <Button
@@ -250,8 +250,8 @@ export function DataTable<TData, TValue>({
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 flex-1">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex min-w-0 items-center space-x-2 flex-1">
               <div className="relative flex-1 max-w-sm">
                 {showSearchAnimation ? (
                   <div className="absolute left-2 top-2.5 h-4 w-4 animate-spin rounded-full border-b-2 border-primary"></div>
@@ -436,7 +436,7 @@ export function DataTable<TData, TValue>({
 
         <CardContent>
           {/* Table */}
-          <div className="rounded-md border">
+          <div className="w-full max-w-full overflow-x-auto rounded-md border">
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -513,7 +513,7 @@ export function DataTable<TData, TValue>({
 
           {/* Pagination */}
           {pagination ? (
-            <div className="flex items-center justify-between space-x-2 py-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 py-4">
               <div className="flex items-center space-x-2">
                 {/* <p className="text-sm text-muted-foreground">
                   {table.getFilteredSelectedRowModel().rows.length} of{" "}
@@ -614,7 +614,7 @@ export function DataTable<TData, TValue>({
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-between space-x-2 py-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 py-4">
               <div className="flex items-center space-x-2">
                 <p className="text-sm text-muted-foreground">
                   {table.getFilteredSelectedRowModel().rows.length} of{" "}

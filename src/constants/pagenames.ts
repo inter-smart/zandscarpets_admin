@@ -16,6 +16,7 @@ export const PAGE_NAMES: PageName[] = [
   { label: "Privacy", slug: "privacy" },
   { label: "Our Work", slug: "our-work" },
   { label: "Category", slug: "category" },
+  { label: "Products", slug: "products" },
 ];
 
 export const pageLabel = (slug?: string | null): string | null =>

@@ -7,12 +7,17 @@ import PageLoader from "./PageLoader";
 
 export function DashboardLayout() {
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen flex w-full bg-background">
+    // The shell is exactly one viewport tall and never scrolls itself; only <main>
+    // scrolls. This keeps the header pinned and stops wide content (data tables)
+    // from pushing the whole page sideways.
+    <SidebarProvider defaultOpen={true} className="h-svh min-h-0 overflow-hidden">
+      <div className="flex h-full w-full overflow-hidden bg-background">
         <AppSidebar />
-        <div className="flex-1 flex flex-col">
+        {/* min-w-0 lets this flex child shrink below its content's width, so wide
+            tables scroll inside their own container instead of stretching the page. */}
+        <div className="flex h-full min-w-0 flex-1 flex-col">
           <AppHeader />
-          <main className="flex-1 p-6">
+          <main className="min-w-0 flex-1 overflow-y-auto overflow-x-hidden p-6 [scrollbar-gutter:stable]">
             <Suspense fallback={<PageLoader />}>
               <Outlet />
             </Suspense>

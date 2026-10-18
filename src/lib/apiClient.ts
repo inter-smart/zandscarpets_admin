@@ -15,20 +15,27 @@ export const registerAuthFailureHandler = (handler: AuthFailureHandler | null): 
   onAuthFailure = handler;
 };
 
-let refreshInFlight: Promise<boolean> | null = null;
+let refreshInFlight: Promise<authApi.AdminUser> | null = null;
 
-const attemptRefresh = async (): Promise<boolean> => {
+// Single entry point for every refresh (401 retry, boot hydrate, silent
+// timer). Refresh tokens are single-use, so concurrent callers must share one
+// network call.
+export const refreshSession = (): Promise<authApi.AdminUser> => {
   if (!refreshInFlight) {
     refreshInFlight = authApi
       .refresh()
-      .then(() => true)
-      .catch(() => false)
+      .then(({ user }) => user)
       .finally(() => {
         refreshInFlight = null;
       });
   }
   return refreshInFlight;
 };
+
+// True only when the server actually rejected the session (401/403), as
+// opposed to a network error or 5xx where the session may still be valid.
+export const isAuthRejection = (error: unknown): boolean =>
+  error instanceof authApi.ApiError && (error.status === 401 || error.status === 403);
 
 export const apiFetch = async (
   input: RequestInfo | URL,
@@ -41,9 +48,12 @@ export const apiFetch = async (
     return response;
   }
 
-  const refreshed = await attemptRefresh();
-  if (!refreshed) {
-    onAuthFailure?.();
+  try {
+    await refreshSession();
+  } catch (error) {
+    // Only end the session if the server rejected it; on a network/5xx
+    // failure keep the user signed in and surface the original 401.
+    if (isAuthRejection(error)) onAuthFailure?.();
     return response;
   }
 

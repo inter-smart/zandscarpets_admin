@@ -3,13 +3,13 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
   type ReactNode,
 } from "react";
 import * as authApi from "@/services/auth/authApi";
-import { registerAuthFailureHandler } from "@/lib/apiClient";
-import { hasStoredSession, markStoredSession, clearStoredSession } from "@/lib/authSession";
+import { registerAuthFailureHandler, refreshSession, isAuthRejection } from "@/lib/apiClient";
+import { hasStoredSession, markStoredSession, clearStoredSession, SESSION_STORAGE_KEY } from "@/lib/authSession";
+import { toast } from "@/hooks/use-toast";
 import type { AdminUser } from "@/services/auth/authApi";
 
 interface AuthContextValue {
@@ -23,15 +23,17 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-// Comfortably inside the 15-minute access-token TTL so the session is kept
-// alive silently before it would ever expire mid-use.
-const SILENT_REFRESH_INTERVAL_MS = 10 * 60 * 1000;
+const notifySessionExpired = () =>
+  toast({
+    title: "Session expired",
+    description: "Please log in again.",
+    variant: "destructive",
+  });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AdminUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const lastRefreshRef = useRef<number>(0);
   const role = user?.role ?? "user";
 
   const clearSession = useCallback(() => {
@@ -62,13 +64,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!cancelled) applySession(me);
       } catch {
         try {
-          const { user: refreshed } = await authApi.refresh();
+          const refreshed = await refreshSession();
           if (!cancelled) {
             applySession(refreshed);
-            lastRefreshRef.current = Date.now();
           }
-        } catch {
-          if (!cancelled) clearSession();
+        } catch (error) {
+          if (!cancelled && isAuthRejection(error)) {
+            clearSession();
+            notifySessionExpired();
+          }
         }
       } finally {
         if (!cancelled) setIsLoading(false);
@@ -82,47 +86,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [applySession, clearSession]);
 
   useEffect(() => {
-    registerAuthFailureHandler(() => clearSession());
+    registerAuthFailureHandler(() => {
+      // Parallel requests can all fail at once; only the first one toasts.
+      const wasLoggedIn = hasStoredSession();
+      clearSession();
+      if (wasLoggedIn) notifySessionExpired();
+    });
     return () => registerAuthFailureHandler(null);
   }, [clearSession]);
 
+  // Sync logout/login across tabs via the localStorage session flag.
   useEffect(() => {
-    if (!isAuthenticated) return;
-
-    const silentRefresh = async () => {
-      try {
-        const { user: refreshed } = await authApi.refresh();
-        applySession(refreshed);
-        lastRefreshRef.current = Date.now();
-      } catch {
-        clearSession();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key !== SESSION_STORAGE_KEY) return;
+      if (e.newValue !== "true") {
+        setUser(null);
+        setIsAuthenticated(false);
+      } else {
+        window.location.reload();
       }
     };
-
-    const interval = setInterval(silentRefresh, SILENT_REFRESH_INTERVAL_MS);
-
-    // Browsers throttle setInterval in backgrounded tabs — catch up on refocus.
-    const onVisibilityChange = () => {
-      if (
-        document.visibilityState === "visible" &&
-        Date.now() - lastRefreshRef.current > SILENT_REFRESH_INTERVAL_MS
-      ) {
-        silentRefresh();
-      }
-    };
-    document.addEventListener("visibilitychange", onVisibilityChange);
-
-    return () => {
-      clearInterval(interval);
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-    };
-  }, [isAuthenticated, applySession, clearSession]);
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   const login = useCallback(
     async (username: string, password: string) => {
       const { user: loggedInUser } = await authApi.login(username, password);
       applySession(loggedInUser);
-      lastRefreshRef.current = Date.now();
     },
     [applySession]
   );

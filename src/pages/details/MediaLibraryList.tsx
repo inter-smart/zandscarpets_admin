@@ -47,6 +47,9 @@ export default function MediaLibraryList() {
   const [editorAltText, setEditorAltText] = useState("");
   const [editorTitle, setEditorTitle] = useState("");
   const [editorDescription, setEditorDescription] = useState("");
+  const [editorAltTextAr, setEditorAltTextAr] = useState("");
+  const [editorTitleAr, setEditorTitleAr] = useState("");
+  const [editorDescriptionAr, setEditorDescriptionAr] = useState("");
 
   const filters = useMemo(() => (kindFilter === ALL ? undefined : { kind: kindFilter }), [kindFilter]);
   const {
@@ -86,6 +89,9 @@ export default function MediaLibraryList() {
     setEditorAltText(media.alt_text || "");
     setEditorTitle(media.title || "");
     setEditorDescription(media.description || "");
+    setEditorAltTextAr(media.alt_text_ar || "");
+    setEditorTitleAr(media.title_ar || "");
+    setEditorDescriptionAr(media.description_ar || "");
   };
 
   const saveEditor = async () => {
@@ -95,6 +101,9 @@ export default function MediaLibraryList() {
       [editorAltText, "Alt text"],
       [editorTitle, "Title"],
       [editorDescription, "Description"],
+      [editorAltTextAr, "Alt text (Arabic)"],
+      [editorTitleAr, "Title (Arabic)"],
+      [editorDescriptionAr, "Description (Arabic)"],
     ] as const) {
       const error = validateMediaText(value, label);
       if (error) {
@@ -108,6 +117,9 @@ export default function MediaLibraryList() {
         alt_text: editorAltText,
         title: editorTitle,
         description: editorDescription,
+        alt_text_ar: editorAltTextAr,
+        title_ar: editorTitleAr,
+        description_ar: editorDescriptionAr,
       });
       setItems((prev) => prev.map((m) => (m.id === data.id ? data : m)));
       toast({ title: "Success", description: "Media updated" });
@@ -271,6 +283,18 @@ export default function MediaLibraryList() {
                 placeholder="Optional description"
                 rows={3}
               />
+            </div>
+            <div>
+              <Label htmlFor="media-alt-ar-edit">Alt Text (Arabic)</Label>
+              <Input id="media-alt-ar-edit" dir="rtl" value={editorAltTextAr} onChange={(e) => setEditorAltTextAr(e.target.value)} />
+            </div>
+            <div>
+              <Label htmlFor="media-title-ar-edit">Title (Arabic)</Label>
+              <Input id="media-title-ar-edit" dir="rtl" value={editorTitleAr} onChange={(e) => setEditorTitleAr(e.target.value)} />
+            </div>
+            <div>
+              <Label htmlFor="media-description-ar-edit">Description (Arabic)</Label>
+              <Textarea id="media-description-ar-edit" dir="rtl" value={editorDescriptionAr} onChange={(e) => setEditorDescriptionAr(e.target.value)} rows={3} />
             </div>
           </div>
           <DialogFooter>

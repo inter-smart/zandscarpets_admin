@@ -14,6 +14,11 @@ export interface AdsBannerRecord {
   id: number;
   media_path: string | null;
   media_alt: string | null;
+  media_alt_ar?: string | null;
+  link?: string | null;
+  link_new_tab?: boolean | null;
+  button_text?: string | null;
+  button_text_ar?: string | null;
   sort_order: number;
   is_active: boolean;
   deleted_at?: string | null;

@@ -9,6 +9,7 @@ export interface DetailItemRecord {
   id: number;
   mapping_id: number;
   text_content: string | null;
+  text_content_ar?: string | null;
   media_id: number | null;
   media: MediaRecord | null;
   sort_order: number;
@@ -24,6 +25,7 @@ export interface DetailMappingRecord {
   field: {
     id: number;
     name: string;
+    name_ar?: string | null;
     slug: string;
     type: "rich_text" | "image" | "video";
     allows_multiple: boolean;
@@ -56,13 +58,13 @@ export const removeMapping = (mappingId: number) =>
 
 export const addDetailItem = (
   mappingId: number,
-  payload: { text_content?: string; media_id?: number },
+  payload: { text_content?: string; text_content_ar?: string; media_id?: number },
 ) => json<DetailItemRecord>(`${MAPPINGS_URL}/${mappingId}/items`, "POST", payload);
 
 export const editDetailItem = (
   mappingId: number,
   itemId: number,
-  payload: { text_content?: string; media_id?: number },
+  payload: { text_content?: string; text_content_ar?: string; media_id?: number },
 ) => json<DetailItemRecord>(`${MAPPINGS_URL}/${mappingId}/items/${itemId}`, "PUT", payload);
 
 export const removeDetailItem = (itemId: number) =>

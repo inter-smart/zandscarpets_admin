@@ -266,6 +266,8 @@ interface FormRichTextFieldProps<T extends FieldValues> extends BaseFormFieldPro
   // height?: string;
   maxLength?: number;
   checkList?: boolean;
+  galleryMarker?: boolean;
+  uploadImage?: (file: File) => Promise<string>;
 }
 
 export function FormRichTextField<T extends FieldValues>({
@@ -276,6 +278,8 @@ export function FormRichTextField<T extends FieldValues>({
   height,
   maxLength,
   checkList,
+  galleryMarker,
+  uploadImage,
 }: FormRichTextFieldProps<T>) {
   const isArabic = name.endsWith("_ar");
   return (
@@ -293,6 +297,8 @@ export function FormRichTextField<T extends FieldValues>({
               height={height}
               maxLength={maxLength}
               checkList={checkList}
+              galleryMarker={galleryMarker}
+              uploadImage={uploadImage}
               dir={isArabic ? "rtl" : undefined}
             />
           </FormControl>

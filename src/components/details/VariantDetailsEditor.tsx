@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { RichTextEditor } from "@/components/common/RichTextEditor";
 import { Plus, Trash2, ImagePlus, EyeOff, Eye, RotateCcw } from "lucide-react";
 import MediaThumbnail from "@/components/common/MediaThumbnail";
@@ -57,6 +58,7 @@ export default function VariantDetailsEditor({ productId, variantId }: VariantDe
   const [loading, setLoading] = useState(true);
   const [textEditor, setTextEditor] = useState<{ mappingId: number; item: DetailItemRecord | null; fieldName: string } | null>(null);
   const [textValue, setTextValue] = useState("");
+  const [textValueAr, setTextValueAr] = useState("");
   const [mediaPickerFor, setMediaPickerFor] = useState<ResolvedFieldEntry | null>(null);
 
   useEffect(() => {
@@ -100,15 +102,16 @@ export default function VariantDetailsEditor({ productId, variantId }: VariantDe
   const openTextEditor = (mappingId: number, item: DetailItemRecord | null, fieldName: string) => {
     setTextEditor({ mappingId, item, fieldName });
     setTextValue(item?.text_content || "");
+    setTextValueAr(item?.text_content_ar || "");
   };
 
   const saveTextItem = async () => {
     if (!textEditor) return;
     try {
       if (textEditor.item) {
-        await editDetailItem(textEditor.mappingId, textEditor.item.id, { text_content: textValue });
+        await editDetailItem(textEditor.mappingId, textEditor.item.id, { text_content: textValue, text_content_ar: textValueAr });
       } else {
-        await addDetailItem(textEditor.mappingId, { text_content: textValue });
+        await addDetailItem(textEditor.mappingId, { text_content: textValue, text_content_ar: textValueAr });
       }
       toast({ title: "Success", description: "Saved" });
       setTextEditor(null);
@@ -327,7 +330,14 @@ export default function VariantDetailsEditor({ productId, variantId }: VariantDe
           <DialogHeader>
             <DialogTitle>{textEditor?.item ? "Edit" : "Add"} {textEditor?.fieldName}</DialogTitle>
           </DialogHeader>
-          <RichTextEditor value={textValue} onChange={setTextValue} height="250px" />
+          <div className="space-y-2">
+            <Label>English</Label>
+            <RichTextEditor value={textValue} onChange={setTextValue} height="250px" />
+          </div>
+          <div className="space-y-2">
+            <Label>Arabic</Label>
+            <RichTextEditor value={textValueAr} onChange={setTextValueAr} height="250px" />
+          </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setTextEditor(null)}>
               Cancel

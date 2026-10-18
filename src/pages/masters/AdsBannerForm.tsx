@@ -44,6 +44,10 @@ export default function AdsBannerForm() {
       media_path: "",
       media_alt: "",
       media_alt_ar: "",
+      link: "",
+      link_new_tab: false,
+      button_text: "",
+      button_text_ar: "",
       sort_order: "1",
       is_active: true,
     },
@@ -66,6 +70,10 @@ export default function AdsBannerForm() {
           media_path: data.media_path || "",
           media_alt: data.media_alt || "",
           media_alt_ar: data.media_alt_ar || "",
+          link: data.link || "",
+          link_new_tab: data.link_new_tab ?? false,
+          button_text: data.button_text || "",
+          button_text_ar: data.button_text_ar || "",
           sort_order: (data.sort_order ?? 1).toString(),
           is_active: data.is_active ?? true,
         });
@@ -91,6 +99,10 @@ export default function AdsBannerForm() {
       const formData = new FormData();
       formData.append("media_alt", data.media_alt || "");
       formData.append("media_alt_ar", data.media_alt_ar || "");
+      formData.append("link", data.link || "");
+      formData.append("link_new_tab", (data.link_new_tab ?? false).toString());
+      formData.append("button_text", data.button_text || "");
+      formData.append("button_text_ar", data.button_text_ar || "");
       formData.append("sort_order", (data.sort_order || "1").toString());
       formData.append("is_active", (data.is_active ?? true).toString());
 
@@ -182,6 +194,42 @@ export default function AdsBannerForm() {
                   placeholder="صف وسائط الإعلان"
                 />
               </div>
+
+              <FormTextField
+                form={form}
+                name="link"
+                label="Link"
+                placeholder="/en/products?category=vinyl-flooring or https://..."
+              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormTextField
+                  form={form}
+                  name="button_text"
+                  label="Button Text"
+                  placeholder="Shop Now (default when a link is set)"
+                />
+                <FormTextField
+                  form={form}
+                  name="button_text_ar"
+                  label="Button Text (Arabic)"
+                  placeholder="تسوق الآن"
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="link_new_tab"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Open in a new tab</FormLabel>
+                      <p className="text-sm text-muted-foreground">Open the link in a new browser tab.</p>
+                    </div>
+                    <FormControl>
+                      <Switch checked={!!field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
             </CardContent>
           </Card>
 

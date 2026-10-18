@@ -193,6 +193,12 @@ const CommonMilestonesForm = React.lazy(
 
 // Contact — CMS
 const ContactCmsForm = React.lazy(() => import("./pages/contact/ContactCmsForm"));
+const CategoryCmsForm = React.lazy(() => import("./pages/products/CategoryCmsForm"));
+const BlogList = React.lazy(() => import("./pages/blogs/BlogList"));
+const BlogForm = React.lazy(() => import("./pages/blogs/BlogForm"));
+const BlogTagList = React.lazy(() => import("./pages/blogs/BlogTagList"));
+const BlogTagForm = React.lazy(() => import("./pages/blogs/BlogTagForm"));
+const BlogCmsForm = React.lazy(() => import("./pages/blogs/BlogCmsForm"));
 
 // Policies — Privacy Policy CMS
 const PrivacyPolicyForm = React.lazy(() => import("./pages/policies/PrivacyPolicyForm"));
@@ -333,6 +339,18 @@ const App = () => (
               <Route path="/milestones" element={<CommonMilestonesList />} />
               <Route path="/milestones/new" element={<CommonMilestonesForm />} />
               <Route path="/milestones/:id/edit" element={<CommonMilestonesForm />} />
+
+              {/* Blogs */}
+              <Route path="/blogs" element={<BlogList />} />
+              <Route path="/blogs/new" element={<BlogForm />} />
+              <Route path="/blogs/:id/edit" element={<BlogForm />} />
+              <Route path="/blog-tags" element={<BlogTagList />} />
+              <Route path="/blog-tags/new" element={<BlogTagForm />} />
+              <Route path="/blog-tags/:id/edit" element={<BlogTagForm />} />
+              <Route path="/blog-cms" element={<BlogCmsForm />} />
+
+              {/* Categories page CMS */}
+              <Route path="/category-cms" element={<CategoryCmsForm />} />
 
               {/* Contact CMS */}
               <Route path="/contact-cms" element={<ContactCmsForm />} />

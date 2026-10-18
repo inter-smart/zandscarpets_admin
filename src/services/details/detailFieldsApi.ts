@@ -11,6 +11,7 @@ export type DetailFieldType = (typeof FIELD_TYPES)[number];
 export interface DetailFieldRecord {
   id: number;
   name: string;
+  name_ar?: string | null;
   slug: string;
   type: DetailFieldType;
   allows_multiple: boolean;
@@ -22,6 +23,7 @@ export interface DetailFieldRecord {
 
 export interface DetailFieldPayload {
   name: string;
+  name_ar?: string;
   type: DetailFieldType;
   allows_multiple: boolean;
   sort_order: number;

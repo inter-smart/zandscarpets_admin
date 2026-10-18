@@ -124,8 +124,8 @@ All colors MUST be HSL.
 }
 /* Rich text editor: bullet points shown as check-circle icons (matches the storefront) */
 .rte-check-list ul {
-  list-style: none;
-  padding-inline-start: 0;
+  list-style: none !important; /* the editor's own bullets would show next to the icon */
+  padding-inline-start: 0 !important;
 }
 .rte-check-list ul > li {
   position: relative;

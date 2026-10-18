@@ -38,10 +38,12 @@ interface ApiErrorEnvelope {
 export class ApiError extends Error {
   code?: string;
   details?: unknown;
+  status?: number;
 
-  constructor(message: string, code?: string, details?: unknown) {
+  constructor(message: string, code?: string, details?: unknown, status?: number) {
     super(message);
     this.name = "ApiError";
+    this.status = status;
     this.code = code;
     this.details = details;
   }
@@ -52,7 +54,7 @@ const parseEnvelope = async <T>(response: Response): Promise<ApiEnvelope<T>> => 
   if (!response.ok || !body.success) {
     const errorBody = body as ApiErrorEnvelope;
     const message = errorBody.error?.message || errorBody.message || `Request failed with status ${response.status}`;
-    throw new ApiError(message, errorBody.error?.code, errorBody.error?.details);
+    throw new ApiError(message, errorBody.error?.code, errorBody.error?.details, response.status);
   }
   return body;
 };

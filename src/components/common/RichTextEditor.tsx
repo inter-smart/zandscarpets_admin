@@ -30,7 +30,8 @@ import {
   Image as ImageIcon,
   Smile,
   Link as LinkIcon,
-  Palette
+  Palette,
+  GalleryHorizontal,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { IconSelector } from "./IconSelector";
@@ -48,6 +49,10 @@ interface RichTextEditorProps {
   dir?: "ltr" | "rtl";
   // bullet points show a check-circle icon (the storefront renders them the same way)
   checkList?: boolean;
+  // adds a toolbar button that drops a `[gallery]` marker line (the blog page shows its swiper there)
+  galleryMarker?: boolean;
+  // stores an image chosen in the "Upload Image" tab and returns its URL
+  uploadImage?: (file: File) => Promise<string>;
 }
 
 export function RichTextEditor({
@@ -61,6 +66,8 @@ export function RichTextEditor({
   height,
   dir,
   checkList = false,
+  galleryMarker = false,
+  uploadImage,
 }: RichTextEditorProps) {
   const [showIconSelector, setShowIconSelector] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
@@ -395,6 +402,20 @@ export function RichTextEditor({
               <LinkIcon className="h-4 w-4" />
             </ToolbarButton>
 
+            {galleryMarker && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                title="Insert the gallery swiper here"
+                onClick={() => editor.chain().focus().insertContent("<p>[gallery]</p>").run()}
+                className="h-8 gap-1 px-2 text-xs"
+              >
+                <GalleryHorizontal className="h-4 w-4" />
+                Gallery
+              </Button>
+            )}
+
             <Separator orientation="vertical" className="mx-1 h-8" />
 
             {/* Undo/Redo */}
@@ -441,6 +462,7 @@ export function RichTextEditor({
         isOpen={showImageModal}
         onClose={() => setShowImageModal(false)}
         onInsertImage={handleImageInsert}
+        uploadImage={uploadImage}
       />
     </div>
   );

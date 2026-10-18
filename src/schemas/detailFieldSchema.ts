@@ -4,6 +4,7 @@ import { FIELD_TYPES } from "@/services/details/detailFieldsApi";
 
 export const detailFieldSchema = z.object({
   name: commonValidations.requiredString("Name"),
+  name_ar: z.string().trim().optional(),
   type: z.enum(FIELD_TYPES),
   allows_multiple: z.boolean(),
   sort_order: commonValidations.sortOrder,

@@ -43,6 +43,7 @@ export default function DetailFieldForm() {
     resolver: zodResolver(detailFieldSchema),
     defaultValues: {
       name: "",
+      name_ar: "",
       type: "rich_text",
       allows_multiple: false,
       sort_order: "1",
@@ -67,6 +68,7 @@ export default function DetailFieldForm() {
       const { data } = await fetchDetailFieldById(itemId);
       form.reset({
         name: data.name || "",
+        name_ar: data.name_ar || "",
         type: data.type,
         allows_multiple: data.allows_multiple ?? false,
         sort_order: (data.sort_order ?? 1).toString(),
@@ -89,6 +91,7 @@ export default function DetailFieldForm() {
 
       const payload = {
         name: data.name,
+        name_ar: data.name_ar || "",
         type: data.type,
         allows_multiple: data.allows_multiple,
         sort_order: parseInt(data.sort_order || "1"),
@@ -143,6 +146,7 @@ export default function DetailFieldForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <FormTextField form={form} name="name" label="Name" placeholder="e.g., Installation Guide" />
+              <FormTextField form={form} name="name_ar" label="Name (Arabic)" placeholder="مثال: تعليمات التركيب" />
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {typeLocked ? (
                   <FormItem>

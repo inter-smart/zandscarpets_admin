@@ -36,6 +36,9 @@ export interface MediaRecord {
   alt_text: string | null;
   title: string | null;
   description: string | null;
+  alt_text_ar?: string | null;
+  title_ar?: string | null;
+  description_ar?: string | null;
   thumbnail_location: string | null;
   createdAt?: string;
 }
@@ -89,6 +92,9 @@ export interface MediaDetailsPatch {
   alt_text?: string;
   title?: string;
   description?: string;
+  alt_text_ar?: string;
+  title_ar?: string;
+  description_ar?: string;
 }
 
 // Partial update: only the keys present in `patch` change. An empty string

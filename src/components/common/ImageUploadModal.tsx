@@ -23,9 +23,14 @@ interface ImageUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   onInsertImage: (src: string, alt: string, title?: string) => void;
+  // When given, an uploaded file is stored through it and the returned URL is inserted (a plain
+  // object URL would not survive saving). Without it the upload tab keeps its old behaviour.
+  uploadImage?: (file: File) => Promise<string>;
 }
 
-export function ImageUploadModal({ isOpen, onClose, onInsertImage }: ImageUploadModalProps) {
+export function ImageUploadModal({ isOpen, onClose, onInsertImage, uploadImage }: ImageUploadModalProps) {
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [altText, setAltText] = useState("");
@@ -45,15 +50,28 @@ export function ImageUploadModal({ isOpen, onClose, onInsertImage }: ImageUpload
     onClose();
   };
 
-  const handleInsert = () => {
+  const handleInsert = async () => {
     let src = "";
-    
+    setUploadError("");
+
     if (activeTab === "upload" && uploadedFile) {
-      src = URL.createObjectURL(uploadedFile);
+      if (uploadImage) {
+        try {
+          setUploading(true);
+          src = await uploadImage(uploadedFile);
+        } catch (error) {
+          setUploadError(error instanceof Error ? error.message : "Failed to upload the image");
+          return;
+        } finally {
+          setUploading(false);
+        }
+      } else {
+        src = URL.createObjectURL(uploadedFile);
+      }
     } else if (activeTab === "url" && imageUrl.trim()) {
       src = imageUrl.trim();
     }
-    
+
     if (src && altText.trim()) {
       onInsertImage(src, altText.trim(), titleText.trim() || undefined);
       handleClose();
@@ -123,6 +141,8 @@ export function ImageUploadModal({ isOpen, onClose, onInsertImage }: ImageUpload
             </TabsContent>
           </Tabs>
 
+          {uploadError && <p className="text-sm text-destructive">{uploadError}</p>}
+
           {/* Preview */}
           {previewSrc && (
             <div className="space-y-2">
@@ -174,9 +194,9 @@ export function ImageUploadModal({ isOpen, onClose, onInsertImage }: ImageUpload
           </Button>
           <Button 
             onClick={handleInsert} 
-            disabled={!canInsert()}
+            disabled={!canInsert() || uploading}
           >
-            Insert Image
+            {uploading ? "Uploading..." : "Insert Image"}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -82,6 +82,17 @@ const aboutSection = [
   { title: "Messages", url: "/about-messages", icon: MessageSquare },
 ];
 
+const categorySection = [
+  { title: "CMS", url: "/category-cms", icon: Boxes },
+];
+
+const blogPageSection = [{ title: "CMS", url: "/blog-cms", icon: FileText }];
+
+const blogsSection = [
+  { title: "Blogs", url: "/blogs", icon: FileText },
+  { title: "Blog Tags", url: "/blog-tags", icon: Tags },
+];
+
 const contactSection = [
   { title: "CMS", url: "/contact-cms", icon: Phone },
   { title: "Connections", url: "/contact-connections", icon: Link2 },
@@ -161,7 +172,7 @@ const commonItemsSection = [
 ];
 const adminSection = [{ title: "Users", url: "/users", icon: Users }];
 
-const CMS_SECTIONS = ["home", "about", "contact", "services", "common"];
+const CMS_SECTIONS = ["home", "about", "category", "blog-page", "contact", "services", "common"];
 
 const isNavActive = (
   location: { pathname: string; search: string },
@@ -217,6 +228,18 @@ export function AppSidebar() {
     // About section
     else if (path.includes("/about-")) {
       setOpenSection("about");
+    }
+    // Category page section
+    else if (path.includes("/category-cms")) {
+      setOpenSection("category");
+    }
+    // Blog page CMS
+    else if (path.includes("/blog-cms")) {
+      setOpenSection("blog-page");
+    }
+    // Blogs section
+    else if (path.startsWith("/blogs") || path.startsWith("/blog-tags")) {
+      setOpenSection("blogs");
     }
     // Contact section
     else if (path.includes("/contact-")) {
@@ -344,7 +367,7 @@ export function AppSidebar() {
           </SidebarMenu>
         </SidebarGroup>
 
-        {/* CMS (Home, About, Contact, Services, Settings & Common) */}
+        {/* CMS (Home, About, Category, Contact, Services, Settings & Common) */}
         <GetLayout
           Icon={LayoutTemplate}
           title="CMS"
@@ -376,6 +399,26 @@ export function AppSidebar() {
               onOpenChange={(isOpen) => setOpenSection(isOpen ? "about" : null)}
               location={location}
               Section={aboutSection}
+            />
+            <GetLayout
+              nested
+              Icon={Boxes}
+              title="Category"
+              isCollapsed={isCollapsed}
+              open={openSection === "category"}
+              onOpenChange={(isOpen) => setOpenSection(isOpen ? "category" : null)}
+              location={location}
+              Section={categorySection}
+            />
+            <GetLayout
+              nested
+              Icon={FileText}
+              title="Blog Page"
+              isCollapsed={isCollapsed}
+              open={openSection === "blog-page"}
+              onOpenChange={(isOpen) => setOpenSection(isOpen ? "blog-page" : null)}
+              location={location}
+              Section={blogPageSection}
             />
             <GetLayout
               nested
@@ -428,6 +471,16 @@ export function AppSidebar() {
           onOpenChange={(isOpen) => setOpenSection(isOpen ? "projects" : null)}
           location={location}
           Section={projectsSection}
+        />
+
+        <GetLayout
+          Icon={FileText}
+          title="Blogs"
+          isCollapsed={isCollapsed}
+          open={openSection === "blogs"}
+          onOpenChange={(isOpen) => setOpenSection(isOpen ? "blogs" : null)}
+          location={location}
+          Section={blogsSection}
         />
 
         <GetLayout
