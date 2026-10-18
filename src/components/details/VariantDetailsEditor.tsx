@@ -326,10 +326,11 @@ export default function VariantDetailsEditor({ productId, variantId }: VariantDe
       )}
 
       <Dialog open={Boolean(textEditor)} onOpenChange={(open) => !open && setTextEditor(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="flex max-h-[90vh] max-w-3xl flex-col gap-4">
           <DialogHeader>
             <DialogTitle>{textEditor?.item ? "Edit" : "Add"} {textEditor?.fieldName}</DialogTitle>
           </DialogHeader>
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto pr-1">
           <div className="space-y-2">
             <Label>English</Label>
             <RichTextEditor value={textValue} onChange={setTextValue} height="250px" />
@@ -337,6 +338,7 @@ export default function VariantDetailsEditor({ productId, variantId }: VariantDe
           <div className="space-y-2">
             <Label>Arabic</Label>
             <RichTextEditor value={textValueAr} onChange={setTextValueAr} height="250px" />
+          </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setTextEditor(null)}>
