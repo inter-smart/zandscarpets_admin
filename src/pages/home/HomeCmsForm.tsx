@@ -200,6 +200,9 @@ export default function HomeCmsForm() {
                   placeholder="أدخل عنوان المشروع"
                 />
               </div>
+              <p className="text-sm text-muted-foreground">
+                This title is also used as the heading on the Works page.
+              </p>
             </CardContent>
           </Card>
 

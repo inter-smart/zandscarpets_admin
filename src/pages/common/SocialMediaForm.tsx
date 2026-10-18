@@ -51,7 +51,6 @@ export default function SocialMediaForm() {
     resolver: zodResolver(socialMediaSchema),
     defaultValues: {
       media_path: "",
-      footer_media_path: "",
       media_alt: "",
       media_alt_ar: "",
       link: "",
@@ -75,7 +74,6 @@ export default function SocialMediaForm() {
       if (data) {
         form.reset({
           media_path: data.media_path || "",
-          footer_media_path: data.footer_media_path || "",
           media_alt: data.media_alt || "",
           media_alt_ar: data.media_alt_ar || "",
           link: data.link || "",
@@ -106,10 +104,7 @@ export default function SocialMediaForm() {
       formData.append("is_active", (data.is_active ?? true).toString());
 
       // Add each icon file if a new one was chosen, otherwise fall back to the existing path string
-      const fileKeys = [
-        "media_path",
-        "footer_media_path",
-      ] as const;
+      const fileKeys = ["media_path"] as const;
       for (const key of fileKeys) {
         const value = data[key];
         if (value instanceof File || typeof value === "string") {
@@ -206,16 +201,6 @@ export default function SocialMediaForm() {
                   accept={SOCIAL_ICON_ACCEPT}
                   maxImageSize={SOCIAL_ICON_MAX_BYTES}
                   recommendedDimensions={SOCIAL_ICON_RECOMMENDED}
-                  validateImage={(file) => validateSocialIcon(file)}
-                />
-                <FormFileUploadField
-                  form={form}
-                  name="footer_media_path"
-                  label="Footer Icon"
-                  placeholder="Upload footer social media icon"
-                  accept={SOCIAL_ICON_ACCEPT}
-                  maxImageSize={SOCIAL_ICON_MAX_BYTES}
-                  recommendedDimensions={`${SOCIAL_ICON_RECOMMENDED}. White icon works best (footer background is dark).`}
                   validateImage={(file) => validateSocialIcon(file)}
                 />
               </div>

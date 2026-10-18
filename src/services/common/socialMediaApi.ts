@@ -8,7 +8,6 @@ const baseUrl = `${API_BASE_URL}/site-settings/social-media`;
 export interface SocialMedia {
   id?: number;
   media_path: string | null;
-  footer_media_path?: string | null;
   media_alt: string;
   media_alt_ar?: string;
   link: string;
@@ -46,7 +45,6 @@ export interface SocialMediaItemResponse {
 
 export interface CreateSocialMediaData {
   media_path?: File | string;
-  footer_media_path?: File | string;
   media_alt: string;
   link: string;
   sort_order?: number;

@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   FormTextField,
   FormTextareaField,
+  FormFileUploadField,
   FormRichTextField,
 } from "@/components/forms/FormFieldComponents";
 import {
@@ -31,6 +32,31 @@ const defaultValues: ContactCmsFormData = {
   social_media_title: "",
   social_media_title_ar: "",
   map_url: "",
+  phone_title: "",
+  phone_title_ar: "",
+  phone_description: "",
+  phone_description_ar: "",
+  phone_value: "",
+  phone_icon_media_alt: "",
+  phone_icon_media_alt_ar: "",
+  phone_icon_media_path: "",
+  email_title: "",
+  email_title_ar: "",
+  email_description: "",
+  email_description_ar: "",
+  email_value: "",
+  email_icon_media_alt: "",
+  email_icon_media_alt_ar: "",
+  email_icon_media_path: "",
+  office_title: "",
+  office_title_ar: "",
+  office_description: "",
+  office_description_ar: "",
+  office_value: "",
+  office_value_ar: "",
+  office_icon_media_alt: "",
+  office_icon_media_alt_ar: "",
+  office_icon_media_path: "",
 };
 
 export default function ContactCmsForm() {
@@ -66,6 +92,31 @@ export default function ContactCmsForm() {
           social_media_title: data.social_media_title || "",
           social_media_title_ar: data.social_media_title_ar || "",
           map_url: data.map_url || "",
+          phone_title: data.phone_title || "",
+          phone_title_ar: data.phone_title_ar || "",
+          phone_description: data.phone_description || "",
+          phone_description_ar: data.phone_description_ar || "",
+          phone_value: data.phone_value || "",
+          phone_icon_media_alt: data.phone_icon_media_alt || "",
+          phone_icon_media_alt_ar: data.phone_icon_media_alt_ar || "",
+          phone_icon_media_path: data.phone_icon_media_path || "",
+          email_title: data.email_title || "",
+          email_title_ar: data.email_title_ar || "",
+          email_description: data.email_description || "",
+          email_description_ar: data.email_description_ar || "",
+          email_value: data.email_value || "",
+          email_icon_media_alt: data.email_icon_media_alt || "",
+          email_icon_media_alt_ar: data.email_icon_media_alt_ar || "",
+          email_icon_media_path: data.email_icon_media_path || "",
+          office_title: data.office_title || "",
+          office_title_ar: data.office_title_ar || "",
+          office_description: data.office_description || "",
+          office_description_ar: data.office_description_ar || "",
+          office_value: data.office_value || "",
+          office_value_ar: data.office_value_ar || "",
+          office_icon_media_alt: data.office_icon_media_alt || "",
+          office_icon_media_alt_ar: data.office_icon_media_alt_ar || "",
+          office_icon_media_path: data.office_icon_media_path || "",
         });
       }
     } catch (error) {
@@ -78,18 +129,58 @@ export default function ContactCmsForm() {
   const onSubmit = async (data: ContactCmsFormData) => {
     try {
       setLoading(true);
-      const payload = {
-        title: data.title,
-        title_ar: data.title_ar,
-        description: data.description,
-        description_ar: data.description_ar,
-        form_title: data.form_title,
-        form_title_ar: data.form_title_ar,
-        social_media_title: data.social_media_title,
-        social_media_title_ar: data.social_media_title_ar,
-        map_url: data.map_url,
-      };
-      const response = await saveContactCms(payload, recordId ?? 1);
+      const formData = new FormData();
+      const textFields = [
+        "title",
+        "title_ar",
+        "description",
+        "description_ar",
+        "form_title",
+        "form_title_ar",
+        "social_media_title",
+        "social_media_title_ar",
+        "map_url",
+        "phone_title",
+        "phone_title_ar",
+        "phone_description",
+        "phone_description_ar",
+        "phone_value",
+        "phone_icon_media_alt",
+        "phone_icon_media_alt_ar",
+        "email_title",
+        "email_title_ar",
+        "email_description",
+        "email_description_ar",
+        "email_value",
+        "email_icon_media_alt",
+        "email_icon_media_alt_ar",
+        "office_title",
+        "office_title_ar",
+        "office_description",
+        "office_description_ar",
+        "office_value",
+        "office_value_ar",
+        "office_icon_media_alt",
+        "office_icon_media_alt_ar",
+      ] as const;
+      textFields.forEach((key) => formData.append(key, data[key] ?? ""));
+
+      // icons: a new upload is sent as a file; an unchanged one keeps its saved path
+      (
+        [
+          "phone_icon_media_path",
+          "email_icon_media_path",
+          "office_icon_media_path",
+        ] as const
+      ).forEach((key) => {
+        const value = data[key];
+        if (value instanceof File) {
+          formData.append(key, value);
+        } else if (typeof value === "string" && value) {
+          formData.append(key, value);
+        }
+      });
+      const response = await saveContactCms(formData, recordId ?? 1);
       if (response.data?.id) {
         setRecordId(response.data.id);
       }
@@ -157,7 +248,190 @@ export default function ContactCmsForm() {
                   form={form}
                   name="description_ar"
                   label="Description (Arabic)"
-                      placeholder="أدخل وصف جهة الاتصال"
+                  placeholder="أدخل وصف جهة الاتصال"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Phone Details</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormFileUploadField
+                form={form}
+                name="phone_icon_media_path"
+                label="Icon"
+                placeholder="Upload icon"
+                accept="image/*"
+              />
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FormTextField
+                  form={form}
+                  name="phone_icon_media_alt"
+                  label="Icon Alt Text"
+                  placeholder="Enter alt text"
+                />
+                <FormTextField
+                  form={form}
+                  name="phone_icon_media_alt_ar"
+                  label="Icon Alt Text (Arabic)"
+                  placeholder="أدخل النص البديل"
+                />
+                <FormTextField
+                  form={form}
+                  name="phone_title"
+                  label="Title"
+                  placeholder="Enter title"
+                />
+                <FormTextField
+                  form={form}
+                  name="phone_title_ar"
+                  label="Title (Arabic)"
+                  placeholder="أدخل العنوان"
+                />
+                <FormRichTextField
+                  form={form}
+                  name="phone_description"
+                  label="Description"
+                  placeholder="Enter description"
+                />
+                <FormRichTextField
+                  form={form}
+                  name="phone_description_ar"
+                  label="Description (Arabic)"
+                  placeholder="أدخل الوصف"
+                />
+                <FormTextField
+                  form={form}
+                  name="phone_value"
+                  label="Phone Value"
+                  placeholder="e.g. +971 5270 044 20"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Email Details</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormFileUploadField
+                form={form}
+                name="email_icon_media_path"
+                label="Icon"
+                placeholder="Upload icon"
+                accept="image/*"
+              />
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FormTextField
+                  form={form}
+                  name="email_icon_media_alt"
+                  label="Icon Alt Text"
+                  placeholder="Enter alt text"
+                />
+                <FormTextField
+                  form={form}
+                  name="email_icon_media_alt_ar"
+                  label="Icon Alt Text (Arabic)"
+                  placeholder="أدخل النص البديل"
+                />
+                <FormTextField
+                  form={form}
+                  name="email_title"
+                  label="Title"
+                  placeholder="Enter title"
+                />
+                <FormTextField
+                  form={form}
+                  name="email_title_ar"
+                  label="Title (Arabic)"
+                  placeholder="أدخل العنوان"
+                />
+                <FormRichTextField
+                  form={form}
+                  name="email_description"
+                  label="Description"
+                  placeholder="Enter description"
+                />
+                <FormRichTextField
+                  form={form}
+                  name="email_description_ar"
+                  label="Description (Arabic)"
+                  placeholder="أدخل الوصف"
+                />
+                <FormTextField
+                  form={form}
+                  name="email_value"
+                  label="Email Value"
+                  placeholder="e.g. info@zandscarpets.com"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Office Details</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormFileUploadField
+                form={form}
+                name="office_icon_media_path"
+                label="Icon"
+                placeholder="Upload icon"
+                accept="image/*"
+              />
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FormTextField
+                  form={form}
+                  name="office_icon_media_alt"
+                  label="Icon Alt Text"
+                  placeholder="Enter alt text"
+                />
+                <FormTextField
+                  form={form}
+                  name="office_icon_media_alt_ar"
+                  label="Icon Alt Text (Arabic)"
+                  placeholder="أدخل النص البديل"
+                />
+                <FormTextField
+                  form={form}
+                  name="office_title"
+                  label="Title"
+                  placeholder="Enter title"
+                />
+                <FormTextField
+                  form={form}
+                  name="office_title_ar"
+                  label="Title (Arabic)"
+                  placeholder="أدخل العنوان"
+                />
+                <FormRichTextField
+                  form={form}
+                  name="office_description"
+                  label="Description"
+                  placeholder="Enter description"
+                />
+                <FormRichTextField
+                  form={form}
+                  name="office_description_ar"
+                  label="Description (Arabic)"
+                  placeholder="أدخل الوصف"
+                />
+                <FormRichTextField
+                  form={form}
+                  name="office_value"
+                  label="Address"
+                  placeholder="Enter office address"
+                />
+                <FormRichTextField
+                  form={form}
+                  name="office_value_ar"
+                  label="Address (Arabic)"
+                  placeholder="أدخل عنوان المكتب"
                 />
               </div>
             </CardContent>
@@ -219,6 +493,10 @@ export default function ContactCmsForm() {
                 label="Map URL"
                 placeholder="Enter map embed URL"
               />
+              <p className="text-sm text-muted-foreground">
+                Paste the Google Maps embed link (the src of the iframe) or the
+                whole iframe code. Only Google Maps embeds are shown.
+              </p>
             </CardContent>
           </Card>
 

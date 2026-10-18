@@ -4,7 +4,6 @@ import { commonValidations } from "@/utils/formUtils";
 
 export const socialMediaSchema = z.object({
   media_path: commonValidations.requiredFile("Icon"),
-  footer_media_path: z.custom<File | string>().optional(),
   media_alt: commonValidations.requiredString("Alt text"),
   media_alt_ar: commonValidations.requiredString("Alt text (Arabic)"),
   link: commonValidations.requiredString("Link"),
