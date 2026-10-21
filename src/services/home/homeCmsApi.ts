@@ -28,6 +28,9 @@ export interface HomeCms {
   faq_title_ar?: string;
   space_section_title: string;
   space_section_title_ar?: string;
+  space_button_text?: string;
+  space_button_text_ar?: string;
+  space_button_link?: string;
   premium_title: string;
   premium_title_ar?: string;
   premium_description: string;

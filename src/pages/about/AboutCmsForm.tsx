@@ -31,6 +31,9 @@ const defaultValues: AboutCmsFormData = {
   trust_title_ar: "",
   trust_description: "",
   trust_description_ar: "",
+  trust_button_text: "",
+  trust_button_text_ar: "",
+  trust_button_link: "",
   mission_title: "",
   mission_title_ar: "",
   vision_title: "",
@@ -96,6 +99,9 @@ export default function AboutCmsForm() {
           trust_title_ar: data.trust_title_ar || "",
           trust_description: data.trust_description || "",
           trust_description_ar: data.trust_description_ar || "",
+          trust_button_text: data.trust_button_text || "",
+          trust_button_text_ar: data.trust_button_text_ar || "",
+          trust_button_link: data.trust_button_link || "",
           mission_title: data.mission_title || "",
           mission_title_ar: data.mission_title_ar || "",
           vision_title: data.vision_title || "",
@@ -156,6 +162,9 @@ export default function AboutCmsForm() {
       formData.append("trust_title_ar", data.trust_title_ar || "");
       formData.append("trust_description", data.trust_description);
       formData.append("trust_description_ar", data.trust_description_ar || "");
+      formData.append("trust_button_text", data.trust_button_text || "");
+      formData.append("trust_button_text_ar", data.trust_button_text_ar || "");
+      formData.append("trust_button_link", data.trust_button_link || "");
       formData.append("mission_title", data.mission_title);
       formData.append("mission_title_ar", data.mission_title_ar || "");
       formData.append("vision_title", data.vision_title);
@@ -326,6 +335,26 @@ export default function AboutCmsForm() {
                 label="Trust Description (Arabic)"
                 placeholder="أدخل وصف الثقة"
               />
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:col-span-2">
+                <FormTextField
+                  form={form}
+                  name="trust_button_text"
+                  label="Button Text"
+                  placeholder="e.g. Get a Quote"
+                />
+                <FormTextField
+                  form={form}
+                  name="trust_button_text_ar"
+                  label="Button Text (Arabic)"
+                  placeholder="مثال: اطلب عرض سعر"
+                />
+                <FormTextField
+                  form={form}
+                  name="trust_button_link"
+                  label="Button Link"
+                  placeholder="/contact (leave empty to hide the button)"
+                />
+              </div>
             </CardContent>
           </Card>
 

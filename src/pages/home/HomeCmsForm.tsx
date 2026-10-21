@@ -31,6 +31,9 @@ const defaultValues: HomeCmsFormData = {
   faq_title_ar: "",
   space_section_title: "",
   space_section_title_ar: "",
+  space_button_text: "",
+  space_button_text_ar: "",
+  space_button_link: "",
   premium_title: "",
   premium_title_ar: "",
   premium_description: "",
@@ -80,6 +83,9 @@ export default function HomeCmsForm() {
           faq_title_ar: data.faq_title_ar || "",
           space_section_title: data.space_section_title || "",
           space_section_title_ar: data.space_section_title_ar || "",
+          space_button_text: data.space_button_text || "",
+          space_button_text_ar: data.space_button_text_ar || "",
+          space_button_link: data.space_button_link || "",
           premium_title: data.premium_title || "",
           premium_title_ar: data.premium_title_ar || "",
           premium_description: data.premium_description || "",
@@ -323,6 +329,26 @@ export default function HomeCmsForm() {
                   name="space_section_title_ar"
                   label="Space Section Title (Arabic)"
                   placeholder="أدخل عنوان قسم المساحات"
+                />
+              </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <FormTextField
+                  form={form}
+                  name="space_button_text"
+                  label="Button Text"
+                  placeholder="e.g. Explore Spaces"
+                />
+                <FormTextField
+                  form={form}
+                  name="space_button_text_ar"
+                  label="Button Text (Arabic)"
+                  placeholder="مثال: استكشف المساحات"
+                />
+                <FormTextField
+                  form={form}
+                  name="space_button_link"
+                  label="Button Link"
+                  placeholder="/products (leave empty to hide the button)"
                 />
               </div>
             </CardContent>
