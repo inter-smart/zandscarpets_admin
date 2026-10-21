@@ -137,6 +137,11 @@ const enquiriesSection = [
     url: "/enquiries",
     icon: Mail,
   },
+  {
+    title: "Sample Requests",
+    url: "/sample-requests",
+    icon: Mail,
+  },
 ];
 
 const commonSection = [
@@ -287,7 +292,7 @@ export function AppSidebar() {
       setOpenSection("products");
     } else if (["/projects"].some((route) => path.includes(route))) {
       setOpenSection("projects");
-    } else if (["/enquiries"].some((route) => path.includes(route))) {
+    } else if (["/enquiries", "/sample-requests"].some((route) => path.includes(route))) {
       setOpenSection("enquiries");
     } else if (["/privacy-policy"].some((route) => path.includes(route))) {
       setOpenSection("policies");

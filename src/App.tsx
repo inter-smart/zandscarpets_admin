@@ -210,6 +210,8 @@ const ConnectionsForm = React.lazy(() => import("./pages/contact/ConnectionsForm
 // Contact Enquiries — read-only, no create/edit (submissions come from the public site)
 const ContactEnquiryList = React.lazy(() => import("./pages/enquiries/ContactEnquiryList"));
 const ContactEnquiryView = React.lazy(() => import("./pages/enquiries/ContactEnquiryView"));
+const SampleRequestList = React.lazy(() => import("./pages/enquiries/SampleRequestList"));
+const SampleRequestView = React.lazy(() => import("./pages/enquiries/SampleRequestView"));
 
 // Bulk Upload
 const BulkUploadHome = React.lazy(() => import("./pages/bulkUpload/BulkUploadHome"));
@@ -471,6 +473,8 @@ const App = () => (
               {/* Contact Enquiries Routes — list + view only, no new/edit */}
               <Route path="/enquiries" element={<ContactEnquiryList />} />
               <Route path="/enquiries/:id" element={<ContactEnquiryView />} />
+              <Route path="/sample-requests" element={<SampleRequestList />} />
+              <Route path="/sample-requests/:id" element={<SampleRequestView />} />
 
               {/* Bulk Upload Routes */}
               <Route path="/bulk-upload" element={<BulkUploadHome />} />
