@@ -82,7 +82,11 @@ export default function ProductsList() {
   const returnState = { state: { from: location.pathname + location.search } };
   const { toast } = useToast();
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
-  const { filters: listFilters, setFilter, reset: resetListFilters } = useUrlFilters({
+  const {
+    filters: listFilters,
+    setFilter,
+    reset: resetListFilters,
+  } = useUrlFilters({
     product_category_id: ALL,
     status: ALL,
     home: ALL,
@@ -98,9 +102,7 @@ export default function ProductsList() {
 
   useEffect(() => {
     fetchActiveProductCategories()
-      .then((res) =>
-        setCategoryOptions(res.data.map((c) => ({ value: String(c.id), label: c.title }))),
-      )
+      .then((res) => setCategoryOptions(res.data.map((c) => ({ value: String(c.id), label: c.title }))))
       .catch(() => setCategoryOptions([]));
   }, []);
 
@@ -170,8 +172,7 @@ export default function ProductsList() {
     } catch (error) {
       toast({
         title: "Error",
-        description:
-          error instanceof ApiError ? error.message : "Failed to update navbar visibility",
+        description: error instanceof ApiError ? error.message : "Failed to update navbar visibility",
         variant: "destructive",
       });
     } finally {
@@ -205,8 +206,7 @@ export default function ProductsList() {
     } catch (error) {
       toast({
         title: "Error",
-        description:
-          error instanceof ApiError ? error.message : "Failed to update home page visibility",
+        description: error instanceof ApiError ? error.message : "Failed to update home page visibility",
         variant: "destructive",
       });
     } finally {
@@ -228,8 +228,7 @@ export default function ProductsList() {
     } catch (error) {
       toast({
         title: "Error",
-        description:
-          error instanceof ApiError ? error.message : "Failed to delete Product",
+        description: error instanceof ApiError ? error.message : "Failed to delete Product",
         variant: "destructive",
       });
     } finally {
@@ -241,37 +240,22 @@ export default function ProductsList() {
     {
       accessorKey: "id",
       header: "ID",
-      cell: ({ row }) => (
-        <div className="font-mono">
-          {(itemsPage - 1) * itemsLimit + row.index + 1}
-        </div>
-      ),
+      cell: ({ row }) => <div className="font-mono">{(itemsPage - 1) * itemsLimit + row.index + 1}</div>,
     },
     {
       accessorKey: "main_media_path",
       header: "Image",
-      cell: ({ row }) => (
-        <MediaThumbnail
-          path={row.original.main_media_path}
-          alt={row.original.media_alt || row.original.title}
-        />
-      ),
+      cell: ({ row }) => <MediaThumbnail path={row.original.main_media_path} alt={row.original.media_alt || row.original.title} />,
     },
     {
       accessorKey: "title",
       header: "Title",
-      cell: ({ row }) => (
-        <div className="font-medium max-w-[280px] truncate">
-          {row.getValue("title")}
-        </div>
-      ),
+      cell: ({ row }) => <div className="font-medium max-w-[280px] truncate">{row.getValue("title")}</div>,
     },
     {
       id: "category",
       header: "Category",
-      cell: ({ row }) => (
-        <div className="text-sm">{row.original.category?.title || "-"}</div>
-      ),
+      cell: ({ row }) => <div className="text-sm">{row.original.category?.title || "-"}</div>,
     },
     {
       id: "labels",
@@ -290,15 +274,6 @@ export default function ProductsList() {
           </div>
         );
       },
-    },
-    {
-      accessorKey: "price",
-      header: "Price",
-      cell: ({ row }) => (
-        <div className="font-mono text-sm">
-          {row.original.price != null ? Number(row.original.price).toFixed(2) : "-"}
-        </div>
-      ),
     },
     {
       accessorKey: "sort_order",
@@ -320,14 +295,7 @@ export default function ProductsList() {
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("is_active") as boolean;
-        return (
-          <StatusToggleCell
-            status={status}
-            onCheckedChange={(checked) =>
-              setStatusToggleItem({ item: row.original, newStatus: checked })
-            }
-          />
-        );
+        return <StatusToggleCell status={status} onCheckedChange={(checked) => setStatusToggleItem({ item: row.original, newStatus: checked })} />;
       },
     },
     {
@@ -336,9 +304,7 @@ export default function ProductsList() {
       cell: ({ row }) => (
         <StatusToggleCell
           status={!!row.original.show_in_home}
-          onCheckedChange={(checked) =>
-            setHomeToggleItem({ item: row.original, newValue: checked })
-          }
+          onCheckedChange={(checked) => setHomeToggleItem({ item: row.original, newValue: checked })}
         />
       ),
     },
@@ -348,9 +314,7 @@ export default function ProductsList() {
       cell: ({ row }) => (
         <StatusToggleCell
           status={!!row.original.list_in_navbar}
-          onCheckedChange={(checked) =>
-            setNavbarToggleItem({ item: row.original, newValue: checked })
-          }
+          onCheckedChange={(checked) => setNavbarToggleItem({ item: row.original, newValue: checked })}
         />
       ),
     },
@@ -360,9 +324,7 @@ export default function ProductsList() {
       cell: ({ row }) => (
         <StatusToggleCell
           status={!!row.original.show_in_footer}
-          onCheckedChange={(checked) =>
-            setFooterToggleItem({ item: row.original, newValue: checked })
-          }
+          onCheckedChange={(checked) => setFooterToggleItem({ item: row.original, newValue: checked })}
         />
       ),
     },
@@ -371,11 +333,7 @@ export default function ProductsList() {
       header: "Variants",
       cell: ({ row }) => {
         const count = row.original.variant_count ?? 0;
-        return (
-          <Badge variant={count ? "secondary" : "outline"}>
-            {count}
-          </Badge>
-        );
+        return <Badge variant={count ? "secondary" : "outline"}>{count}</Badge>;
       },
     },
     {
@@ -387,33 +345,23 @@ export default function ProductsList() {
           <RowActionsMenu
             extraItems={
               <>
-                <DropdownMenuItem
-                  onClick={() => navigate(`/products/${item.id}/variants`, returnState)}
-                >
+                <DropdownMenuItem onClick={() => navigate(`/products/${item.id}/variants`, returnState)}>
                   <Layers className="mr-2 h-4 w-4" />
                   Variants
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => navigate(`/faqs?product_id=${item.id}`, returnState)}
-                >
+                <DropdownMenuItem onClick={() => navigate(`/faqs?product_id=${item.id}`, returnState)}>
                   <HelpCircle className="mr-2 h-4 w-4" />
                   FAQs
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => navigate(`/products/${item.id}/media`, returnState)}
-                >
+                <DropdownMenuItem onClick={() => navigate(`/products/${item.id}/media`, returnState)}>
                   <Images className="mr-2 h-4 w-4" />
                   Media
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => navigate(`/products/${item.id}/details`, returnState)}
-                >
+                <DropdownMenuItem onClick={() => navigate(`/products/${item.id}/details`, returnState)}>
                   <LayoutList className="mr-2 h-4 w-4" />
                   Details
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => navigate(`/meta-tags?type=product&product_id=${item.id}`, returnState)}
-                >
+                <DropdownMenuItem onClick={() => navigate(`/meta-tags?type=product&product_id=${item.id}`, returnState)}>
                   <Tags className="mr-2 h-4 w-4" />
                   SEO Meta
                 </DropdownMenuItem>
@@ -497,12 +445,7 @@ export default function ProductsList() {
                 onChange={(value) => setFilter("footer", value || ALL)}
               />
             </FilterField>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={resetAll}
-              disabled={!hasActiveFilters}
-            >
+            <Button variant="outline" size="sm" onClick={resetAll} disabled={!hasActiveFilters}>
               <RotateCcw className="mr-2 h-4 w-4" />
               Reset
             </Button>
@@ -521,12 +464,7 @@ export default function ProductsList() {
         }}
       />
 
-      <DeleteDialogue
-        deleteItemId={deleteItemId}
-        setDeleteItemId={setDeleteItemId}
-        confirmDelete={confirmDelete}
-        itemLabel="Product"
-      />
+      <DeleteDialogue deleteItemId={deleteItemId} setDeleteItemId={setDeleteItemId} confirmDelete={confirmDelete} itemLabel="Product" />
 
       <AlertDialog open={!!homeToggleItem} onOpenChange={() => setHomeToggleItem(null)}>
         <AlertDialogContent
@@ -538,11 +476,7 @@ export default function ProductsList() {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm Home Page Change</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to{" "}
-              {homeToggleItem?.newValue
-                ? "show this product on the home page"
-                : "remove this product from the home page"}
-              ?
+              Are you sure you want to {homeToggleItem?.newValue ? "show this product on the home page" : "remove this product from the home page"}?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -564,11 +498,7 @@ export default function ProductsList() {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm Navbar Change</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to{" "}
-              {navbarToggleItem?.newValue
-                ? "show this product in the navbar"
-                : "remove this product from the navbar"}
-              ?
+              Are you sure you want to {navbarToggleItem?.newValue ? "show this product in the navbar" : "remove this product from the navbar"}?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

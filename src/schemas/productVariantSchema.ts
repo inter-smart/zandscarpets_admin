@@ -15,7 +15,8 @@ export const productVariantSchema = z.object({
     .min(1, "Select a value for each attribute"),
   label: commonValidations.optionalString.or(z.literal("")),
   label_ar: commonValidations.optionalString.or(z.literal("")),
-  sku: commonValidations.requiredString("SKU"),
+  // Auto-generated server-side from product + attribute values when left blank.
+  sku: commonValidations.optionalString.or(z.literal("")),
   media_path: requiredFile,
   media_alt: commonValidations.optionalString.or(z.literal("")),
   media_alt_ar: commonValidations.optionalString.or(z.literal("")),

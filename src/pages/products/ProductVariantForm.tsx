@@ -320,7 +320,7 @@ export default function ProductVariantForm() {
                   <FormItem>
                     <FormLabel>SKU (optional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., 120CM-OAK" {...field} />
+                      <Input placeholder="Auto-generated from product and attributes if left blank" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

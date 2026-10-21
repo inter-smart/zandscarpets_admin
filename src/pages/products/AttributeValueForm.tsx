@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
@@ -38,9 +38,6 @@ export default function AttributeValueForm() {
   const [attributes, setAttributes] = useState<AttributeOption[]>([]);
   const [selectedType, setSelectedType] = useState<AttributeType | null>(null);
   const [colorMode, setColorMode] = useState<ColorMode>("color");
-  // Tracks the hex the Name field was last auto-filled with, so we only
-  // overwrite the Name while it still matches the previous auto value.
-  const autoColorRef = useRef<string | null>(null);
 
   const form = useForm<AttributeValueFormData>({
     resolver: zodResolver(attributeValueSchema),
@@ -93,16 +90,10 @@ export default function AttributeValueForm() {
     if (isEditing && id) loadValueData(parseInt(id));
   }, [id, isEditing]);
 
-  // Default a color's hex (and its Name) once a color attribute is selected.
+  // Default a color's hex once a color attribute is selected (Name is left alone).
   useEffect(() => {
     if (selectedType !== "color" || colorMode !== "color") return;
-    if (!form.getValues("color_code")) {
-      form.setValue("color_code", DEFAULT_HEX);
-      if (!form.getValues("value")) {
-        form.setValue("value", DEFAULT_HEX);
-        autoColorRef.current = DEFAULT_HEX;
-      }
-    }
+    if (!form.getValues("color_code")) form.setValue("color_code", DEFAULT_HEX);
   }, [selectedType, colorMode, form]);
 
   const loadValueData = async (itemId: number) => {
@@ -136,32 +127,15 @@ export default function AttributeValueForm() {
     }
   };
 
-  // Color bar change: update the hex and mirror it into the Name field while
-  // the Name is empty or still equals the previously auto-filled hex.
   const handleColorChange = (hex: string) => {
-    const currentName = form.getValues("value") || "";
     form.setValue("color_code", hex, { shouldDirty: true, shouldValidate: true });
-    if (!currentName || currentName === autoColorRef.current) {
-      form.setValue("value", hex, { shouldDirty: true, shouldValidate: true });
-      autoColorRef.current = hex;
-    }
   };
 
+  // Switching modes never touches the Name fields.
   const handleModeChange = (mode: ColorMode) => {
     setColorMode(mode);
-    const shouldValidate = form.formState.isSubmitted;
-    if (mode === "color") {
-      // Color bar mode: the Name mirrors the picked hex.
-      const hex = form.getValues("color_code") || DEFAULT_HEX;
-      form.setValue("color_code", hex, { shouldValidate });
-      form.setValue("value", hex, { shouldValidate });
-      form.setValue("value_ar", "", { shouldValidate });
-      autoColorRef.current = hex;
-    } else {
-      // Photo mode: reset the Name so it's entered manually for the photo.
-      form.setValue("value", "", { shouldValidate });
-      form.setValue("value_ar", "", { shouldValidate });
-      autoColorRef.current = null;
+    if (mode === "color" && !form.getValues("color_code")) {
+      form.setValue("color_code", DEFAULT_HEX, { shouldValidate: form.formState.isSubmitted });
     }
   };
 
