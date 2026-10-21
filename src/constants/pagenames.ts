@@ -12,7 +12,7 @@ export const PAGE_NAMES: PageName[] = [
   { label: "Services", slug: "services" },
   { label: "Contact", slug: "contact" },
   { label: "Blogs", slug: "blogs" },
-  { label: "Resources", slug: "resources" },
+  { label: "Downloads", slug: "downloads" },
   { label: "Privacy", slug: "privacy" },
   { label: "Our Work", slug: "our-work" },
   { label: "Category", slug: "category" },

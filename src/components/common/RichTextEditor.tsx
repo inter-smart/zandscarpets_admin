@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { BulletList } from "@tiptap/extension-bullet-list";
 import { Image } from "@tiptap/extension-image";
 import { Link } from "@tiptap/extension-link";
 import { TextStyle } from "@tiptap/extension-text-style";
@@ -21,6 +22,7 @@ import {
   RemoveFormatting,
   List,
   ListOrdered,
+  ListChecks,
   Quote,
   Undo,
   Redo,
@@ -36,6 +38,24 @@ import {
 import { cn } from "@/lib/utils";
 import { IconSelector } from "./IconSelector";
 import { ImageUploadModal } from "./ImageUploadModal";
+
+// `<ul>` with this class renders with a check-circle marker on the storefront instead of a
+// native bullet (see `.icon-bullet-list` in the storefront's globals.css and `.ProseMirror
+// ul.icon-bullet-list` below for the editor's own preview). Plain bullet lists keep no class.
+const ICON_BULLET_LIST_CLASS = "icon-bullet-list";
+
+const BulletListWithClass = BulletList.extend({
+  addAttributes() {
+    return {
+      class: {
+        default: null,
+        parseHTML: (element) => element.getAttribute("class"),
+        renderHTML: (attributes) =>
+          attributes.class ? { class: attributes.class } : {},
+      },
+    };
+  },
+});
 
 interface RichTextEditorProps {
   label?: string;
@@ -75,14 +95,15 @@ export function RichTextEditor({
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        bulletList: {
-          keepMarks: true,
-          keepAttributes: false,
-        },
+        bulletList: false,
         orderedList: {
           keepMarks: true,
           keepAttributes: false,
         },
+      }),
+      BulletListWithClass.configure({
+        keepMarks: true,
+        keepAttributes: false,
       }),
       Image.configure({
         inline: false,
@@ -176,6 +197,29 @@ export function RichTextEditor({
     }
   };
 
+  const handleIconBulletList = () => {
+    if (!editor) return;
+
+    const isIconList =
+      editor.isActive("bulletList") &&
+      editor.getAttributes("bulletList").class === ICON_BULLET_LIST_CLASS;
+
+    if (isIconList) {
+      // already icon-style: drop back to a plain bullet list
+      editor.chain().focus().updateAttributes("bulletList", { class: null }).run();
+    } else if (editor.isActive("bulletList")) {
+      // already a bullet list, just not icon-style yet: switch its marker
+      editor.chain().focus().updateAttributes("bulletList", { class: ICON_BULLET_LIST_CLASS }).run();
+    } else {
+      editor
+        .chain()
+        .focus()
+        .toggleBulletList()
+        .updateAttributes("bulletList", { class: ICON_BULLET_LIST_CLASS })
+        .run();
+    }
+  };
+
   const handleLinkToggle = () => {
     if (!editor) return;
 
@@ -198,10 +242,11 @@ export function RichTextEditor({
     return null;
   }
 
-  const ToolbarButton = ({ onClick, isActive, disabled, children }: {
+  const ToolbarButton = ({ onClick, isActive, disabled, title, children }: {
     onClick: () => void;
     isActive?: boolean;
     disabled?: boolean;
+    title?: string;
     children: React.ReactNode;
   }) => (
     <Button
@@ -210,6 +255,7 @@ export function RichTextEditor({
       size="sm"
       onClick={onClick}
       disabled={disabled}
+      title={title}
       className="h-8 w-8 p-0"
     >
       {children}
@@ -361,11 +407,26 @@ export function RichTextEditor({
             {/* Lists */}
             <ToolbarButton
               onClick={() => editor.chain().focus().toggleBulletList().run()}
-              isActive={editor.isActive("bulletList")}
+              isActive={
+                editor.isActive("bulletList") &&
+                editor.getAttributes("bulletList").class !== ICON_BULLET_LIST_CLASS
+              }
+              title="Bullet list"
             >
               <List className="h-4 w-4" />
             </ToolbarButton>
-            
+
+            <ToolbarButton
+              onClick={handleIconBulletList}
+              isActive={
+                editor.isActive("bulletList") &&
+                editor.getAttributes("bulletList").class === ICON_BULLET_LIST_CLASS
+              }
+              title="Icon bullet list"
+            >
+              <ListChecks className="h-4 w-4" />
+            </ToolbarButton>
+
             <ToolbarButton
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
               isActive={editor.isActive("orderedList")}

@@ -212,6 +212,12 @@ const ContactEnquiryList = React.lazy(() => import("./pages/enquiries/ContactEnq
 const ContactEnquiryView = React.lazy(() => import("./pages/enquiries/ContactEnquiryView"));
 const SampleRequestList = React.lazy(() => import("./pages/enquiries/SampleRequestList"));
 const SampleRequestView = React.lazy(() => import("./pages/enquiries/SampleRequestView"));
+const DownloadRequestList = React.lazy(() => import("./pages/enquiries/DownloadRequestList"));
+const DownloadRequestView = React.lazy(() => import("./pages/enquiries/DownloadRequestView"));
+
+// Downloads
+const DownloadList = React.lazy(() => import("./pages/downloads/DownloadList"));
+const DownloadForm = React.lazy(() => import("./pages/downloads/DownloadForm"));
 
 // Bulk Upload
 const BulkUploadHome = React.lazy(() => import("./pages/bulkUpload/BulkUploadHome"));
@@ -475,6 +481,13 @@ const App = () => (
               <Route path="/enquiries/:id" element={<ContactEnquiryView />} />
               <Route path="/sample-requests" element={<SampleRequestList />} />
               <Route path="/sample-requests/:id" element={<SampleRequestView />} />
+              <Route path="/download-requests" element={<DownloadRequestList />} />
+              <Route path="/download-requests/:id" element={<DownloadRequestView />} />
+
+              {/* Downloads */}
+              <Route path="/downloads" element={<DownloadList />} />
+              <Route path="/downloads/new" element={<DownloadForm />} />
+              <Route path="/downloads/:id/edit" element={<DownloadForm />} />
 
               {/* Bulk Upload Routes */}
               <Route path="/bulk-upload" element={<BulkUploadHome />} />

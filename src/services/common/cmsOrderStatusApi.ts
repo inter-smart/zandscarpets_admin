@@ -41,7 +41,8 @@ export type CmsResource =
   | "attribute-values"
   | "detail-fields"
   | "blogs"
-  | "blog-tags";
+  | "blog-tags"
+  | "downloads";
 
 interface ApiEnvelope<T> {
   success: boolean;

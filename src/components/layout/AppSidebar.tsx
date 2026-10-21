@@ -42,6 +42,7 @@ import {
   LayoutList,
   UploadCloud,
   FileText,
+  Download,
   Layers,
 } from "lucide-react";
 
@@ -64,7 +65,10 @@ import { ROLES } from "@/lib/utils";
 
 const Logo =
   "https://cdn-lanhl.nitrocdn.com/BEDNLEoRmIKjWuHGWySaweMWUMbmbmac/assets/images/source/rev-b24f0bb/www.zandscarpets.com/assets/images/logo.svg";
-const mainNavItems = [{ title: "Dashboard", url: "/", icon: LayoutDashboard }];
+const mainNavItems = [
+  { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Downloads", url: "/downloads", icon: Download },
+];
 
 const homeSection = [
   { title: "CMS", url: "/home-cms", icon: Home },
@@ -140,6 +144,11 @@ const enquiriesSection = [
   {
     title: "Sample Requests",
     url: "/sample-requests",
+    icon: Mail,
+  },
+  {
+    title: "Download Requests",
+    url: "/download-requests",
     icon: Mail,
   },
 ];
