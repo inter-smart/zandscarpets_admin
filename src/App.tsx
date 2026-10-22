@@ -110,7 +110,6 @@ const ProductLabelForm = React.lazy(() => import("./pages/products/ProductLabelF
 const ProductVariantsList = React.lazy(() => import("./pages/products/ProductVariantsList"));
 const ProductVariantForm = React.lazy(() => import("./pages/products/ProductVariantForm"));
 const ProductDetailsPage = React.lazy(() => import("./pages/products/ProductDetailsPage"));
-const ProductDataSheetsList = React.lazy(() => import("./pages/products/ProductDataSheetsList"));
 const VariantDetailsPage = React.lazy(() => import("./pages/products/VariantDetailsPage"));
 const DetailFieldsList = React.lazy(() => import("./pages/details/DetailFieldsList"));
 const DetailFieldForm = React.lazy(() => import("./pages/details/DetailFieldForm"));
@@ -474,7 +473,6 @@ const App = () => (
               <Route path="/attribute-values/:id/edit" element={<AttributeValueForm />} />
 
               {/* Product Label Routes (features / tags / specifications) */}
-              <Route path="/data-sheets" element={<ProductDataSheetsList />} />
               <Route path="/product-labels" element={<ProductLabelsList />} />
               <Route path="/product-labels/new" element={<ProductLabelForm />} />
               <Route path="/product-labels/:id/edit" element={<ProductLabelForm />} />

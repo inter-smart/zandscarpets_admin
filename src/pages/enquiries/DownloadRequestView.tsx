@@ -115,7 +115,9 @@ export default function DownloadRequestView() {
             <Field label="Email">{item.email}</Field>
             <Field label="Phone">{item.phone}</Field>
             <Field label="Company">{item.company_name || "-"}</Field>
-            <Field label="File">{item.download_title || "-"}</Field>
+            <Field label="File / Product">
+              {item.download_title || item.product_title || "-"}
+            </Field>
             <Field label="Submitted At">
               {item.createdAt ? new Date(item.createdAt).toLocaleString() : "-"}
             </Field>

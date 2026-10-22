@@ -17,6 +17,8 @@ export interface DownloadRequestRecord {
   email: string;
   company_name: string | null;
   download_title: string | null;
+  // set instead of download_title when the request came from a product's own datasheet button
+  product_title: string | null;
   createdAt?: string;
   updatedAt?: string;
 }

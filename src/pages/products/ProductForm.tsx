@@ -42,7 +42,6 @@ import { fetchActiveAttributes, AttributeOption } from "@/services/products/attr
 import { fetchActiveAttributeValues, AttributeValueOption } from "@/services/products/attributeValuesApi";
 import { fetchProductVariantList, generateProductVariants } from "@/services/products/productVariantsApi";
 import VariantValuePicker, { groupValuesByAttribute } from "@/components/products/VariantValuePicker";
-import ProductDataSheetUploader from "@/components/products/ProductDataSheetUploader";
 import VariantGeneratePreview from "@/components/products/VariantGeneratePreview";
 import { AttributeSelection } from "@/utils/variantCombinations";
 import { productSchema, ProductFormData } from "@/schemas/productSchema";
@@ -470,21 +469,6 @@ export default function ProductForm() {
                   placeholder="وصف الصورة"
                 />
               </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Data Sheet</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {isEditing && productId ? (
-                <ProductDataSheetUploader productId={productId} />
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  Save the product first, then attach a data sheet.
-                </p>
-              )}
             </CardContent>
           </Card>
 

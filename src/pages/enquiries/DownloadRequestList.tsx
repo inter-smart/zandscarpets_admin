@@ -98,9 +98,11 @@ export default function DownloadRequestList() {
     },
     {
       accessorKey: "download_title",
-      header: "File",
+      header: "File / Product",
       cell: ({ row }) => (
-        <div className="text-sm font-medium">{row.original.download_title || "-"}</div>
+        <div className="text-sm font-medium">
+          {row.original.download_title || row.original.product_title || "-"}
+        </div>
       ),
     },
     {
