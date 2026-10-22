@@ -34,6 +34,7 @@ const defaultValues: HomeCmsFormData = {
   space_button_text: "",
   space_button_text_ar: "",
   space_button_link: "",
+  space_bg_image: "",
   premium_title: "",
   premium_title_ar: "",
   premium_description: "",
@@ -86,6 +87,7 @@ export default function HomeCmsForm() {
           space_button_text: data.space_button_text || "",
           space_button_text_ar: data.space_button_text_ar || "",
           space_button_link: data.space_button_link || "",
+          space_bg_image: data.space_bg_image || "",
           premium_title: data.premium_title || "",
           premium_title_ar: data.premium_title_ar || "",
           premium_description: data.premium_description || "",
@@ -103,12 +105,17 @@ export default function HomeCmsForm() {
     try {
       setLoading(true);
       const payload = new FormData();
-      const { cta_media_path, ...textFields } = data;
+      const { cta_media_path, space_bg_image, ...textFields } = data;
       Object.entries(textFields).forEach(([key, value]) => payload.append(key, value ?? ""));
       if (cta_media_path instanceof File) {
         payload.append("cta_media_path", cta_media_path);
       } else if (typeof cta_media_path === "string" && cta_media_path) {
         payload.append("cta_media_path", cta_media_path);
+      }
+      if (space_bg_image instanceof File) {
+        payload.append("space_bg_image", space_bg_image);
+      } else if (typeof space_bg_image === "string" && space_bg_image) {
+        payload.append("space_bg_image", space_bg_image);
       }
       const response = await saveHomeCms(payload, recordId ?? 1);
       if (response.data?.id) {
@@ -267,12 +274,14 @@ export default function HomeCmsForm() {
                   name="cta_title"
                   label="CTA Title"
                   placeholder="Enter CTA title"
+                  height="120px"
                 />
                 <FormRichTextField
                   form={form}
                   name="cta_title_ar"
                   label="CTA Title (Arabic)"
                   placeholder="أدخل عنوان CTA"
+                  height="120px"
                 />
               </div>
               <FormFileUploadField
@@ -284,8 +293,8 @@ export default function HomeCmsForm() {
                 accept="image/*"
               />
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormRichTextField form={form} name="cta_description" label="CTA Description" placeholder="Enter CTA description" />
-                <FormRichTextField form={form} name="cta_description_ar" label="CTA Description (Arabic)" placeholder="أدخل وصف CTA" />
+                <FormRichTextField form={form} name="cta_description" label="CTA Description" placeholder="Enter CTA description" height="160px" />
+                <FormRichTextField form={form} name="cta_description_ar" label="CTA Description (Arabic)" placeholder="أدخل وصف CTA" height="160px" />
               </div>
             </CardContent>
           </Card>
@@ -351,6 +360,13 @@ export default function HomeCmsForm() {
                   placeholder="/products (leave empty to hide the button)"
                 />
               </div>
+              <FormFileUploadField
+                form={form}
+                name="space_bg_image"
+                label="Background Image"
+                placeholder="Upload background image"
+                accept="image/*"
+              />
             </CardContent>
           </Card>
 
@@ -374,8 +390,8 @@ export default function HomeCmsForm() {
                 />
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormRichTextField form={form} name="premium_description" label="Premium Description" placeholder="Enter premium description" />
-                <FormRichTextField form={form} name="premium_description_ar" label="Premium Description (Arabic)" placeholder="أدخل وصف البريميوم" />
+                <FormRichTextField form={form} name="premium_description" label="Premium Description" placeholder="Enter premium description" height="160px" />
+                <FormRichTextField form={form} name="premium_description_ar" label="Premium Description (Arabic)" placeholder="أدخل وصف البريميوم" height="160px" />
               </div>
             </CardContent>
           </Card>

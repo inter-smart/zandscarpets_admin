@@ -203,6 +203,9 @@ const BlogCmsForm = React.lazy(() => import("./pages/blogs/BlogCmsForm"));
 // Policies — Privacy Policy CMS
 const PrivacyPolicyForm = React.lazy(() => import("./pages/policies/PrivacyPolicyForm"));
 
+// Seasonal Offer popup CMS
+const SeasonalOfferForm = React.lazy(() => import("./pages/seasonalOffer/SeasonalOfferForm"));
+
 // Contact — Connections
 const ConnectionsList = React.lazy(() => import("./pages/contact/ConnectionsList"));
 const ConnectionsForm = React.lazy(() => import("./pages/contact/ConnectionsForm"));
@@ -365,6 +368,9 @@ const App = () => (
 
               {/* Privacy Policy CMS */}
               <Route path="/privacy-policy" element={<PrivacyPolicyForm />} />
+
+              {/* Seasonal Offer popup CMS */}
+              <Route path="/seasonal-offer" element={<SeasonalOfferForm />} />
 
               {/* Contact Connections */}
               <Route path="/contact-connections" element={<ConnectionsList />} />

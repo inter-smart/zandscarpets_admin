@@ -172,6 +172,7 @@ const mastersSection = [
   { title: "Work Plans", url: "/work-plans", icon: ClipboardList },
   { title: "Our Features", url: "/our-features", icon: TrendingUp },
   { title: "Ads Banner", url: "/ads-banner", icon: Image },
+  { title: "Seasonal Offer", url: "/seasonal-offer", icon: Sparkles },
 ];
 const servicesSection = [
   { title: "Services", url: "/services", icon: Wrench },
@@ -315,6 +316,7 @@ export function AppSidebar() {
         "/work-plans",
         "/our-features",
         "/ads-banner",
+        "/seasonal-offer",
         "/projects",
       ].some((route) => path.includes(route))
     ) {

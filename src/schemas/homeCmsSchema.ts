@@ -24,6 +24,7 @@ export const homeCmsSchema = z.object({
   space_button_text: z.string().optional(),
   space_button_text_ar: z.string().optional(),
   space_button_link: z.string().optional(),
+  space_bg_image: commonValidations.fileUpload,
   premium_title: commonValidations.requiredText("Premium title"),
   premium_title_ar: commonValidations.requiredText("Premium title (Arabic)"),
   premium_description: commonValidations.richText("Premium description"),

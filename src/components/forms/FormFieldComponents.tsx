@@ -6,6 +6,7 @@ import {
   FormItem,
   FormLabel,
   FormControl,
+  FormDescription,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -74,6 +75,7 @@ export function FormNumberField<T extends FieldValues>({
   name,
   label,
   placeholder,
+  description,
   min,
   max,
 }: FormNumberFieldProps<T>) {
@@ -93,6 +95,7 @@ export function FormNumberField<T extends FieldValues>({
               max={max}
             />
           </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
         </FormItem>
       )}

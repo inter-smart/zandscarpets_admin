@@ -31,6 +31,7 @@ export interface HomeCms {
   space_button_text?: string;
   space_button_text_ar?: string;
   space_button_link?: string;
+  space_bg_image?: string | null;
   premium_title: string;
   premium_title_ar?: string;
   premium_description: string;
