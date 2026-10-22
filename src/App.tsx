@@ -217,6 +217,8 @@ const SampleRequestList = React.lazy(() => import("./pages/enquiries/SampleReque
 const SampleRequestView = React.lazy(() => import("./pages/enquiries/SampleRequestView"));
 const DownloadRequestList = React.lazy(() => import("./pages/enquiries/DownloadRequestList"));
 const DownloadRequestView = React.lazy(() => import("./pages/enquiries/DownloadRequestView"));
+const QuoteRequestList = React.lazy(() => import("./pages/enquiries/QuoteRequestList"));
+const QuoteRequestView = React.lazy(() => import("./pages/enquiries/QuoteRequestView"));
 
 // Downloads
 const DownloadList = React.lazy(() => import("./pages/downloads/DownloadList"));
@@ -489,6 +491,8 @@ const App = () => (
               <Route path="/sample-requests/:id" element={<SampleRequestView />} />
               <Route path="/download-requests" element={<DownloadRequestList />} />
               <Route path="/download-requests/:id" element={<DownloadRequestView />} />
+              <Route path="/quote-requests" element={<QuoteRequestList />} />
+              <Route path="/quote-requests/:id" element={<QuoteRequestView />} />
 
               {/* Downloads */}
               <Route path="/downloads" element={<DownloadList />} />
