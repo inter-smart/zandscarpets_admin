@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
+import MediaThumbnail from "@/components/common/MediaThumbnail";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { FolderPlus, RotateCcw } from "lucide-react";
 import RowActionsMenu from "@/components/common/RowActionsMenu";
@@ -226,6 +227,11 @@ export default function ProductCategoryList() {
       accessorKey: "id",
       header: "ID",
       cell: ({ row }) => <div className="font-mono">{(itemsPage - 1) * itemsLimit + row.index + 1}</div>,
+    },
+    {
+      accessorKey: "media_path",
+      header: "Media",
+      cell: ({ row }) => <MediaThumbnail path={row.original.media_path} alt={row.original.title} />,
     },
     {
       accessorKey: "title",

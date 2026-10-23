@@ -182,6 +182,14 @@ export default function ProjectsForm() {
   };
 
   const onSubmit = async (data: ProjectsFormData) => {
+    // Category is required whenever the selected industry has categories
+    // mapped to it; an industry with none can't force a pick, so it stays
+    // optional there (the API accepts a null category).
+    if (!data.category_id && categoryOptions.length > 0) {
+      form.setError("category_id", { type: "required", message: "Category is required" });
+      return;
+    }
+
     try {
       setLoading(true);
 
