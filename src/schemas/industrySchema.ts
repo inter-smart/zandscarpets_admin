@@ -6,7 +6,6 @@ export const industrySchema = z.object({
   title_ar: commonValidations.requiredString("Title (Arabic)"),
   description: commonValidations.richText("Description"),
   description_ar: commonValidations.richText("Description (Arabic)"),
-  link: commonValidations.optionalString,
   sort_order: commonValidations.sortOrder,
   is_active: commonValidations.booleanStatus,
 });

@@ -55,7 +55,6 @@ export default function IndustryForm() {
       title_ar: "",
       description: "",
       description_ar: "",
-      link: "",
       sort_order: "1",
       is_active: true,
     },
@@ -88,7 +87,6 @@ export default function IndustryForm() {
         title_ar: data.title_ar || "",
         description: data.description || "",
         description_ar: data.description_ar || "",
-        link: data.link || "",
         sort_order: (data.sort_order ?? 1).toString(),
         is_active: data.is_active ?? true,
       });
@@ -117,7 +115,6 @@ export default function IndustryForm() {
         title_ar: data.title_ar,
         description: data.description,
         description_ar: data.description_ar,
-        link: data.link || undefined,
         sort_order: parseInt(data.sort_order || "1"),
         is_active: data.is_active,
         category_ids: categoryIds.map((c) => Number(c)),
@@ -214,13 +211,6 @@ export default function IndustryForm() {
                   placeholder="وصف هذا الصناعة"
                 />
               </div>
-
-              <FormTextField
-                form={form}
-                name="link"
-                label="Link"
-                placeholder="https://..."
-              />
 
               <div className="space-y-2">
                 <Label>Categories</Label>
