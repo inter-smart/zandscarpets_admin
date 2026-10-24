@@ -15,6 +15,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Bold,
   Italic,
   Strikethrough,
@@ -56,6 +61,43 @@ const BulletListWithClass = BulletList.extend({
     };
   },
 });
+
+// Wraps a toolbar control with a hover/focus hint describing what it does.
+const Tip = ({ label, children }: { label: string; children: React.ReactNode }) => (
+  <Tooltip>
+    <TooltipTrigger asChild>{children}</TooltipTrigger>
+    <TooltipContent>{label}</TooltipContent>
+  </Tooltip>
+);
+
+const ToolbarButton = ({ onClick, isActive, disabled, title, children }: {
+  onClick: () => void;
+  isActive?: boolean;
+  disabled?: boolean;
+  title: string;
+  children: React.ReactNode;
+}) => {
+  const button = (
+    <Button
+      type="button"
+      variant={isActive ? "default" : "ghost"}
+      size="sm"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={title}
+      className="h-8 w-8 p-0"
+    >
+      {children}
+    </Button>
+  );
+
+  // a disabled button swallows pointer events, so the tooltip hangs off a wrapper instead
+  return (
+    <Tip label={title}>
+      {disabled ? <span className="inline-flex">{button}</span> : button}
+    </Tip>
+  );
+};
 
 interface RichTextEditorProps {
   label?: string;
@@ -242,26 +284,6 @@ export function RichTextEditor({
     return null;
   }
 
-  const ToolbarButton = ({ onClick, isActive, disabled, title, children }: {
-    onClick: () => void;
-    isActive?: boolean;
-    disabled?: boolean;
-    title?: string;
-    children: React.ReactNode;
-  }) => (
-    <Button
-      type="button"
-      variant={isActive ? "default" : "ghost"}
-      size="sm"
-      onClick={onClick}
-      disabled={disabled}
-      title={title}
-      className="h-8 w-8 p-0"
-    >
-      {children}
-    </Button>
-  );
-
   return (
     <div className={cn("space-y-2", className)}>
       {label && (
@@ -271,14 +293,15 @@ export function RichTextEditor({
         </Label>
       )}
       
-      <div className="border rounded-md">
+      <div className="flex flex-col overflow-hidden rounded-md border">
         {/* Toolbar */}
-        <div className="border-b bg-muted/50 p-2">
+        <div className="shrink-0 border-b bg-muted/50 p-2">
           <div className="flex flex-wrap gap-1">
             {/* Text Formatting */}
             <ToolbarButton
               onClick={() => editor.chain().focus().toggleBold().run()}
               isActive={editor.isActive("bold")}
+              title="Bold (Ctrl+B)"
             >
               <Bold className="h-4 w-4" />
             </ToolbarButton>
@@ -286,6 +309,7 @@ export function RichTextEditor({
             <ToolbarButton
               onClick={() => editor.chain().focus().toggleItalic().run()}
               isActive={editor.isActive("italic")}
+              title="Italic (Ctrl+I)"
             >
               <Italic className="h-4 w-4" />
             </ToolbarButton>
@@ -293,6 +317,7 @@ export function RichTextEditor({
             <ToolbarButton
               onClick={() => editor.chain().focus().toggleStrike().run()}
               isActive={editor.isActive("strike")}
+              title="Strikethrough (Ctrl+Shift+S)"
             >
               <Strikethrough className="h-4 w-4" />
             </ToolbarButton>
@@ -300,6 +325,7 @@ export function RichTextEditor({
             <ToolbarButton
               onClick={() => editor.chain().focus().toggleUnderline().run()}
               isActive={editor.isActive("underline")}
+              title="Underline (Ctrl+U)"
             >
               <UnderlineIcon className="h-4 w-4" />
             </ToolbarButton>
@@ -308,17 +334,20 @@ export function RichTextEditor({
               onClick={() =>
                 editor.chain().focus().unsetAllMarks().clearNodes().run()
               }
+              title="Clear formatting"
             >
               <RemoveFormatting className="h-4 w-4" />
             </ToolbarButton>
 
             {/* Text Color */}
             <Popover>
+              <Tip label="Text color">
               <PopoverTrigger asChild>
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
+                  aria-label="Text color"
                   className="h-8 w-8 p-0 relative"
                 >
                   <Palette className="h-4 w-4" />
@@ -330,6 +359,7 @@ export function RichTextEditor({
                   )}
                 </Button>
               </PopoverTrigger>
+              </Tip>
               <PopoverContent className="w-64 p-3">
                 <div className="space-y-3">
                   <div>
@@ -384,6 +414,7 @@ export function RichTextEditor({
             <ToolbarButton
               onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
               isActive={editor.isActive("heading", { level: 2 })}
+              title="Heading 2 – large section title"
             >
               <Heading2 className="h-4 w-4" />
             </ToolbarButton>
@@ -391,6 +422,7 @@ export function RichTextEditor({
             <ToolbarButton
               onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
               isActive={editor.isActive("heading", { level: 3 })}
+              title="Heading 3 – smaller sub-title"
             >
               <Heading3 className="h-4 w-4" />
             </ToolbarButton>
@@ -398,6 +430,7 @@ export function RichTextEditor({
             <ToolbarButton
               onClick={() => editor.chain().focus().setParagraph().run()}
               isActive={editor.isActive("paragraph")}
+              title="Normal paragraph text"
             >
               <Type className="h-4 w-4" />
             </ToolbarButton>
@@ -411,7 +444,7 @@ export function RichTextEditor({
                 editor.isActive("bulletList") &&
                 editor.getAttributes("bulletList").class !== ICON_BULLET_LIST_CLASS
               }
-              title="Bullet list"
+              title="Bullet list (plain dots)"
             >
               <List className="h-4 w-4" />
             </ToolbarButton>
@@ -422,7 +455,7 @@ export function RichTextEditor({
                 editor.isActive("bulletList") &&
                 editor.getAttributes("bulletList").class === ICON_BULLET_LIST_CLASS
               }
-              title="Icon bullet list"
+              title="Icon bullet list (check-circle marker)"
             >
               <ListChecks className="h-4 w-4" />
             </ToolbarButton>
@@ -430,6 +463,7 @@ export function RichTextEditor({
             <ToolbarButton
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
               isActive={editor.isActive("orderedList")}
+              title="Numbered list"
             >
               <ListOrdered className="h-4 w-4" />
             </ToolbarButton>
@@ -437,6 +471,7 @@ export function RichTextEditor({
             <ToolbarButton
               onClick={() => editor.chain().focus().toggleBlockquote().run()}
               isActive={editor.isActive("blockquote")}
+              title="Quote block"
             >
               <Quote className="h-4 w-4" />
             </ToolbarButton>
@@ -446,12 +481,14 @@ export function RichTextEditor({
             {/* Media & Links */}
             <ToolbarButton
               onClick={() => setShowImageModal(true)}
+              title="Insert image (upload or paste a URL)"
             >
               <ImageIcon className="h-4 w-4" />
             </ToolbarButton>
 
             <ToolbarButton
               onClick={() => setShowIconSelector(true)}
+              title="Insert icon"
             >
               <Smile className="h-4 w-4" />
             </ToolbarButton>
@@ -459,22 +496,24 @@ export function RichTextEditor({
             <ToolbarButton
               onClick={handleLinkToggle}
               isActive={editor.isActive("link")}
+              title="Add or edit link (leave the URL empty to remove it)"
             >
               <LinkIcon className="h-4 w-4" />
             </ToolbarButton>
 
             {galleryMarker && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                title="Insert the gallery swiper here"
-                onClick={() => editor.chain().focus().insertContent("<p>[gallery]</p>").run()}
-                className="h-8 gap-1 px-2 text-xs"
-              >
-                <GalleryHorizontal className="h-4 w-4" />
-                Gallery
-              </Button>
+              <Tip label="Insert the gallery swiper at the cursor ([gallery] marker)">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => editor.chain().focus().insertContent("<p>[gallery]</p>").run()}
+                  className="h-8 gap-1 px-2 text-xs"
+                >
+                  <GalleryHorizontal className="h-4 w-4" />
+                  Gallery
+                </Button>
+              </Tip>
             )}
 
             <Separator orientation="vertical" className="mx-1 h-8" />
@@ -483,6 +522,7 @@ export function RichTextEditor({
             <ToolbarButton
               onClick={() => editor.chain().focus().undo().run()}
               disabled={!editor.can().undo()}
+              title="Undo (Ctrl+Z)"
             >
               <Undo className="h-4 w-4" />
             </ToolbarButton>
@@ -490,6 +530,7 @@ export function RichTextEditor({
             <ToolbarButton
               onClick={() => editor.chain().focus().redo().run()}
               disabled={!editor.can().redo()}
+              title="Redo (Ctrl+Shift+Z)"
             >
               <Redo className="h-4 w-4" />
             </ToolbarButton>
@@ -499,14 +540,14 @@ export function RichTextEditor({
         {/* Editor */}
         <EditorContent
           editor={editor}
-          className="p-3"
-          style={{ minHeight: height ?? "300px" }}
+          className="overflow-y-auto"
+          style={{ height: height ?? "300px" }}
           placeholder={placeholder}
         />
         
         {/* Character counter */}
         {maxLength && (
-          <div className="px-3 py-2 border-t bg-muted/30 text-sm text-muted-foreground text-right">
+          <div className="shrink-0 px-3 py-2 border-t bg-muted/30 text-sm text-muted-foreground text-right">
             {editor?.getText().length || 0}/{maxLength} characters
           </div>
         )}
