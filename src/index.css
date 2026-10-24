@@ -51,14 +51,14 @@ All colors MUST be HSL.
     --info-foreground: 0 0% 100%;
 
     /* Sidebar using Z&S navy colors */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 28% 17%; /* Logo text color */
-    --sidebar-primary: 209 96% 19%; /* Z&S navy */
+    --sidebar-background: 209 96% 14%; /* deep Z&S navy */
+    --sidebar-foreground: 209 30% 90%;
+    --sidebar-primary: 205 98% 44%; /* brand blue #037EDA — active item / accents */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 209 20% 96%;
-    --sidebar-accent-foreground: 220 28% 17%;
-    --sidebar-border: 209 20% 91%;
-    --sidebar-ring: 209 96% 19%;
+    --sidebar-accent: 209 80% 22%; /* hover / open group */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 209 60% 22%;
+    --sidebar-ring: 205 98% 44%;
 
     /* Z&S Navy Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(209 96% 19%), hsl(209 96% 25%));
