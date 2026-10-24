@@ -540,8 +540,9 @@ export function RichTextEditor({
         {/* Editor */}
         <EditorContent
           editor={editor}
-          className="overflow-y-auto"
-          style={{ height: height ?? "300px" }}
+          className="min-h-0 overflow-y-auto overscroll-contain [&_.ProseMirror]:min-h-full"
+          // callers pass small values (120-250px) meant as a minimum; never go below 320px visible
+          style={{ height: `max(${height ?? "0px"}, 320px)` }}
           placeholder={placeholder}
         />
         
