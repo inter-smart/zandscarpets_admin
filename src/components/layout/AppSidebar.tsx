@@ -28,8 +28,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { useAuth } from "@/context/AuthContext";
-import { ROLES } from "@/lib/utils";
+import { useVisibleNav } from "@/hooks/useVisibleNav";
+import { NavSearchTrigger } from "@/components/layout/NavSearch";
 import {
   NAV,
   isNavGroup,
@@ -97,7 +97,7 @@ const navItemCls =
 
 export function AppSidebar() {
   const location = useLocation();
-  const { role } = useAuth();
+  const visibleNav = useVisibleNav();
   const [openIds, setOpenIds] = useState<string[]>([]);
 
   const { state } = useSidebar();
@@ -135,8 +135,6 @@ export function AppSidebar() {
     setOpenIds(groupChain(groups, id));
   };
 
-  const visible = (entry: NavGroup | NavItem) => !entry.adminOnly || role === ROLES.ADMIN;
-
   return (
     <Sidebar className={isCollapsed ? "w-16" : "w-64"} collapsible="icon">
       <SidebarContent className="bg-sidebar border-r border-sidebar-border gap-0">
@@ -161,9 +159,21 @@ export function AppSidebar() {
           )}
         </div>
 
-        {NAV.map((section) => {
-          const entries = section.entries.filter(visible);
-          if (entries.length === 0) return null;
+        {/* Search */}
+        <SidebarGroup className="py-2">
+          <SidebarMenu>
+            {isCollapsed ? (
+              <SidebarMenuItem>
+                <NavSearchTrigger variant="sidebar-icon" />
+              </SidebarMenuItem>
+            ) : (
+              <NavSearchTrigger variant="sidebar" />
+            )}
+          </SidebarMenu>
+        </SidebarGroup>
+
+        {visibleNav.map((section) => {
+          const entries = section.entries;
           return (
             <SidebarGroup key={section.id} className="py-1">
               {!isCollapsed && (

@@ -1,4 +1,4 @@
-import { Bell, Search, User, LogOut, Settings } from "lucide-react";
+import { Bell, User, LogOut, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/AuthContext";
+import { NavSearchTrigger } from "@/components/layout/NavSearch";
 
 export function AppHeader() {
   const { user, logout } = useAuth();
@@ -28,6 +29,8 @@ export function AppHeader() {
       <div className="flex h-16 items-center gap-4 px-6">
         {/* Sidebar trigger */}
         <SidebarTrigger className="-ml-1" />
+
+        <NavSearchTrigger variant="header" />
 
     
 

@@ -48,6 +48,7 @@ import {
   Gift,
   PanelBottom,
   Newspaper,
+  Plus,
 } from "lucide-react";
 
 /**
@@ -309,4 +310,85 @@ export const NAV: NavSection[] = [
       { title: "Users", url: "/users", icon: Users, adminOnly: true },
     ],
   },
+];
+
+/** Extra search terms per URL so pages can be found by what users want to do. */
+const NAV_KEYWORDS: Record<string, string> = {
+  "/meta-tags": "seo title description og schema json-ld",
+  "/banners": "hero slider image",
+  "/ads-banner": "advert promotion offer",
+  "/seasonal-offer": "popup promotion discount",
+  "/attributes": "size color variant option",
+  "/attribute-values": "size color variant option swatch",
+  "/details/fields": "description guide gallery video content blocks",
+  "/details/media": "images videos files uploads",
+  "/product-labels?type=feature": "label highlight",
+  "/product-labels?type=tag": "label badge",
+  "/product-labels?type=specification": "label spec technical",
+  "/pages": "navbar footer menu links",
+  "/site-settings": "logo email phone address general",
+  "/social-media": "facebook instagram linkedin links",
+  "/floating-icons": "whatsapp call chat",
+  "/enquiries": "leads contact messages",
+  "/quote-requests": "leads quotation",
+  "/sample-requests": "leads samples",
+  "/download-requests": "leads catalogue brochure",
+  "/users": "accounts roles admin staff",
+  "/bulk-upload": "import export excel xlsx csv",
+};
+
+export interface SearchEntry {
+  title: string;
+  url: string;
+  icon: LucideIcon;
+  /** e.g. "Website Content › Pages › Home" */
+  breadcrumb: string;
+  section: string;
+  /** Text matched by the search box. */
+  value: string;
+}
+
+const toEntry = (item: NavItem, section: string, trail: string[]): SearchEntry => {
+  const breadcrumb = [section, ...trail].join(" › ");
+  return {
+    title: item.title,
+    url: item.url,
+    icon: item.icon,
+    breadcrumb,
+    section,
+    value: `${item.title} ${breadcrumb} ${NAV_KEYWORDS[item.url] ?? ""}`,
+  };
+};
+
+const collectGroup = (group: NavGroup, section: string, trail: string[]): SearchEntry[] => {
+  const here = [...trail, group.title];
+  return [
+    ...(group.children ?? []).flatMap((child) => collectGroup(child, section, here)),
+    // A single-page group is shown as one link, so its breadcrumb stops above it.
+    ...(group.items ?? []).map((item) =>
+      toEntry(item, section, group.items!.length === 1 && !group.children?.length ? trail : here),
+    ),
+  ];
+};
+
+/** Flattens a (possibly role-filtered) nav tree into search entries. */
+export const flattenNav = (sections: NavSection[]): SearchEntry[] =>
+  sections.flatMap((section) =>
+    section.entries.flatMap((entry) =>
+      isNavGroup(entry)
+        ? collectGroup(entry, section.label, [])
+        : [toEntry(entry, section.label, [])],
+    ),
+  );
+
+/** "Create new …" shortcuts shown in the search palette. */
+export const QUICK_ACTIONS: NavItem[] = [
+  { title: "New product", url: "/products/new", icon: Plus },
+  { title: "New category", url: "/product-categories/new", icon: Plus },
+  { title: "New blog", url: "/blogs/new", icon: Plus },
+  { title: "New project", url: "/projects/new", icon: Plus },
+  { title: "New service", url: "/services/new", icon: Plus },
+  { title: "New download", url: "/downloads/new", icon: Plus },
+  { title: "New FAQ", url: "/faqs/new", icon: Plus },
+  { title: "New banner", url: "/banners/new", icon: Plus },
 ];

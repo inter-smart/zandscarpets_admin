@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { AppHeader } from "./AppHeader";
+import { NavSearchDialog } from "./NavSearch";
 import PageLoader from "./PageLoader";
 
 export function DashboardLayout() {
@@ -27,6 +28,7 @@ export function DashboardLayout() {
     <SidebarProvider defaultOpen={true} className="h-svh min-h-0 overflow-hidden">
       <div className="flex h-full w-full overflow-hidden bg-background">
         <AppSidebar />
+        <NavSearchDialog />
         {/* min-w-0 lets this flex child shrink below its content's width, so wide
             tables scroll inside their own container instead of stretching the page. */}
         <div className="flex h-full min-w-0 flex-1 flex-col">
