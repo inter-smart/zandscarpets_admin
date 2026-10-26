@@ -21,6 +21,15 @@ import {
   fetchSeasonalOffer,
   saveSeasonalOffer,
 } from "@/services/seasonalOffer/seasonalOfferApi";
+import {
+  SEASONAL_IMAGE_ACCEPT,
+  SEASONAL_MAIN_MAX_BYTES,
+  SEASONAL_BADGE_MAX_BYTES,
+  SEASONAL_MAIN_RECOMMENDED,
+  SEASONAL_BADGE_RECOMMENDED,
+  validateSeasonalMainImage,
+  validateSeasonalBadgeImage,
+} from "@/utils/seasonalOfferImageValidation";
 
 const defaultValues: SeasonalOfferFormData = {
   is_active: false,
@@ -177,7 +186,10 @@ export default function SeasonalOfferForm() {
                 name="media_path"
                 label="Main Image"
                 placeholder="Upload image"
-                accept="image/*"
+                accept={SEASONAL_IMAGE_ACCEPT}
+                maxImageSize={SEASONAL_MAIN_MAX_BYTES}
+                recommendedDimensions={SEASONAL_MAIN_RECOMMENDED}
+                validateImage={validateSeasonalMainImage}
               />
             </CardContent>
           </Card>
@@ -192,7 +204,10 @@ export default function SeasonalOfferForm() {
                 name="badge_image"
                 label="Badge Image (optional)"
                 placeholder="Upload badge image"
-                accept="image/*"
+                accept={SEASONAL_IMAGE_ACCEPT}
+                maxImageSize={SEASONAL_BADGE_MAX_BYTES}
+                recommendedDimensions={SEASONAL_BADGE_RECOMMENDED}
+                validateImage={validateSeasonalBadgeImage}
               />
               <p className="text-sm text-muted-foreground">
                 Shown in a fixed circular badge over the top-left corner of the main
