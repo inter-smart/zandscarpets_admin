@@ -13,7 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { useVisibleNav } from "@/hooks/useVisibleNav";
-import { flattenNav, QUICK_ACTIONS, type SearchEntry } from "@/config/navigation";
+import { usePermissions } from "@/hooks/usePermissions";
+import { flattenNav, moduleForPath, QUICK_ACTIONS, type SearchEntry } from "@/config/navigation";
 
 const RECENT_KEY = "admin-nav-recent";
 const MAX_RECENT = 5;
@@ -49,6 +50,7 @@ export function NavSearchDialog() {
   const navigate = useNavigate();
   const location = useLocation();
   const sections = useVisibleNav();
+  const { can } = usePermissions();
 
   const entries = useMemo(() => flattenNav(sections), [sections]);
   const bySection = useMemo(() => {
@@ -59,15 +61,10 @@ export function NavSearchDialog() {
     return [...map.entries()];
   }, [entries]);
 
-  // Quick actions are only offered for routes the user can reach in the menu's
-  // module (e.g. hidden when the matching list page is not visible to them).
+  // "New …" shortcuts need manage access to the module that owns the route.
   const actions = useMemo(
-    () =>
-      QUICK_ACTIONS.filter((a) => {
-        const base = `/${a.url.split("/")[1]}`;
-        return entries.some((e) => e.url.split("?")[0] === base);
-      }),
-    [entries],
+    () => QUICK_ACTIONS.filter((a) => can(moduleForPath(a.url), "manage")),
+    [can],
   );
 
   const recentEntries = useMemo(

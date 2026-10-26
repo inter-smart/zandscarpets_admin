@@ -1,7 +1,7 @@
 import { apiFetch } from "@/lib/apiClient";
 
 // Admin user management — this is a genuinely protected, admin-only resource
-// (server: authMiddleware(["admin"])), so calls go through `apiFetch` for
+// (server: authMiddleware({ module: "users" })), so calls go through `apiFetch` for
 // cookie credentials + 401-refresh-retry, unlike the plain-`fetch` services
 // elsewhere in the app.
 const API_BASE_URL =
@@ -16,7 +16,8 @@ export interface AdminUserRecord {
   username: string;
   email: string;
   password?: string;
-  role: "admin" | "user";
+  role_id: number | null;
+  roleInfo?: { id: number; name: string; slug: string; is_system: boolean } | null;
   is_active: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -91,7 +92,7 @@ export interface CreateUserPayload {
   username: string;
   email: string;
   password: string;
-  role: "admin" | "user";
+  role_id?: number;
   is_active: boolean;
 }
 
@@ -99,7 +100,7 @@ export interface UpdateUserPayload {
   username?: string;
   email?: string;
   password?: string;
-  role?: "admin" | "user";
+  role_id?: number;
   is_active?: boolean;
 }
 

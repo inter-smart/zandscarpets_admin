@@ -22,18 +22,15 @@ import {
   fetchUserById,
   createUser,
   updateUser,
+  type CreateUserPayload,
 } from "@/services/users/usersApi";
+import { fetchRoleOptions, type RoleOption } from "@/services/roles/rolesApi";
 import {
   createUserSchema,
   updateUserSchema,
   CreateUserFormData,
   UpdateUserFormData,
 } from "@/schemas/userSchema";
-
-const roleOptions = [
-  { value: "user", label: "User" },
-  { value: "admin", label: "Admin" },
-];
 
 export default function UsersForm() {
   const { toast } = useToast();
@@ -44,6 +41,7 @@ export default function UsersForm() {
 
   const [initialLoading, setInitialLoading] = useState<boolean>(isEdit);
   const [saving, setSaving] = useState(false);
+  const [roles, setRoles] = useState<RoleOption[]>([]);
 
   const resolver = zodResolver(isEdit ? updateUserSchema : createUserSchema);
 
@@ -53,10 +51,26 @@ export default function UsersForm() {
       username: "",
       email: "",
       password: "",
-      role: "user",
+      role_id: undefined,
       is_active: true,
     },
   });
+
+  useEffect(() => {
+    fetchRoleOptions()
+      .then((list) => {
+        setRoles(list);
+        // New users default to the first non-system role (Staff) rather than Admin.
+        if (!isEdit && form.getValues("role_id") === undefined) {
+          const fallback = list.find((r) => !r.is_system) ?? list[0];
+          if (fallback) form.setValue("role_id", fallback.id);
+        }
+      })
+      .catch(() =>
+        toast({ title: "Error", description: "Failed to load roles", variant: "destructive" }),
+      );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!isEdit) return;
@@ -70,7 +84,7 @@ export default function UsersForm() {
           username: data.username || "",
           email: data.email || "",
           password: "",
-          role: data.role || "user",
+          role_id: data.role_id ?? undefined,
           is_active: data.is_active ?? true,
         });
       } catch (error) {
@@ -98,7 +112,7 @@ export default function UsersForm() {
         await updateUser(idParam, payload);
         toast({ title: "Success", description: "User updated" });
       } else {
-        await createUser(values as CreateUserFormData | UpdateUserFormData);
+        await createUser(values as CreateUserPayload);
         toast({ title: "Success", description: "User created" });
       }
 
@@ -203,15 +217,15 @@ export default function UsersForm() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  name="role"
+                  name="role_id"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Role</FormLabel>
                       <FormControl>
                         <Combobox
-                          options={roleOptions}
-                          value={field.value}
-                          onChange={field.onChange}
+                          options={roles.map((r) => ({ value: String(r.id), label: r.name }))}
+                          value={field.value !== undefined ? String(field.value) : ""}
+                          onChange={(v) => field.onChange(v ? Number(v) : undefined)}
                           placeholder="Select role"
                           searchPlaceholder="Search roles..."
                         />

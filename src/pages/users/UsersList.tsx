@@ -14,6 +14,7 @@ import {
   toggleUserStatus,
 } from "@/services/users/usersApi";
 import { useState } from "react";
+import { useCanManage } from "@/hooks/useCanManage";
 import DeleteDialogue from "@/components/common/DeleteDialogue";
 import StatusToggleCell from "@/components/common/StatusToggleCell";
 import StatusChangeDialogue from "@/components/common/StatusChangeDialogue";
@@ -21,6 +22,7 @@ import StatusChangeDialogue from "@/components/common/StatusChangeDialogue";
 export default function UsersList() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const canManage = useCanManage();
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
   const [statusToggleItem, setStatusToggleItem] = useState<{
     item: AdminUserRecord;
@@ -112,13 +114,13 @@ export default function UsersList() {
       ),
     },
     {
-      accessorKey: "role",
+      id: "role",
       header: "Role",
       cell: ({ row }) => {
-        const role = row.getValue("role") as string;
+        const role = row.original.roleInfo;
         return (
-          <Badge variant={role === "admin" ? "default" : "secondary"}>
-            {role === "admin" ? "Admin" : "User"}
+          <Badge variant={role?.is_system ? "default" : "secondary"}>
+            {role?.name ?? "No role"}
           </Badge>
         );
       },
@@ -166,7 +168,7 @@ export default function UsersList() {
               Manage admin dashboard users and their access
             </p>
           </div>
-          <Button onClick={() => navigate("/users/create")}>Add User</Button>
+          {canManage && <Button onClick={() => navigate("/users/create")}>Add User</Button>}
         </div>
 
         <DataTable

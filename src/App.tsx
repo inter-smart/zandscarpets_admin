@@ -13,6 +13,8 @@ import {
 import { NuqsAdapter } from "nuqs/adapters/react-router/v6";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { usePermissions } from "@/hooks/usePermissions";
+import { moduleForPath, isWritePath } from "@/config/navigation";
 
 // Core pages that exist
 import Index from "./pages/Index";
@@ -41,6 +43,8 @@ const FloatingIconForm = React.lazy(
 
 const UsersList = React.lazy(() => import("./pages/users/UsersList"));
 const UsersForm = React.lazy(() => import("./pages/users/UsersForm"));
+const RolesList = React.lazy(() => import("./pages/roles/RolesList"));
+const RoleForm = React.lazy(() => import("./pages/roles/RoleForm"));
 import { MetaTagsList } from "./pages/common/MetaTagsList";
 
 // Masters — Pages
@@ -236,24 +240,16 @@ const ProductMainBulkUpload = React.lazy(() => import("./pages/bulkUpload/Produc
 const queryClient = new QueryClient();
 // Protected Route Component
 
-const adminOnlyAccessRoutes = ["/users", "/users/create", "/users/edit/:id"];
-
 // Layout route: renders once and stays mounted while only the matched child
 // route's element swaps inside DashboardLayout's <Outlet /> — this is what
 // keeps the sidebar/header from remounting on every navigation.
 function ProtectedRoute() {
-  const { isAuthenticated, isLoading, role } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+  const { can } = usePermissions();
   const location = useLocation();
 
-  const isAdminRoute = adminOnlyAccessRoutes.some(
-    (route) =>
-      location.pathname === route || location.pathname.startsWith(`${route}/`),
-  );
-  // only admin can access the route
-  if (isAdminRoute && role !== "admin") {
-    return <Navigate to="/" state={{ from: location }} replace />;
-  }
-
+  // Wait for the session to resolve first, otherwise permissions are not known yet
+  // and a valid user would be bounced.
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">
@@ -264,6 +260,14 @@ function ProtectedRoute() {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // The module comes from the menu config; create/edit screens need "manage", the rest "view".
+  // This is a UX guard — the API enforces the same rules.
+  const module = moduleForPath(location.pathname);
+  const level = isWritePath(location.pathname) ? "manage" : "view";
+  if (!can(module, level)) {
+    return <Navigate to="/" state={{ from: location, denied: true }} replace />;
   }
   return <DashboardLayout />;
 }
@@ -561,6 +565,11 @@ const App = () => (
               <Route path="/users/create" element={<UsersForm />} />
               {/* edit user */}
               <Route path="/users/edit/:id" element={<UsersForm />} />
+
+              {/* Roles & Permissions */}
+              <Route path="/roles" element={<RolesList />} />
+              <Route path="/roles/new" element={<RoleForm />} />
+              <Route path="/roles/:id/edit" element={<RoleForm />} />
             </Route>
 
             {/* Catch all route - must be last */}

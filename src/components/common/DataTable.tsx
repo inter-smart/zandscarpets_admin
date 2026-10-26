@@ -12,6 +12,7 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
+import { useCanManage } from "@/hooks/useCanManage";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -127,6 +128,7 @@ export function DataTable<TData, TValue>({
   headerExtra,
   onBack,
 }: DataTableProps<TData, TValue>) {
+  const canManage = useCanManage();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -240,7 +242,7 @@ export function DataTable<TData, TValue>({
         </div>
         <div className="flex flex-wrap items-center justify-end gap-2">
           {headerExtra}
-          {onAdd && showAddButton && (
+          {onAdd && showAddButton && canManage && (
             <Button onClick={onAdd} className="bg-primary hover:bg-primary/90">
               {addButtonText}
             </Button>

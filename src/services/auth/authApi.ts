@@ -8,7 +8,14 @@ export interface AdminUser {
   id: number;
   username: string;
   email: string;
-  role: string;
+  /** Role slug (e.g. "admin", "staff", "seo-team"). Access decisions use `permissions`, not this. */
+  role: string | null;
+  role_id?: number | null;
+  role_name?: string | null;
+  /** True for the locked system Admin role (full access). */
+  is_admin?: boolean;
+  /** module key → access level; a missing key means no access. */
+  permissions?: Record<string, "view" | "manage">;
   createdAt?: string;
   updatedAt?: string;
 }

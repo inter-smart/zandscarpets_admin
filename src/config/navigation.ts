@@ -53,17 +53,17 @@ import {
 
 /**
  * Declarative sidebar menu. Routes/URLs are unchanged — this only controls grouping.
- * `permission` is reserved for the upcoming role-based access work (not enforced yet).
+ * `module` is the permission module (see the server's config/permissionModules.js) that
+ * guards an entry; it is inherited from the group/section when not set on the item.
+ * Entries without any module (Dashboard) are visible to every logged-in user.
  */
-export type Permission = string;
+export type PermissionModule = string;
 
 export interface NavItem {
   title: string;
   url: string;
   icon: LucideIcon;
-  permission?: Permission;
-  /** Only shown to the admin role (existing behaviour for "Users"). */
-  adminOnly?: boolean;
+  module?: PermissionModule;
 }
 
 export interface NavGroup {
@@ -74,13 +74,13 @@ export interface NavGroup {
   items?: NavItem[];
   /** Nested sub-groups, rendered before `items`. */
   children?: NavGroup[];
-  permission?: Permission;
-  adminOnly?: boolean;
+  module?: PermissionModule;
 }
 
 export interface NavSection {
   id: string;
   label: string;
+  module?: PermissionModule;
   entries: (NavGroup | NavItem)[];
 }
 
@@ -99,6 +99,7 @@ export const NAV: NavSection[] = [
     entries: [
       {
         id: "pages",
+        module: "website_pages",
         title: "Pages",
         icon: LayoutTemplate,
         children: [
@@ -161,6 +162,7 @@ export const NAV: NavSection[] = [
       },
       {
         id: "site-elements",
+        module: "site_elements",
         title: "Site Elements",
         icon: PanelBottom,
         items: [
@@ -179,6 +181,7 @@ export const NAV: NavSection[] = [
     entries: [
       {
         id: "products",
+        module: "catalog",
         title: "Products",
         icon: Package,
         items: [
@@ -189,6 +192,7 @@ export const NAV: NavSection[] = [
       },
       {
         id: "product-setup",
+        module: "catalog",
         title: "Product Setup",
         icon: SlidersHorizontal,
         items: [
@@ -203,6 +207,7 @@ export const NAV: NavSection[] = [
       },
       {
         id: "bulk-upload",
+        module: "bulk_upload",
         title: "Bulk Upload",
         icon: UploadCloud,
         items: [
@@ -224,6 +229,7 @@ export const NAV: NavSection[] = [
     entries: [
       {
         id: "blogs",
+        module: "blogs",
         title: "Blogs",
         icon: FileText,
         items: [
@@ -231,9 +237,10 @@ export const NAV: NavSection[] = [
           { title: "Blog Tags", url: "/blog-tags", icon: Tags },
         ],
       },
-      { title: "Projects", url: "/projects", icon: Briefcase },
+      { title: "Projects", url: "/projects", icon: Briefcase, module: "projects" },
       {
         id: "services",
+        module: "services",
         title: "Services",
         icon: Wrench,
         items: [
@@ -241,9 +248,10 @@ export const NAV: NavSection[] = [
           { title: "Process Steps", url: "/process-steps", icon: ListChecks },
         ],
       },
-      { title: "Downloads", url: "/downloads", icon: Download },
+      { title: "Downloads", url: "/downloads", icon: Download, module: "downloads" },
       {
         id: "shared-blocks",
+        module: "shared_blocks",
         title: "Shared Blocks",
         icon: Layers,
         items: [
@@ -261,6 +269,7 @@ export const NAV: NavSection[] = [
     entries: [
       {
         id: "masters",
+        module: "masters",
         title: "Masters",
         icon: Database,
         items: [
@@ -279,6 +288,7 @@ export const NAV: NavSection[] = [
     entries: [
       {
         id: "enquiries",
+        module: "leads",
         title: "Enquiries",
         icon: Inbox,
         items: [
@@ -293,11 +303,12 @@ export const NAV: NavSection[] = [
   {
     id: "seo",
     label: "SEO",
-    entries: [{ title: "Meta Tags", url: "/meta-tags", icon: Search }],
+    entries: [{ title: "Meta Tags", url: "/meta-tags", icon: Search, module: "seo" }],
   },
   {
     id: "settings",
     label: "Settings",
+    module: "settings",
     entries: [
       { title: "Site Settings", url: "/site-settings", icon: Settings },
       { title: "Social Media", url: "/social-media", icon: Share2 },
@@ -307,7 +318,8 @@ export const NAV: NavSection[] = [
     id: "administration",
     label: "Administration",
     entries: [
-      { title: "Users", url: "/users", icon: Users, adminOnly: true },
+      { title: "Users", url: "/users", icon: Users, module: "users" },
+      { title: "Roles & Permissions", url: "/roles", icon: ShieldCheck, module: "roles" },
     ],
   },
 ];
@@ -392,3 +404,35 @@ export const QUICK_ACTIONS: NavItem[] = [
   { title: "New FAQ", url: "/faqs/new", icon: Plus },
   { title: "New banner", url: "/banners/new", icon: Plus },
 ];
+
+/** Module guarding `url` (longest matching menu entry); undefined = open to every logged-in user. */
+const URL_MODULES: { path: string; module?: PermissionModule }[] = (() => {
+  const out: { path: string; module?: PermissionModule }[] = [];
+  const walkGroup = (group: NavGroup, inherited?: PermissionModule) => {
+    const mod = group.module ?? inherited;
+    (group.items ?? []).forEach((item) =>
+      out.push({ path: item.url.split("?")[0], module: item.module ?? mod }),
+    );
+    (group.children ?? []).forEach((child) => walkGroup(child, mod));
+  };
+  NAV.forEach((section) =>
+    section.entries.forEach((entry) =>
+      isNavGroup(entry)
+        ? walkGroup(entry, section.module)
+        : out.push({ path: entry.url.split("?")[0], module: entry.module ?? section.module }),
+    ),
+  );
+  return out.sort((a, b) => b.path.length - a.path.length);
+})();
+
+export const moduleForPath = (pathname: string): PermissionModule | undefined => {
+  if (pathname === "/") return undefined;
+  const hit = URL_MODULES.find(
+    ({ path }) => path !== "/" && (pathname === path || pathname.startsWith(`${path}/`)),
+  );
+  return hit?.module;
+};
+
+/** True when `pathname` is a create/edit screen (needs "manage"), e.g. /blogs/new, /blogs/3/edit. */
+export const isWritePath = (pathname: string): boolean =>
+  /\/(new|create)$/.test(pathname) || /\/edit(\/|$)/.test(pathname) || /\/(new|edit)\//.test(pathname);

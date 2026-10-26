@@ -64,24 +64,16 @@ export const commonValidations = {
     .min(3, "Username must be between 3 and 50 characters")
     .max(50, "Username must be between 3 and 50 characters"),
 
-  // Password validation — mirrors server's passwordRule regex (lower/upper/digit/special char)
+  // Password validation — length only (8–128), same as the server's passwordRule
   requiredPassword: z
     .string()
-    .min(8, "Password must be between 8 and 128 characters")
-    .max(128, "Password must be between 8 and 128 characters")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-      "Password must contain lowercase, uppercase, number, and special char"
-    ),
+    .min(8, "Password must be at least 8 characters")
+    .max(128, "Password must be at most 128 characters"),
 
   optionalPassword: z
     .string()
-    .min(8, "Password must be between 8 and 128 characters")
-    .max(128, "Password must be between 8 and 128 characters")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-      "Password must contain lowercase, uppercase, number, and special char"
-    )
+    .min(8, "Password must be at least 8 characters")
+    .max(128, "Password must be at most 128 characters")
     .optional()
     .or(z.literal("")),
 

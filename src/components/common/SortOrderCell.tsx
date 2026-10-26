@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ChevronUp, ChevronDown } from "lucide-react";
+import { useCanManage } from "@/hooks/useCanManage";
 
 interface SortOrderCellProps {
   sortOrder: number;
@@ -17,13 +18,14 @@ export default function SortOrderCell({
   onDecrement,
   minValue = 1,
 }: SortOrderCellProps) {
+  const canManage = useCanManage();
   return (
     <div className="flex items-center justify-start gap-1">
       <Button
         variant="outline"
         size="icon"
         className="h-6 w-6"
-        disabled={sortOrder <= minValue}
+        disabled={!canManage || sortOrder <= minValue}
         onClick={onDecrement}
       >
         <ChevronDown className="h-3 w-3" />
@@ -33,6 +35,7 @@ export default function SortOrderCell({
         variant="outline"
         size="icon"
         className="h-6 w-6"
+        disabled={!canManage}
         onClick={onIncrement}
       >
         <ChevronUp className="h-3 w-3" />

@@ -1,4 +1,5 @@
 import * as authApi from "@/services/auth/authApi";
+import { toast } from "@/hooks/use-toast";
 
 // Drop-in replacement for `fetch()` used by feature-service files. Adds
 // `credentials: "include"` (so the httpOnly auth cookies are sent) and, on a
@@ -43,6 +44,16 @@ export const apiFetch = async (
 ): Promise<Response> => {
   const requestInit: RequestInit = { ...init, credentials: "include" };
   const response = await fetch(input, requestInit);
+
+  if (response.status === 403) {
+    // Permission denied by the server — not an auth failure, so no refresh/retry.
+    toast({
+      title: "Permission denied",
+      description: "Your role doesn't allow this action.",
+      variant: "destructive",
+    });
+    return response;
+  }
 
   if (response.status !== 401) {
     return response;

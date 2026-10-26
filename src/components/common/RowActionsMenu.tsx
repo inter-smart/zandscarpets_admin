@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ReactNode } from "react";
 import { MoreHorizontal, Edit, Trash2, Eye } from "lucide-react";
+import { useCanManage } from "@/hooks/useCanManage";
 
 interface RowActionsMenuProps {
   onView?: () => void;
@@ -24,13 +25,21 @@ interface RowActionsMenuProps {
 // open a dialog, etc.) — this component is presentational only.
 export default function RowActionsMenu({
   onView,
-  onEdit,
-  onDelete,
   viewLabel = "View",
   editLabel = "Edit",
   deleteLabel = "Delete",
-  extraItems,
+  extraItems: extraItemsProp,
+  onEdit: onEditProp,
+  onDelete: onDeleteProp,
 }: RowActionsMenuProps) {
+  // Read-only roles only keep "View".
+  const canManage = useCanManage();
+  const extraItems = canManage ? extraItemsProp : undefined;
+  const onEdit = canManage ? onEditProp : undefined;
+  const onDelete = canManage ? onDeleteProp : undefined;
+
+  if (!onView && !onEdit && !onDelete && !extraItems) return null;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

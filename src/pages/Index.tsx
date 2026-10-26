@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import { MetricsCard } from "@/components/dashboard/MetricsCard";
 import { QuickActions } from "@/components/dashboard/QuickActions";
@@ -9,6 +12,21 @@ import {
 } from "lucide-react";
 
 const Index = () => {
+  const location = useLocation();
+  const { toast } = useToast();
+
+  // Redirected here by ProtectedRoute when a page isn't permitted for the user's role.
+  useEffect(() => {
+    if ((location.state as { denied?: boolean } | null)?.denied) {
+      toast({
+        title: "No access",
+        description: "Your role doesn't have permission to open that page.",
+        variant: "destructive",
+      });
+      window.history.replaceState({}, "");
+    }
+  }, [location.state, toast]);
+
   return (
     <div className="space-y-6">
       {/* Page Header */}

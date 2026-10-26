@@ -5,7 +5,7 @@ export const createUserSchema = z.object({
   username: commonValidations.username,
   email: commonValidations.requiredEmail,
   password: commonValidations.requiredPassword,
-  role: commonValidations.userRole.default("user"),
+  role_id: z.number({ required_error: "Role is required", invalid_type_error: "Role is required" }).int().positive(),
   is_active: commonValidations.booleanStatus,
 });
 
@@ -13,7 +13,7 @@ export const updateUserSchema = z.object({
   username: commonValidations.username,
   email: commonValidations.requiredEmail,
   password: commonValidations.optionalPassword,
-  role: commonValidations.userRole,
+  role_id: z.number({ required_error: "Role is required", invalid_type_error: "Role is required" }).int().positive(),
   is_active: commonValidations.booleanStatus,
 });
 

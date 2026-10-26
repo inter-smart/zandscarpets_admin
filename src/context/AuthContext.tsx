@@ -34,7 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AdminUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const role = user?.role ?? "user";
+  const role = user?.role ?? "";
 
   const clearSession = useCallback(() => {
     setUser(null);
