@@ -27,6 +27,8 @@ import {
   SEASONAL_BADGE_MAX_BYTES,
   SEASONAL_MAIN_RECOMMENDED,
   SEASONAL_BADGE_RECOMMENDED,
+  SEASONAL_MOBILE_RECOMMENDED,
+  validateSeasonalMobileImage,
   validateSeasonalMainImage,
   validateSeasonalBadgeImage,
 } from "@/utils/seasonalOfferImageValidation";
@@ -35,6 +37,7 @@ const defaultValues: SeasonalOfferFormData = {
   is_active: false,
   auto_show_delay_seconds: "",
   media_path: "",
+  mobile_media_path: "",
   badge_image: "",
   button_text: "",
   button_text_ar: "",
@@ -71,6 +74,7 @@ export default function SeasonalOfferForm() {
               ? String(data.auto_show_delay_seconds)
               : "",
           media_path: data.media_path || "",
+          mobile_media_path: data.mobile_media_path || "",
           badge_image: data.badge_image || "",
           button_text: data.button_text || "",
           button_text_ar: data.button_text_ar || "",
@@ -88,7 +92,7 @@ export default function SeasonalOfferForm() {
     try {
       setLoading(true);
       const payload = new FormData();
-      const { media_path, badge_image, ...textFields } = data;
+      const { media_path, mobile_media_path, badge_image, ...textFields } = data;
       Object.entries(textFields).forEach(([key, value]) =>
         payload.append(key, typeof value === "boolean" ? String(value) : (value ?? "")),
       );
@@ -96,6 +100,11 @@ export default function SeasonalOfferForm() {
         payload.append("media_path", media_path);
       } else if (typeof media_path === "string" && media_path) {
         payload.append("media_path", media_path);
+      }
+      if (mobile_media_path instanceof File) {
+        payload.append("mobile_media_path", mobile_media_path);
+      } else if (typeof mobile_media_path === "string" && mobile_media_path) {
+        payload.append("mobile_media_path", mobile_media_path);
       }
       if (badge_image instanceof File) {
         payload.append("badge_image", badge_image);
@@ -165,8 +174,9 @@ export default function SeasonalOfferForm() {
                 name="auto_show_delay_seconds"
                 label="Auto-show delay (seconds)"
                 placeholder="e.g. 10"
-                description="Recommended: keep the delay between 10 and 15 seconds for a better user experience."
+                description="Recommended: 8 seconds (allowed: 5 to 60). Too short a delay competes with page loading; 0 or empty disables the auto-show."
                 min={0}
+                max={60}
               />
               <p className="text-sm text-muted-foreground">
                 Seconds after a visitor lands on the site before the popup opens
@@ -191,6 +201,28 @@ export default function SeasonalOfferForm() {
                 recommendedDimensions={SEASONAL_MAIN_RECOMMENDED}
                 validateImage={validateSeasonalMainImage}
               />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Mobile Image (optional)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormFileUploadField
+                form={form}
+                name="mobile_media_path"
+                label="Mobile Image"
+                placeholder="Upload mobile image"
+                accept={SEASONAL_IMAGE_ACCEPT}
+                maxImageSize={SEASONAL_MAIN_MAX_BYTES}
+                recommendedDimensions={SEASONAL_MOBILE_RECOMMENDED}
+                validateImage={validateSeasonalMobileImage}
+              />
+              <p className="text-sm text-muted-foreground">
+                Shown on phones (below 640px wide) instead of the main image. Leave empty to
+                use the main image on phones too.
+              </p>
             </CardContent>
           </Card>
 

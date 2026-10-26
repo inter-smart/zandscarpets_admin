@@ -11,6 +11,7 @@ export interface SeasonalOffer {
   is_active: boolean;
   auto_show_delay_seconds?: number | null;
   media_path?: string | null;
+  mobile_media_path?: string | null;
   badge_image?: string | null;
   button_text?: string;
   button_text_ar?: string;
