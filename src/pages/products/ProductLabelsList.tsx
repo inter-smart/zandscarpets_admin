@@ -134,6 +134,12 @@ export default function ProductLabelsList() {
             header: "Badge",
             cell: ({ row }) => (row.original.is_product_badge ? <Badge>Badge</Badge> : <span className="text-sm text-muted-foreground">-</span>),
           },
+          {
+            accessorKey: "show_in_filter",
+            header: "In Filter",
+            cell: ({ row }) =>
+              row.original.show_in_filter ? <Badge variant="outline">Filter</Badge> : <span className="text-sm text-muted-foreground">-</span>,
+          },
         ] as ColumnDef<ProductLabelRecord>[])
       : []),
     {

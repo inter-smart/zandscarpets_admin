@@ -17,6 +17,7 @@ export interface ProductLabelRecord {
   slug: string;
   is_active: boolean;
   is_product_badge: boolean;
+  show_in_filter: boolean;
   sort_order: number;
   createdAt?: string;
   updatedAt?: string;
@@ -27,6 +28,7 @@ export interface ProductLabelPayload {
   title: string;
   title_ar: string;
   is_product_badge: boolean;
+  show_in_filter: boolean;
   sort_order: number;
   is_active: boolean;
 }

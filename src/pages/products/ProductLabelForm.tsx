@@ -57,6 +57,7 @@ export default function ProductLabelForm() {
       title: "",
       title_ar: "",
       is_product_badge: false,
+      show_in_filter: false,
       sort_order: "1",
       is_active: true,
     },
@@ -71,8 +72,9 @@ export default function ProductLabelForm() {
   // A badge must be one of the product's own tags, so the flag is only
   // meaningful for `tag` labels; clear it whenever the type moves elsewhere.
   useEffect(() => {
-    if (selectedType !== "tag" && form.getValues("is_product_badge")) {
-      form.setValue("is_product_badge", false);
+    if (selectedType !== "tag") {
+      if (form.getValues("is_product_badge")) form.setValue("is_product_badge", false);
+      if (form.getValues("show_in_filter")) form.setValue("show_in_filter", false);
     }
   }, [selectedType, form]);
 
@@ -85,6 +87,7 @@ export default function ProductLabelForm() {
         title: data.title || "",
         title_ar: data.title_ar || "",
         is_product_badge: data.is_product_badge ?? false,
+        show_in_filter: data.show_in_filter ?? false,
         sort_order: (data.sort_order ?? 1).toString(),
         is_active: data.is_active ?? true,
       });
@@ -108,6 +111,7 @@ export default function ProductLabelForm() {
         title: data.title,
         title_ar: data.title_ar,
         is_product_badge: data.is_product_badge,
+        show_in_filter: data.show_in_filter,
         sort_order: parseInt(data.sort_order || "1"),
         is_active: data.is_active,
       };
@@ -182,12 +186,20 @@ export default function ProductLabelForm() {
                   )}
                 />
                 {selectedType === "tag" && (
-                  <FormSwitchField
-                    form={form}
-                    name="is_product_badge"
-                    label="Product Badge"
-                    description="Only one tag per product can be the badge."
-                  />
+                  <>
+                    <FormSwitchField
+                      form={form}
+                      name="is_product_badge"
+                      label="Product Badge"
+                      description="Only one tag per product can be the badge."
+                    />
+                    <FormSwitchField
+                      form={form}
+                      name="show_in_filter"
+                      label="Show in Filter"
+                      description="Show this tag in the filter section of the listing page."
+                    />
+                  </>
                 )}
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
