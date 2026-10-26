@@ -196,6 +196,9 @@ const CommonMilestonesForm = React.lazy(
 
 // Contact — CMS
 const ContactCmsForm = React.lazy(() => import("./pages/contact/ContactCmsForm"));
+const SectionVisibility = React.lazy(
+  () => import("./pages/siteSettings/SectionVisibility"),
+);
 const CategoryCmsForm = React.lazy(() => import("./pages/products/CategoryCmsForm"));
 const BlogList = React.lazy(() => import("./pages/blogs/BlogList"));
 const BlogForm = React.lazy(() => import("./pages/blogs/BlogForm"));
@@ -371,6 +374,7 @@ const App = () => (
 
               {/* Contact CMS */}
               <Route path="/contact-cms" element={<ContactCmsForm />} />
+              <Route path="/section-visibility" element={<SectionVisibility />} />
 
               {/* Privacy Policy CMS */}
               <Route path="/privacy-policy" element={<PrivacyPolicyForm />} />

@@ -20,6 +20,7 @@ import {
   MessageSquare,
   Phone,
   Link2,
+  Eye,
   Briefcase,
   Wrench,
   ListChecks,
@@ -158,6 +159,7 @@ export const NAV: NavSection[] = [
         items: [
           { title: "Privacy Policy", url: "/privacy-policy", icon: ShieldCheck },
           { title: "Navigation Pages", url: "/pages", icon: Compass },
+          { title: "Section Visibility", url: "/section-visibility", icon: Eye },
         ],
       },
       {
@@ -340,6 +342,7 @@ const NAV_KEYWORDS: Record<string, string> = {
   "/product-labels?type=specification": "label spec technical",
   "/pages": "navbar footer menu links",
   "/site-settings": "logo email phone address general",
+  "/section-visibility": "show hide toggle section banner map form",
   "/social-media": "facebook instagram linkedin links",
   "/floating-icons": "whatsapp call chat",
   "/enquiries": "leads contact messages",
