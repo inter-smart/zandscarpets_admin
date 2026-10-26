@@ -177,7 +177,7 @@ export default function DownloadForm() {
               <FormFileUploadField
                 form={form}
                 name="file_path"
-                label="File (PDF)"
+                label="File (PDF, optional)"
                 placeholder="Upload a PDF, up to 10MB"
                 accept="application/pdf"
               />

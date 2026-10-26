@@ -1,22 +1,47 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/common/DataTable";
 import RowActionsMenu from "@/components/common/RowActionsMenu";
 import DeleteDialogue from "@/components/common/DeleteDialogue";
+import FilterField from "@/components/common/FilterField";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { usePaginatedList } from "@/hooks/usePaginatedList";
+import { useUrlFilters } from "@/hooks/useUrlFilters";
 import {
   fetchDownloadRequestList,
   deleteDownloadRequest,
   DownloadRequestRecord,
+  DownloadRequestFilters,
+  DownloadRequestStatus,
   ApiError,
 } from "@/services/enquiries/downloadRequestApi";
+import {
+  DOWNLOAD_REQUEST_STATUS_LABELS,
+  DOWNLOAD_REQUEST_STATUS_BADGE_VARIANT,
+  DOWNLOAD_REQUEST_STATUS_OPTIONS,
+} from "@/lib/downloadRequestStatus";
+
+const ALL = "all";
 
 export default function DownloadRequestList() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
+
+  const { filters: listFilters, setFilter, reset: resetListFilters } = useUrlFilters({
+    status: ALL,
+  });
+  const statusFilter = listFilters.status;
+
+  const filters = useMemo<DownloadRequestFilters>(
+    () => ({ status: statusFilter === ALL ? undefined : (statusFilter as DownloadRequestStatus) }),
+    [statusFilter],
+  );
 
   const {
     items: enquiries,
@@ -33,7 +58,15 @@ export default function DownloadRequestList() {
     itemsPage,
     itemsLimit,
     refetch,
-  } = usePaginatedList<DownloadRequestRecord>(fetchDownloadRequestList);
+  } = usePaginatedList<DownloadRequestRecord, DownloadRequestFilters>(fetchDownloadRequestList, 10, filters);
+
+  const hasActiveFilters = statusFilter !== ALL || searchInput !== "";
+
+  const resetAll = () => {
+    resetListFilters();
+    setSearchInput("");
+    setPage(1);
+  };
 
   const confirmDelete = async () => {
     if (!deleteItemId) return;
@@ -106,6 +139,15 @@ export default function DownloadRequestList() {
       ),
     },
     {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => (
+        <Badge variant={DOWNLOAD_REQUEST_STATUS_BADGE_VARIANT[row.original.status]}>
+          {DOWNLOAD_REQUEST_STATUS_LABELS[row.original.status]}
+        </Badge>
+      ),
+    },
+    {
       accessorKey: "createdAt",
       header: "Submitted At",
       cell: ({ row }) => (
@@ -142,6 +184,29 @@ export default function DownloadRequestList() {
         searching={searching}
         searchQuery={searchInput}
         onSearchChange={setSearchInput}
+        headerExtra={
+          <>
+            <FilterField label="Status">
+              <Select value={statusFilter} onValueChange={(value) => setFilter("status", value)}>
+                <SelectTrigger className="w-[160px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ALL}>All</SelectItem>
+                  {DOWNLOAD_REQUEST_STATUS_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FilterField>
+            <Button variant="outline" size="sm" onClick={resetAll} disabled={!hasActiveFilters}>
+              <RotateCcw className="mr-2 h-4 w-4" />
+              Reset
+            </Button>
+          </>
+        }
         pagination={{
           currentPage: page,
           totalPages,

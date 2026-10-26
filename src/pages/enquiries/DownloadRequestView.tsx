@@ -1,16 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import DeleteDialogue from "@/components/common/DeleteDialogue";
 import {
   fetchDownloadRequestById,
   deleteDownloadRequest,
+  updateDownloadRequestStatus,
   DownloadRequestRecord,
+  DownloadRequestStatus,
   ApiError,
 } from "@/services/enquiries/downloadRequestApi";
+import {
+  DOWNLOAD_REQUEST_STATUS_OPTIONS,
+  DOWNLOAD_REQUEST_STATUS_BADGE_VARIANT,
+} from "@/lib/downloadRequestStatus";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -29,6 +37,7 @@ export default function DownloadRequestView() {
   const [item, setItem] = useState<DownloadRequestRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -49,6 +58,27 @@ export default function DownloadRequestView() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (status: DownloadRequestStatus) => {
+    if (!item || status === item.status) return;
+
+    const previous = item.status;
+    setItem({ ...item, status });
+    setUpdatingStatus(true);
+    try {
+      await updateDownloadRequestStatus(item.id, status);
+      toast({ title: "Success", description: "Status updated successfully" });
+    } catch (error) {
+      setItem((current) => (current ? { ...current, status: previous } : current));
+      toast({
+        title: "Error",
+        description: error instanceof ApiError ? error.message : "Failed to update status",
+        variant: "destructive",
+      });
+    } finally {
+      setUpdatingStatus(false);
     }
   };
 
@@ -99,10 +129,28 @@ export default function DownloadRequestView() {
             <p className="text-muted-foreground">Submitted download request details</p>
           </div>
         </div>
-        <Button variant="destructive" onClick={() => setConfirmingDelete(true)}>
-          <Trash2 className="h-4 w-4 mr-2" />
-          Delete
-        </Button>
+        <div className="flex items-center gap-3">
+          <Select
+            value={item.status}
+            onValueChange={(value) => handleStatusChange(value as DownloadRequestStatus)}
+            disabled={updatingStatus}
+          >
+            <SelectTrigger className="w-[160px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {DOWNLOAD_REQUEST_STATUS_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button variant="destructive" onClick={() => setConfirmingDelete(true)}>
+            <Trash2 className="h-4 w-4 mr-2" />
+            Delete
+          </Button>
+        </div>
       </div>
 
       <Card>
@@ -117,6 +165,11 @@ export default function DownloadRequestView() {
             <Field label="Company">{item.company_name || "-"}</Field>
             <Field label="File / Product">
               {item.download_title || item.product_title || "-"}
+            </Field>
+            <Field label="Status">
+              <Badge variant={DOWNLOAD_REQUEST_STATUS_BADGE_VARIANT[item.status]}>
+                {DOWNLOAD_REQUEST_STATUS_OPTIONS.find((option) => option.value === item.status)?.label}
+              </Badge>
             </Field>
             <Field label="Submitted At">
               {item.createdAt ? new Date(item.createdAt).toLocaleString() : "-"}

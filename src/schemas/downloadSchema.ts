@@ -6,7 +6,8 @@ export const downloadSchema = z.object({
   title_ar: commonValidations.requiredString("Title (Arabic)"),
   description: z.string().trim().optional(),
   description_ar: z.string().trim().optional(),
-  file_path: commonValidations.requiredFile("File"),
+  // optional: files are sent to requesters by hand
+  file_path: z.union([z.instanceof(File), z.string()]).optional(),
   sort_order: commonValidations.sortOrder,
   is_active: commonValidations.booleanStatus,
 });

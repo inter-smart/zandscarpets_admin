@@ -10,6 +10,8 @@ const DOWNLOAD_REQUEST_URL = `${API_BASE_URL}/enquiries/download-request`;
 
 export { ApiError };
 
+export type DownloadRequestStatus = "new" | "shared";
+
 export interface DownloadRequestRecord {
   id: number;
   name: string;
@@ -19,6 +21,7 @@ export interface DownloadRequestRecord {
   download_title: string | null;
   // set instead of download_title when the request came from a product's own datasheet button
   product_title: string | null;
+  status: DownloadRequestStatus;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -49,13 +52,20 @@ export interface DownloadRequestListResponse {
   };
 }
 
+export interface DownloadRequestFilters {
+  status?: DownloadRequestStatus;
+}
+
+// Fetcher shape matches usePaginatedList's `Fetcher<T, F>` contract.
 export const fetchDownloadRequestList = async (
   page: number,
   limit: number,
   search?: string,
+  filters?: DownloadRequestFilters,
 ): Promise<DownloadRequestListResponse> => {
   const params = new URLSearchParams({ page: page.toString(), limit: limit.toString() });
   if (search) params.append("search", search);
+  if (filters?.status) params.append("status", filters.status);
 
   const response = await apiFetch(`${DOWNLOAD_REQUEST_URL}?${params}`);
   return parseEnvelope<DownloadRequestListResponse["data"]>(response);
@@ -69,4 +79,16 @@ export const fetchDownloadRequestById = async (id: number): Promise<{ data: Down
 export const deleteDownloadRequest = async (id: number): Promise<{ data: { id: number } }> => {
   const response = await apiFetch(`${DOWNLOAD_REQUEST_URL}/${id}`, { method: "DELETE" });
   return parseEnvelope<{ id: number }>(response);
+};
+
+export const updateDownloadRequestStatus = async (
+  id: number,
+  status: DownloadRequestStatus,
+): Promise<{ data: DownloadRequestRecord }> => {
+  const response = await apiFetch(`${DOWNLOAD_REQUEST_URL}/${id}/status`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  });
+  return parseEnvelope<DownloadRequestRecord>(response);
 };
