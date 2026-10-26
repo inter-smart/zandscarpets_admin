@@ -100,13 +100,19 @@ export interface BlogListResponse {
   };
 }
 
+export interface BlogFilters {
+  status?: "active" | "inactive";
+}
+
 export const fetchBlogList = async (
   page: number,
   limit: number,
   search?: string,
+  filters?: BlogFilters,
 ): Promise<BlogListResponse> => {
   const params = new URLSearchParams({ page: page.toString(), limit: limit.toString() });
   if (search) params.append("search", search);
+  if (filters?.status) params.append("status", filters.status);
   const response = await apiFetch(`${BLOGS_URL}?${params}`);
   return parseEnvelope<BlogListResponse["data"]>(response);
 };

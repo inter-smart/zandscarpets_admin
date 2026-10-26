@@ -219,6 +219,7 @@ export const NAV: NavSection[] = [
           { title: "Products", url: "/bulk-upload/products", icon: ShoppingBag },
           { title: "Product Variants", url: "/bulk-upload/product-variants", icon: Package },
           { title: "Product Main", url: "/bulk-upload/product-main", icon: Sparkles },
+          { title: "Blogs", url: "/bulk-upload/blogs", icon: FileText },
         ],
       },
     ],

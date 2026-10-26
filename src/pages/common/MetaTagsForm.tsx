@@ -11,7 +11,7 @@ import { Combobox } from "@/components/ui/combobox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormTextField, FormTextareaField, FormKeywordsField } from "@/components/forms/FormFieldComponents";
 import { useToast } from "@/hooks/use-toast";
-import { fetchMetaTagById, createMetaTag, updateMetaTag, MetaTag } from "@/services/common/metaTagsApi";
+import { fetchMetaTagById, fetchMetaTagsList, createMetaTag, updateMetaTag, MetaTag } from "@/services/common/metaTagsApi";
 import { fetchActiveProducts } from "@/services/products/productsApi";
 import { fetchActiveProductVariants } from "@/services/products/productVariantsApi";
 import { fetchActiveBlogs } from "@/services/common/blogsApi";
@@ -96,7 +96,10 @@ export default function MetaTagsForm() {
   const lockProject = isEditing || (urlType === "project" && Boolean(urlProjectId));
 
   const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(isEditing);
+  const hasDeepLinkTarget = Boolean(
+    urlType && (urlPageName || urlProductId || urlVariantId || urlBlogId || urlProjectId),
+  );
+  const [initialLoading, setInitialLoading] = useState(isEditing || hasDeepLinkTarget);
   const [metaTag, setMetaTag] = useState<MetaTag | null>(null);
   const [productOptions, setProductOptions] = useState<{ value: string; label: string }[]>([]);
   const [variantOptions, setVariantOptions] = useState<{ value: string; label: string }[]>([]);
@@ -146,6 +149,37 @@ export default function MetaTagsForm() {
     fetchActiveProjects()
       .then((res) => setProjectOptions(res.data.map((project) => ({ value: String(project.id), label: project.title }))))
       .catch(() => setProjectOptions([]));
+  }, []);
+
+  // Deep-linked "add" with a target that already has meta data: jump to its
+  // edit screen so the saved values prefill instead of creating a duplicate.
+  useEffect(() => {
+    if (isEditing || !hasDeepLinkTarget) return;
+    let cancelled = false;
+    fetchMetaTagsList(1, 1, undefined, {
+      type: urlType,
+      page_name: urlPageName,
+      product_id: urlProductId ? Number(urlProductId) : undefined,
+      variant_id: urlVariantId ? Number(urlVariantId) : undefined,
+      blog_id: urlBlogId,
+      project_id: urlProjectId ? Number(urlProjectId) : undefined,
+    })
+      .then((res) => {
+        if (cancelled) return;
+        const existing = res.data?.data?.[0];
+        if (existing) {
+          navigate(`/meta-tags/${existing.id}/edit${entryQuery}`, { replace: true });
+        } else {
+          setInitialLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setInitialLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

@@ -10,6 +10,7 @@ import { apiFetch } from "@/lib/apiClient";
 export const BULK_UPLOAD_API_URL = `${import.meta.env.VITE_API_BASE_URL}/bulk-upload`;
 
 export type BulkUploadEntity =
+  | "blogs"
   | "categories"
   | "attributes"
   | "attribute-values"

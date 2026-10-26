@@ -67,6 +67,22 @@ export default function BulkUploadHome() {
           </CardHeader>
         </Card>
       </Link>
+
+      <div>
+        <h2 className="text-lg font-semibold">Blogs</h2>
+        <p className="text-muted-foreground text-sm mt-1">Separate from the product catalog steps above.</p>
+      </div>
+      <Link to="/bulk-upload/blogs">
+        <Card className="hover:border-primary transition-colors">
+          <CardHeader>
+            <CardTitle className="text-base">Blogs</CardTitle>
+            <CardDescription>
+              Import blog posts and their SEO meta data from a spreadsheet. Image files must already be in the
+              server's blog images folder.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </Link>
     </div>
   );
 }

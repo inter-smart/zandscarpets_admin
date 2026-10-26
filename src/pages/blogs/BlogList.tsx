@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/common/DataTable";
@@ -6,23 +6,41 @@ import RowActionsMenu from "@/components/common/RowActionsMenu";
 import StatusToggleCell from "@/components/common/StatusToggleCell";
 import DeleteDialogue from "@/components/common/DeleteDialogue";
 import StatusChangeDialogue from "@/components/common/StatusChangeDialogue";
+import { Combobox } from "@/components/ui/combobox";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useStatusToggle } from "@/hooks/useStatusToggle";
 import { usePaginatedList } from "@/hooks/usePaginatedList";
+import { useUrlFilters } from "@/hooks/useUrlFilters";
 import { resolveImageUrl } from "@/lib/resolveImageUrl";
 import {
   fetchBlogList,
   deleteBlog,
   toggleBlogStatus,
   BlogRecord,
+  BlogFilters,
   ApiError,
 } from "@/services/blogs/blogApi";
+
+const ALL = "all";
+
+const STATUS_OPTIONS = [
+  { value: ALL, label: "All status" },
+  { value: "active", label: "Active" },
+  { value: "inactive", label: "Inactive" },
+];
 
 export default function BlogList() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
+
+  const { filters: listFilters, setFilter } = useUrlFilters({ status: ALL });
+  const statusFilter = listFilters.status as string;
+  const filters = useMemo<BlogFilters>(
+    () => ({ status: statusFilter === ALL ? undefined : (statusFilter as BlogFilters["status"]) }),
+    [statusFilter],
+  );
 
   const {
     items: blogs,
@@ -31,6 +49,8 @@ export default function BlogList() {
     setPage,
     limit,
     setLimit,
+    itemsPage,
+    itemsLimit,
     searchInput,
     setSearchInput,
     totalCount,
@@ -38,7 +58,7 @@ export default function BlogList() {
     loading,
     searching,
     refetch,
-  } = usePaginatedList<BlogRecord>(fetchBlogList);
+  } = usePaginatedList<BlogRecord, BlogFilters>(fetchBlogList, 10, filters);
 
   const { statusToggleItem, setStatusToggleItem, confirmStatusToggle } = useStatusToggle({
     setItems: setBlogs,
@@ -70,6 +90,11 @@ export default function BlogList() {
   };
 
   const columns: ColumnDef<BlogRecord>[] = [
+    {
+      id: "serial",
+      header: "Sl No",
+      cell: ({ row }) => <div className="font-medium">{(itemsPage - 1) * itemsLimit + row.index + 1}</div>,
+    },
     {
       accessorKey: "media_path",
       header: "Image",
@@ -149,6 +174,16 @@ export default function BlogList() {
         searchPlaceholder="Search blogs..."
         onAdd={() => navigate("/blogs/new")}
         addButtonText="Add Blog"
+        headerExtra={
+          <Combobox
+            maxVisibleItems={3}
+            autoWidth
+            value={statusFilter}
+            options={STATUS_OPTIONS}
+            placeholder="All status"
+            onChange={(value) => setFilter("status", value)}
+          />
+        }
         loading={loading}
         searching={searching}
         searchQuery={searchInput}
