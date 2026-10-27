@@ -1,4 +1,4 @@
-import { Bell, User, LogOut, Settings } from "lucide-react";
+import { User, LogOut, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/AuthContext";
 import { NavSearchTrigger } from "@/components/layout/NavSearch";
@@ -35,17 +34,6 @@ export function AppHeader() {
     
 
         <div className="flex items-end gap-3 ml-auto">
-          {/* Notifications */}
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-5 w-5" />
-            <Badge
-              variant="destructive"
-              className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs text-center flex items-center justify-center"
-            >
-              3
-            </Badge>
-          </Button>
-
           {/* User menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
