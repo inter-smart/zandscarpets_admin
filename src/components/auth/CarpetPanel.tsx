@@ -9,7 +9,7 @@ export function CarpetPanel() {
         </div>
         <div className="hidden space-y-2 lg:block">
           <h2 className="text-2xl font-semibold">Z&S Carpets</h2>
-          <p className="text-sm text-white/80">Admin Console</p>
+          {/* <p className="text-sm text-white/80">Admin Console</p> */}
         </div>
         <p className="hidden text-xs text-white/50 lg:block">© {new Date().getFullYear()} Z&S. All rights reserved.</p>
       </div>
