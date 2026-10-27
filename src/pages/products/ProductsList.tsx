@@ -258,24 +258,6 @@ export default function ProductsList() {
       cell: ({ row }) => <div className="text-sm">{row.original.category?.title || "-"}</div>,
     },
     {
-      id: "labels",
-      header: "Tags",
-      cell: ({ row }) => {
-        const tags = (row.original.labels || []).filter((l) => l.type === "tag");
-        if (!tags.length) return "-";
-        return (
-          <div className="flex flex-wrap gap-1">
-            {tags.slice(0, 3).map((l) => (
-              <Badge key={l.id} variant="secondary">
-                {l.title}
-              </Badge>
-            ))}
-            {tags.length > 3 && <Badge variant="outline">+{tags.length - 3}</Badge>}
-          </div>
-        );
-      },
-    },
-    {
       accessorKey: "sort_order",
       header: "Sort Order",
       cell: ({ row }) => {
@@ -303,6 +285,7 @@ export default function ProductsList() {
       header: "Home Visibility",
       cell: ({ row }) => (
         <StatusToggleCell
+         
           status={!!row.original.show_in_home}
           onCheckedChange={(checked) => setHomeToggleItem({ item: row.original, newValue: checked })}
         />
@@ -313,6 +296,7 @@ export default function ProductsList() {
       header: "Navbar Visibility",
       cell: ({ row }) => (
         <StatusToggleCell
+         
           status={!!row.original.list_in_navbar}
           onCheckedChange={(checked) => setNavbarToggleItem({ item: row.original, newValue: checked })}
         />
@@ -323,6 +307,7 @@ export default function ProductsList() {
       header: "Footer Visibility",
       cell: ({ row }) => (
         <StatusToggleCell
+         
           status={!!row.original.show_in_footer}
           onCheckedChange={(checked) => setFooterToggleItem({ item: row.original, newValue: checked })}
         />

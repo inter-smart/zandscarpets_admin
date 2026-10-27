@@ -59,6 +59,9 @@ import {
   FileText,
   FileSpreadsheet,
   ArrowLeft,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
 } from "lucide-react";
 
 const PAGE_SIZE_OPTIONS = [10, 20, 30, 40, 50];
@@ -452,12 +455,30 @@ export function DataTable<TData, TValue>({
                             : ""
                         }`}
                       >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
+                        {header.isPlaceholder ? null : header.column.getCanSort() ? (
+                          <button
+                            type="button"
+                            className="flex items-center gap-1 select-none hover:text-foreground"
+                            onClick={header.column.getToggleSortingHandler()}
+                          >
+                            {flexRender(
                               header.column.columnDef.header,
                               header.getContext(),
                             )}
+                            {header.column.getIsSorted() === "asc" ? (
+                              <ArrowUp className="h-3.5 w-3.5" />
+                            ) : header.column.getIsSorted() === "desc" ? (
+                              <ArrowDown className="h-3.5 w-3.5" />
+                            ) : (
+                              <ArrowUpDown className="h-3.5 w-3.5 opacity-40" />
+                            )}
+                          </button>
+                        ) : (
+                          flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )
+                        )}
                       </TableHead>
                     ))}
                   </TableRow>
