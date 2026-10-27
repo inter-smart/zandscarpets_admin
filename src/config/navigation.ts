@@ -136,7 +136,11 @@ export const NAV: NavSection[] = [
             id: "services-page",
             title: "Services Page",
             icon: Wrench,
-            items: [{ title: "Page Content", url: "/service-cms", icon: Info }],
+            items: [
+              { title: "Page Content", url: "/service-cms", icon: Info },
+              { title: "Services", url: "/services", icon: Wrench },
+              { title: "Process Steps", url: "/process-steps", icon: ListChecks },
+            ],
           },
           {
             id: "categories-page",
@@ -237,16 +241,6 @@ export const NAV: NavSection[] = [
         ],
       },
       { title: "Projects", url: "/projects", icon: Briefcase, module: "projects" },
-      {
-        id: "services",
-        module: "services",
-        title: "Services",
-        icon: Wrench,
-        items: [
-          { title: "Services", url: "/services", icon: Wrench },
-          { title: "Process Steps", url: "/process-steps", icon: ListChecks },
-        ],
-      },
       { title: "Downloads", url: "/downloads", icon: Download, module: "downloads" },
       {
         id: "shared-blocks",

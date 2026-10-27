@@ -111,6 +111,14 @@ interface DataTableProps<TData, TValue> {
   onBack?: () => void;
 }
 
+const SORTABLE_KEYS = new Set([
+  "title",
+  "title_ar",
+  "name",
+  "sort_order",
+  "createdAt",
+]);
+
 export function DataTable<TData, TValue>({
   columns,
   data,
@@ -172,9 +180,22 @@ export function DataTable<TData, TValue>({
   // Combine external and local searching states
   const showSearchAnimation = searching || localSearching;
 
+  // Header-click sorting is opt-in: only these columns are sortable unless a
+  // column sets `enableSorting` itself.
+  const sortableColumns = React.useMemo(
+    () =>
+      columns.map((col) => {
+        const key = (col as { accessorKey?: string }).accessorKey;
+        return col.enableSorting === undefined
+          ? { ...col, enableSorting: !!key && SORTABLE_KEYS.has(key) }
+          : col;
+      }) as ColumnDef<TData, TValue>[],
+    [columns],
+  );
+
   const table = useReactTable({
     data,
-    columns,
+    columns: sortableColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
