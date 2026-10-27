@@ -5,16 +5,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Lock, User } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { loginSchema, type LoginFormData } from "@/schemas/loginSchema";
 import { getRememberedUsername, setRememberedUsername, clearRememberedUsername } from "@/lib/rememberedUsername";
+import { CarpetPanel } from "@/components/auth/CarpetPanel";
 import { ForgotPasswordDialog } from "@/components/auth/ForgotPasswordDialog";
-const Logo =
-  "https://cdn-lanhl.nitrocdn.com/BEDNLEoRmIKjWuHGWySaweMWUMbmbmac/assets/images/source/rev-b24f0bb/www.zandscarpets.com/assets/images/logo.svg";
-
 export default function Login() {
   const { isAuthenticated, login } = useAuth();
   const location = useLocation();
@@ -62,104 +59,82 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-accent/20 to-muted p-4">
-      <div className="w-full max-w-md space-y-8">
-        {/* Logo and Header */}
-        <div className="text-center">
-          <img src={Logo} alt="Z&S" className="mx-auto h-12 w-auto mb-6" />
-          {/* <h1 className="text-2xl font-bold tracking-tight text-foreground">Admin Dashboard</h1> */}
-          {/* <p className="mt-2 text-sm text-muted-foreground">Sign in to manage your Z&S content</p> */}
-        </div>
+    <div className="min-h-screen grid grid-rows-[auto_1fr] lg:grid-rows-1 lg:grid-cols-[30%_70%] bg-white">
+      <CarpetPanel />
 
-        {/* Login Form */}
-        <Card className="shadow-healthcare-lg border-0">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-xl text-center">Sign in</CardTitle>
-            <CardDescription className="text-center">Enter your credentials to access the dashboard</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              {serverError && (
-                <Alert variant="destructive">
-                  <AlertDescription>{serverError}</AlertDescription>
-                </Alert>
-              )}
+      {/* Form side */}
+      <main className="flex items-center justify-center p-6 sm:p-10">
+        <div className="w-full max-w-md space-y-8">
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">Welcome back</h1>
+            <p className="text-sm text-muted-foreground">Enter your credentials to access the dashboard</p>
+          </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="username">Email / Username</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    id="username"
-                    type="text"
-                    placeholder="Enter your email / username"
-                    autoComplete="username"
-                    className="pl-10"
-                    {...form.register("username")}
-                  />
-                </div>
-                {form.formState.errors.username && <p className="text-sm text-destructive">{form.formState.errors.username.message}</p>}
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {serverError && (
+              <Alert variant="destructive">
+                <AlertDescription>{serverError}</AlertDescription>
+              </Alert>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="username">Email / Username</Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="Enter your email / username"
+                  autoComplete="username"
+                  className="h-11 pl-10"
+                  {...form.register("username")}
+                />
               </div>
+              {form.formState.errors.username && <p className="text-sm text-destructive">{form.formState.errors.username.message}</p>}
+            </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    autoComplete="current-password"
-                    className="pl-10 pr-10"
-                    {...form.register("password")}
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
-                  </Button>
-                </div>
-                {form.formState.errors.password && <p className="text-sm text-destructive">{form.formState.errors.password.message}</p>}
-                <div className="text-right">
-                  <button
-                    type="button"
-                    onClick={() => setIsForgotOpen(true)}
-                    className="text-sm font-medium text-primary underline-offset-4 hover:underline"
-                  >
-                    Forgot password?
-                  </button>
-                </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  autoComplete="current-password"
+                  className="h-11 pl-10 pr-10"
+                  {...form.register("password")}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
+                </Button>
               </div>
+              {form.formState.errors.password && <p className="text-sm text-destructive">{form.formState.errors.password.message}</p>}
+              <div className="text-right">
+                <button
+                  type="button"
+                  onClick={() => setIsForgotOpen(true)}
+                  className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
+            </div>
 
-              {/* <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="remember"
-                    checked={rememberMe}
-                    onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                  />
-                  <Label htmlFor="remember" className="text-sm">
-                    Remember me
-                  </Label>
-                </div>
-              </div> */}
+            <Button type="submit" variant="gradient" size="lg" className="w-full" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting ? "Signing in..." : "Sign in"}
+            </Button>
+          </form>
 
-              <Button type="submit" variant="gradient" size="lg" className="w-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Signing in..." : "Sign in"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-
-        {/* Footer */}
-        <div className="text-center text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} Z&S. All rights reserved.</p>
+          <p className="text-center text-xs text-muted-foreground lg:hidden">© {new Date().getFullYear()} Z&S. All rights reserved.</p>
         </div>
-      </div>
+      </main>
 
       <ForgotPasswordDialog open={isForgotOpen} onClose={() => setIsForgotOpen(false)} />
     </div>
