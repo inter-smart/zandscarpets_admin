@@ -157,7 +157,7 @@ export default function Login() {
 
         {/* Footer */}
         <div className="text-center text-xs text-muted-foreground">
-          <p>© 2024 Z&S. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Z&S. All rights reserved.</p>
         </div>
       </div>
 
