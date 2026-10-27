@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import type { ForgotPasswordResult } from "@/services/auth/authApi";
 import { RequestEmailStep } from "./steps/RequestEmailStep";
 import { VerifyOtpStep } from "./steps/VerifyOtpStep";
 import { ResetPasswordStep } from "./steps/ResetPasswordStep";
@@ -12,21 +13,32 @@ interface ForgotPasswordDialogProps {
   onClose: () => void;
 }
 
-// One controlled dialog drives the whole forgot-password → OTP → reset-password
-// flow. It intentionally has no close button and ignores Esc/outside-click —
-// the only way out is completing the flow (or the browser back/refresh).
+// A reset can be started from "I already have a code" when a code was sent recently, in which
+// case the server numbers for the live code are unknown, so they are optional.
+export type OtpSession = Partial<ForgotPasswordResult>;
+
+// One controlled dialog drives the whole forgot-password → OTP → reset-password flow. Esc and
+// outside-click are ignored so a mis-click can't drop a half-finished reset; each step has an
+// explicit "Back to sign in" link instead.
 export function ForgotPasswordDialog({ open, onClose }: ForgotPasswordDialogProps) {
   const { toast } = useToast();
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
+  const [otpSession, setOtpSession] = useState<OtpSession>({});
   const [resetToken, setResetToken] = useState("");
-  const [cooldownSeconds, setCooldownSeconds] = useState(0);
+  const [resetExpiresIn, setResetExpiresIn] = useState(0);
 
   const resetFlow = () => {
     setStep("email");
     setEmail("");
+    setOtpSession({});
     setResetToken("");
-    setCooldownSeconds(0);
+    setResetExpiresIn(0);
+  };
+
+  const handleClose = () => {
+    resetFlow();
+    onClose();
   };
 
   const handleComplete = () => {
@@ -34,12 +46,11 @@ export function ForgotPasswordDialog({ open, onClose }: ForgotPasswordDialogProp
       title: "Password reset",
       description: "Your password has been reset successfully. Please log in with your new password.",
     });
-    resetFlow();
-    onClose();
+    handleClose();
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => { /* not user-closable mid-flow */ }}>
+    <Dialog open={open} onOpenChange={() => { /* not closable by Esc / outside click */ }}>
       <DialogContent
         hideCloseButton
         className="sm:max-w-md"
@@ -49,9 +60,10 @@ export function ForgotPasswordDialog({ open, onClose }: ForgotPasswordDialogProp
       >
         {step === "email" && (
           <RequestEmailStep
-            onSent={(sentEmail, sentCooldownSeconds) => {
+            onBack={handleClose}
+            onSent={(sentEmail, session) => {
               setEmail(sentEmail);
-              setCooldownSeconds(sentCooldownSeconds);
+              setOtpSession(session);
               setStep("otp");
             }}
           />
@@ -60,16 +72,26 @@ export function ForgotPasswordDialog({ open, onClose }: ForgotPasswordDialogProp
         {step === "otp" && (
           <VerifyOtpStep
             email={email}
-            initialCooldownSeconds={cooldownSeconds}
-            onVerified={(token) => {
+            session={otpSession}
+            onBack={handleClose}
+            onChangeEmail={resetFlow}
+            onVerified={(token, expiresInSeconds) => {
               setResetToken(token);
+              setResetExpiresIn(expiresInSeconds);
               setStep("reset");
             }}
           />
         )}
 
         {step === "reset" && (
-          <ResetPasswordStep email={email} resetToken={resetToken} onReset={handleComplete} />
+          <ResetPasswordStep
+            email={email}
+            resetToken={resetToken}
+            expiresInSeconds={resetExpiresIn}
+            onReset={handleComplete}
+            onRestart={resetFlow}
+            onBack={handleClose}
+          />
         )}
       </DialogContent>
     </Dialog>

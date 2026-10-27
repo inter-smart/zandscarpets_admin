@@ -112,23 +112,37 @@ export const getCurrentAdmin = async (): Promise<{ user: AdminUser }> => {
 // registered, and on success returns the resend cooldown (seconds) so the
 // OTP step's countdown timer can be driven by the server, not a client guess.
 
-export const forgotPassword = async (email: string): Promise<{ cooldownSeconds: number }> => {
+export interface ForgotPasswordResult {
+  /** Seconds until another code may be requested. */
+  cooldownSeconds: number;
+  /** Seconds the emailed code stays valid. */
+  expiresInSeconds: number;
+  /** Wrong guesses allowed before the code is burned. */
+  maxAttempts: number;
+  /** Seconds before a new code can be requested after using up all wrong guesses. */
+  lockoutSeconds: number;
+}
+
+export const forgotPassword = async (email: string): Promise<ForgotPasswordResult> => {
   const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email }),
   });
-  const envelope = await parseEnvelope<{ cooldownSeconds: number }>(response);
+  const envelope = await parseEnvelope<ForgotPasswordResult>(response);
   return envelope.data;
 };
 
-export const verifyOtp = async (email: string, otp: string): Promise<{ resetToken: string }> => {
+export const verifyOtp = async (
+  email: string,
+  otp: string
+): Promise<{ resetToken: string; expiresInSeconds: number }> => {
   const response = await fetch(`${API_BASE_URL}/auth/verify-otp`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, otp }),
   });
-  const envelope = await parseEnvelope<{ resetToken: string }>(response);
+  const envelope = await parseEnvelope<{ resetToken: string; expiresInSeconds: number }>(response);
   return envelope.data;
 };
 

@@ -10,13 +10,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Lock, User } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { loginSchema, type LoginFormData } from "@/schemas/loginSchema";
-import {
-  getRememberedUsername,
-  setRememberedUsername,
-  clearRememberedUsername,
-} from "@/lib/rememberedUsername";
+import { getRememberedUsername, setRememberedUsername, clearRememberedUsername } from "@/lib/rememberedUsername";
 import { ForgotPasswordDialog } from "@/components/auth/ForgotPasswordDialog";
-const Logo = 'https://cdn-lanhl.nitrocdn.com/BEDNLEoRmIKjWuHGWySaweMWUMbmbmac/assets/images/source/rev-b24f0bb/www.zandscarpets.com/assets/images/logo.svg'
+const Logo =
+  "https://cdn-lanhl.nitrocdn.com/BEDNLEoRmIKjWuHGWySaweMWUMbmbmac/assets/images/source/rev-b24f0bb/www.zandscarpets.com/assets/images/logo.svg";
 
 export default function Login() {
   const { isAuthenticated, login } = useAuth();
@@ -69,26 +66,16 @@ export default function Login() {
       <div className="w-full max-w-md space-y-8">
         {/* Logo and Header */}
         <div className="text-center">
-          <img
-            src={Logo}
-            alt="Z&S"
-            className="mx-auto h-12 w-auto mb-6"
-          />
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            Admin Dashboard
-          </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Sign in to manage your Z&S content
-          </p>
+          <img src={Logo} alt="Z&S" className="mx-auto h-12 w-auto mb-6" />
+          {/* <h1 className="text-2xl font-bold tracking-tight text-foreground">Admin Dashboard</h1> */}
+          {/* <p className="mt-2 text-sm text-muted-foreground">Sign in to manage your Z&S content</p> */}
         </div>
 
         {/* Login Form */}
         <Card className="shadow-healthcare-lg border-0">
           <CardHeader className="space-y-1">
             <CardTitle className="text-xl text-center">Sign in</CardTitle>
-            <CardDescription className="text-center">
-              Enter your credentials to access the dashboard
-            </CardDescription>
+            <CardDescription className="text-center">Enter your credentials to access the dashboard</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -111,11 +98,7 @@ export default function Login() {
                     {...form.register("username")}
                   />
                 </div>
-                {form.formState.errors.username && (
-                  <p className="text-sm text-destructive">
-                    {form.formState.errors.username.message}
-                  </p>
-                )}
+                {form.formState.errors.username && <p className="text-sm text-destructive">{form.formState.errors.username.message}</p>}
               </div>
 
               <div className="space-y-2">
@@ -137,18 +120,10 @@ export default function Login() {
                     className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-muted-foreground" />
-                    )}
+                    {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
                   </Button>
                 </div>
-                {form.formState.errors.password && (
-                  <p className="text-sm text-destructive">
-                    {form.formState.errors.password.message}
-                  </p>
-                )}
+                {form.formState.errors.password && <p className="text-sm text-destructive">{form.formState.errors.password.message}</p>}
                 <div className="text-right">
                   <button
                     type="button"
@@ -173,13 +148,7 @@ export default function Login() {
                 </div>
               </div> */}
 
-              <Button
-                type="submit"
-                variant="gradient"
-                size="lg"
-                className="w-full"
-                disabled={form.formState.isSubmitting}
-              >
+              <Button type="submit" variant="gradient" size="lg" className="w-full" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? "Signing in..." : "Sign in"}
               </Button>
             </form>
@@ -189,7 +158,6 @@ export default function Login() {
         {/* Footer */}
         <div className="text-center text-xs text-muted-foreground">
           <p>© 2024 Z&S. All rights reserved.</p>
-          <p className="mt-1">Content Management System</p>
         </div>
       </div>
 

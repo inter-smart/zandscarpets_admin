@@ -14,20 +14,12 @@ export const otpSchema = z.object({
 });
 export type OtpFormData = z.infer<typeof otpSchema>;
 
-// Mirrors the backend's password complexity rule (server/modules/admin/http/request/auth/AuthRequest.js)
-// so a client-side rejection matches what the API would reject anyway.
-const passwordComplexity = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
-
 export const resetPasswordSchema = z
   .object({
     password: z
       .string()
       .min(8, "Password must be at least 8 characters")
-      .max(128, "Password must be at most 128 characters")
-      .regex(
-        passwordComplexity,
-        "Password must contain lowercase, uppercase, number, and special character"
-      ),
+      .max(128, "Password must be at most 128 characters"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
   })
   .refine((data) => data.password === data.confirmPassword, {
