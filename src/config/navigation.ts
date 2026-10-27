@@ -85,8 +85,7 @@ export interface NavSection {
   entries: (NavGroup | NavItem)[];
 }
 
-export const isNavGroup = (entry: NavGroup | NavItem): entry is NavGroup =>
-  "id" in entry;
+export const isNavGroup = (entry: NavGroup | NavItem): entry is NavGroup => "id" in entry;
 
 export const NAV: NavSection[] = [
   {
@@ -190,6 +189,7 @@ export const NAV: NavSection[] = [
           { title: "Products", url: "/products", icon: ShoppingBag },
           { title: "Categories", url: "/product-categories", icon: Boxes },
           { title: "Category Highlights", url: "/product-highlights", icon: Star },
+          { title: "Product Banners", url: "/product-banners", icon: Image },
         ],
       },
       {
@@ -213,14 +213,14 @@ export const NAV: NavSection[] = [
         title: "Bulk Upload",
         icon: UploadCloud,
         items: [
-          { title: "Overview", url: "/bulk-upload", icon: UploadCloud },
-          { title: "Categories", url: "/bulk-upload/categories", icon: Boxes },
-          { title: "Attributes", url: "/bulk-upload/attributes", icon: SlidersHorizontal },
-          { title: "Attribute Values", url: "/bulk-upload/attribute-values", icon: Shapes },
-          { title: "Media", url: "/bulk-upload/media", icon: Image },
-          { title: "Products", url: "/bulk-upload/products", icon: ShoppingBag },
-          { title: "Product Variants", url: "/bulk-upload/product-variants", icon: Package },
-          { title: "Product Main", url: "/bulk-upload/product-main", icon: Sparkles },
+          // { title: "Overview", url: "/bulk-upload", icon: UploadCloud },
+          // { title: "Categories", url: "/bulk-upload/categories", icon: Boxes },
+          // { title: "Attributes", url: "/bulk-upload/attributes", icon: SlidersHorizontal },
+          // { title: "Attribute Values", url: "/bulk-upload/attribute-values", icon: Shapes },
+          // { title: "Media", url: "/bulk-upload/media", icon: Image },
+          // { title: "Products", url: "/bulk-upload/products", icon: ShoppingBag },
+          // { title: "Product Variants", url: "/bulk-upload/product-variants", icon: Package },
+          { title: "Products", url: "/bulk-upload/product-main", icon: Sparkles },
           { title: "Blogs", url: "/bulk-upload/blogs", icon: FileText },
         ],
       },
@@ -331,6 +331,7 @@ export const NAV: NavSection[] = [
 const NAV_KEYWORDS: Record<string, string> = {
   "/meta-tags": "seo title description og schema json-ld",
   "/banners": "hero slider image",
+  "/product-banners": "product detail page header image title",
   "/ads-banner": "advert promotion offer",
   "/seasonal-offer": "popup promotion discount",
   "/attributes": "size color variant option",
@@ -381,20 +382,14 @@ const collectGroup = (group: NavGroup, section: string, trail: string[]): Search
   return [
     ...(group.children ?? []).flatMap((child) => collectGroup(child, section, here)),
     // A single-page group is shown as one link, so its breadcrumb stops above it.
-    ...(group.items ?? []).map((item) =>
-      toEntry(item, section, group.items!.length === 1 && !group.children?.length ? trail : here),
-    ),
+    ...(group.items ?? []).map((item) => toEntry(item, section, group.items!.length === 1 && !group.children?.length ? trail : here)),
   ];
 };
 
 /** Flattens a (possibly role-filtered) nav tree into search entries. */
 export const flattenNav = (sections: NavSection[]): SearchEntry[] =>
   sections.flatMap((section) =>
-    section.entries.flatMap((entry) =>
-      isNavGroup(entry)
-        ? collectGroup(entry, section.label, [])
-        : [toEntry(entry, section.label, [])],
-    ),
+    section.entries.flatMap((entry) => (isNavGroup(entry) ? collectGroup(entry, section.label, []) : [toEntry(entry, section.label, [])])),
   );
 
 /** "Create new …" shortcuts shown in the search palette. */
@@ -414,16 +409,12 @@ const URL_MODULES: { path: string; module?: PermissionModule }[] = (() => {
   const out: { path: string; module?: PermissionModule }[] = [];
   const walkGroup = (group: NavGroup, inherited?: PermissionModule) => {
     const mod = group.module ?? inherited;
-    (group.items ?? []).forEach((item) =>
-      out.push({ path: item.url.split("?")[0], module: item.module ?? mod }),
-    );
+    (group.items ?? []).forEach((item) => out.push({ path: item.url.split("?")[0], module: item.module ?? mod }));
     (group.children ?? []).forEach((child) => walkGroup(child, mod));
   };
   NAV.forEach((section) =>
     section.entries.forEach((entry) =>
-      isNavGroup(entry)
-        ? walkGroup(entry, section.module)
-        : out.push({ path: entry.url.split("?")[0], module: entry.module ?? section.module }),
+      isNavGroup(entry) ? walkGroup(entry, section.module) : out.push({ path: entry.url.split("?")[0], module: entry.module ?? section.module }),
     ),
   );
   return out.sort((a, b) => b.path.length - a.path.length);
@@ -431,9 +422,7 @@ const URL_MODULES: { path: string; module?: PermissionModule }[] = (() => {
 
 export const moduleForPath = (pathname: string): PermissionModule | undefined => {
   if (pathname === "/") return undefined;
-  const hit = URL_MODULES.find(
-    ({ path }) => path !== "/" && (pathname === path || pathname.startsWith(`${path}/`)),
-  );
+  const hit = URL_MODULES.find(({ path }) => path !== "/" && (pathname === path || pathname.startsWith(`${path}/`)));
   return hit?.module;
 };
 

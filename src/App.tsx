@@ -131,6 +131,14 @@ const BannersForm = React.lazy(
   () => import("./pages/siteSettings/BannersForm"),
 );
 
+// Products — Product Banners
+const ProductBannersList = React.lazy(
+  () => import("./pages/products/ProductBannersList"),
+);
+const ProductBannersForm = React.lazy(
+  () => import("./pages/products/ProductBannersForm"),
+);
+
 // Site Settings — Footer Media
 const FooterMediaList = React.lazy(
   () => import("./pages/siteSettings/FooterMediaList"),
@@ -548,6 +556,14 @@ const App = () => (
               <Route path="/banners" element={<BannersList />} />
               <Route path="/banners/new" element={<BannersForm />} />
               <Route path="/banners/:id/edit" element={<BannersForm />} />
+
+              {/* Product Banners Routes */}
+              <Route path="/product-banners" element={<ProductBannersList />} />
+              <Route path="/product-banners/new" element={<ProductBannersForm />} />
+              <Route
+                path="/product-banners/:id/edit"
+                element={<ProductBannersForm />}
+              />
 
               {/* Footer Media Routes */}
               <Route path="/footer-media" element={<FooterMediaList />} />
