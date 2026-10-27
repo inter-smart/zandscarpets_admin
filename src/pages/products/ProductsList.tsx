@@ -23,7 +23,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { HelpCircle, Images, Layers, RotateCcw, LayoutList, Tags } from "lucide-react";
+import { HelpCircle, Layers, RotateCcw, LayoutList, Tags } from "lucide-react";
 import { Combobox, ComboboxOption } from "@/components/ui/combobox";
 import FilterField from "@/components/common/FilterField";
 import { useToast } from "@/hooks/use-toast";
@@ -352,10 +352,6 @@ export default function ProductsList() {
                 <DropdownMenuItem onClick={() => navigate(`/faqs?product_id=${item.id}`, returnState)}>
                   <HelpCircle className="mr-2 h-4 w-4" />
                   FAQs
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate(`/products/${item.id}/media`, returnState)}>
-                  <Images className="mr-2 h-4 w-4" />
-                  Media
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate(`/products/${item.id}/details`, returnState)}>
                   <LayoutList className="mr-2 h-4 w-4" />

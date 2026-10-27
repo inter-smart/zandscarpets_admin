@@ -10,7 +10,6 @@ import {
   Monitor,
   MapPin,
   Compass,
-  TrendingUp,
   Info,
   Heart,
   Clock,
@@ -19,7 +18,6 @@ import {
   RadioTower,
   MessageSquare,
   Phone,
-  Link2,
   Eye,
   Briefcase,
   Wrench,
@@ -29,7 +27,6 @@ import {
   Package,
   Boxes,
   Star,
-  ClipboardList,
   LayoutTemplate,
   ShieldCheck,
   Tag,
@@ -133,7 +130,6 @@ export const NAV: NavSection[] = [
             icon: Phone,
             items: [
               { title: "Page Content", url: "/contact-cms", icon: Phone },
-              { title: "Connections", url: "/contact-connections", icon: Link2 },
             ],
           },
           {
@@ -278,9 +274,6 @@ export const NAV: NavSection[] = [
         items: [
           { title: "FAQs", url: "/faqs", icon: HelpCircle },
           { title: "Industry", url: "/industry", icon: MapPin },
-          { title: "Materials", url: "/materials", icon: Package },
-          { title: "Work Plans", url: "/work-plans", icon: ClipboardList },
-          { title: "Our Features", url: "/our-features", icon: TrendingUp },
         ],
       },
     ],

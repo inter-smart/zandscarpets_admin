@@ -59,14 +59,6 @@ const FaqsForm = React.lazy(() => import("./pages/masters/FaqsForm"));
 const IndustryList = React.lazy(() => import("./pages/masters/IndustryList"));
 const IndustryForm = React.lazy(() => import("./pages/masters/IndustryForm"));
 
-// Masters — Materials
-const MaterialsList = React.lazy(() => import("./pages/masters/MaterialsList"));
-const MaterialsForm = React.lazy(() => import("./pages/masters/MaterialsForm"));
-
-// Masters — Work Plans
-const WorkPlanList = React.lazy(() => import("./pages/masters/WorkPlanList"));
-const WorkPlanForm = React.lazy(() => import("./pages/masters/WorkPlanForm"));
-
 // Services — Service
 const ServiceList = React.lazy(() => import("./pages/services/ServiceList"));
 const ServiceForm = React.lazy(() => import("./pages/services/ServiceForm"));
@@ -84,14 +76,6 @@ const ProcessStepForm = React.lazy(
   () => import("./pages/services/ProcessStepForm"),
 );
 
-// Masters — Our Features
-const OurFeaturesList = React.lazy(
-  () => import("./pages/masters/OurFeaturesList"),
-);
-const OurFeaturesForm = React.lazy(
-  () => import("./pages/masters/OurFeaturesForm"),
-);
-
 // Masters — Ads Banner
 const AdsBannerList = React.lazy(() => import("./pages/masters/AdsBannerList"));
 const AdsBannerForm = React.lazy(() => import("./pages/masters/AdsBannerForm"));
@@ -103,8 +87,6 @@ const ProductHighlightList = React.lazy(() => import("./pages/products/ProductHi
 const ProductHighlightForm = React.lazy(() => import("./pages/products/ProductHighlightForm"));
 const ProductsList = React.lazy(() => import("./pages/products/ProductsList"));
 const ProductForm = React.lazy(() => import("./pages/products/ProductForm"));
-const ProductMediaList = React.lazy(() => import("./pages/products/ProductMediaList"));
-const ProductMediaForm = React.lazy(() => import("./pages/products/ProductMediaForm"));
 const AttributesList = React.lazy(() => import("./pages/products/AttributesList"));
 const AttributeForm = React.lazy(() => import("./pages/products/AttributeForm"));
 const AttributeValuesList = React.lazy(() => import("./pages/products/AttributeValuesList"));
@@ -219,10 +201,6 @@ const PrivacyPolicyForm = React.lazy(() => import("./pages/policies/PrivacyPolic
 
 // Seasonal Offer popup CMS
 const SeasonalOfferForm = React.lazy(() => import("./pages/seasonalOffer/SeasonalOfferForm"));
-
-// Contact — Connections
-const ConnectionsList = React.lazy(() => import("./pages/contact/ConnectionsList"));
-const ConnectionsForm = React.lazy(() => import("./pages/contact/ConnectionsForm"));
 
 // Contact Enquiries — read-only, no create/edit (submissions come from the public site)
 const ContactEnquiryList = React.lazy(() => import("./pages/enquiries/ContactEnquiryList"));
@@ -390,14 +368,6 @@ const App = () => (
               {/* Seasonal Offer popup CMS */}
               <Route path="/seasonal-offer" element={<SeasonalOfferForm />} />
 
-              {/* Contact Connections */}
-              <Route path="/contact-connections" element={<ConnectionsList />} />
-              <Route path="/contact-connections/new" element={<ConnectionsForm />} />
-              <Route
-                path="/contact-connections/:id/edit"
-                element={<ConnectionsForm />}
-              />
-
               {/* Faqs Routes */}
               <Route path="/faqs" element={<FaqsList />} />
               <Route path="/faqs/new" element={<FaqsForm />} />
@@ -407,16 +377,6 @@ const App = () => (
               <Route path="/industry" element={<IndustryList />} />
               <Route path="/industry/new" element={<IndustryForm />} />
               <Route path="/industry/:id/edit" element={<IndustryForm />} />
-
-              {/* Materials Routes */}
-              <Route path="/materials" element={<MaterialsList />} />
-              <Route path="/materials/new" element={<MaterialsForm />} />
-              <Route path="/materials/:id/edit" element={<MaterialsForm />} />
-
-              {/* Work Plan Routes */}
-              <Route path="/work-plans" element={<WorkPlanList />} />
-              <Route path="/work-plans/new" element={<WorkPlanForm />} />
-              <Route path="/work-plans/:id/edit" element={<WorkPlanForm />} />
 
               {/* Service Routes */}
               <Route path="/services" element={<ServiceList />} />
@@ -432,14 +392,6 @@ const App = () => (
               <Route
                 path="/process-steps/:id/edit"
                 element={<ProcessStepForm />}
-              />
-
-              {/* Our Features Routes */}
-              <Route path="/our-features" element={<OurFeaturesList />} />
-              <Route path="/our-features/new" element={<OurFeaturesForm />} />
-              <Route
-                path="/our-features/:id/edit"
-                element={<OurFeaturesForm />}
               />
 
               {/* Ads Banner Routes */}
@@ -464,9 +416,6 @@ const App = () => (
               <Route path="/products" element={<ProductsList />} />
               <Route path="/products/new" element={<ProductForm />} />
               <Route path="/products/:id/edit" element={<ProductForm />} />
-              <Route path="/products/:productId/media" element={<ProductMediaList />} />
-              <Route path="/products/:productId/media/new" element={<ProductMediaForm />} />
-              <Route path="/products/:productId/media/:id/edit" element={<ProductMediaForm />} />
               <Route path="/products/:productId/variants" element={<ProductVariantsList />} />
               <Route path="/products/:productId/variants/new" element={<ProductVariantForm />} />
               <Route path="/products/:productId/variants/:id/edit" element={<ProductVariantForm />} />

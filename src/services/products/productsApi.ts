@@ -1,7 +1,6 @@
 import { updateCmsStatus, updateCmsSortOrder, updateCmsHome, updateCmsFooter, updateCmsNavbar } from "@/services/common/cmsOrderStatusApi";
 import { PRODUCTS_API_URL, createCrudApi } from "./productsApiClient";
 import type { ProductLabelOption } from "./productLabelsApi";
-import type { ProductMediaRecord } from "./productMediaApi";
 import type { AttributeOption } from "./attributesApi";
 
 // Attributes the product uses to build variants, with the link's sort order.
@@ -43,7 +42,6 @@ export interface ProductRecord {
   attributes?: ProductAttributeOption[];
   variant_count?: number;
   relatedProducts?: ProductOption[];
-  productMedia?: ProductMediaRecord[];
   createdAt?: string;
   updatedAt?: string;
 }
