@@ -32,10 +32,8 @@ export const productSchema = z.object({
   short_description_ar: commonValidations.requiredString("Short description (Arabic)"),
   product_description: commonValidations.richText("Product description"),
   product_description_ar: commonValidations.richText("Product description (Arabic)"),
-  main_media_path: requiredFile("Main image"),
-  media_alt: commonValidations.optionalString.or(z.literal("")),
-  media_alt_ar: commonValidations.optionalString.or(z.literal("")),
-  list_media_path: optionalFile,
+  // the first image of the detail carousel and the image on listing cards
+  list_media_path: requiredFile("Product image"),
   list_media_alt: commonValidations.optionalString.or(z.literal("")),
   list_media_alt_ar: commonValidations.optionalString.or(z.literal("")),
   sort_order: commonValidations.sortOrder,

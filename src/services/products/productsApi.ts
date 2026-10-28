@@ -9,9 +9,17 @@ export type ProductAttributeOption = AttributeOption & {
 };
 
 // Products > Products — backed by `/api/backend/products/products`. FormData
-// bodies: main_media_path / list_media_path (image uploads); the *_ids relation
+// bodies: list_media_path (image upload) + gallery_meta / gallery_file__<id> (extra images); the *_ids relation
 // arrays are sent as JSON strings.
 export { ApiError } from "./productsApiClient";
+
+export interface ProductImageRecord {
+  id: number;
+  media_path: string;
+  media_alt: string | null;
+  media_alt_ar: string | null;
+  sort_order: number;
+}
 
 export interface ProductRecord {
   id: number;
@@ -23,12 +31,10 @@ export interface ProductRecord {
   short_description_ar: string;
   product_description: string;
   product_description_ar: string;
-  main_media_path: string | null;
-  media_alt: string | null;
-  media_alt_ar: string | null;
   list_media_path: string | null;
   list_media_alt: string | null;
   list_media_alt_ar: string | null;
+  images?: ProductImageRecord[];
   price: string | number | null;
   badge_label_id: number | null;
   badge?: ProductLabelOption | null;
@@ -48,7 +54,7 @@ export interface ProductRecord {
 
 export type ProductOption = Pick<
   ProductRecord,
-  "id" | "title" | "title_ar" | "slug" | "main_media_path" | "price"
+  "id" | "title" | "title_ar" | "slug" | "list_media_path" | "price"
 >;
 
 export interface ProductFilters {

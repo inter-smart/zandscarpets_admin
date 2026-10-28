@@ -34,6 +34,11 @@ import { fetchActiveAttributeValues } from "@/services/products/attributeValuesA
 import { productVariantSchema, ProductVariantFormData } from "@/schemas/productVariantSchema";
 import type { ProductAttributeOption } from "@/services/products/productsApi";
 import type { AttributeValueOption } from "@/services/products/attributeValuesApi";
+import BlogGalleryField, {
+  BlogGalleryItem,
+  appendGalleryToFormData,
+  blogImagesToGalleryItems,
+} from "@/components/blogs/BlogGalleryField";
 
 const toComboboxOptions = (values: AttributeValueOption[]): ComboboxOption[] =>
   values.map((v) => ({
@@ -52,6 +57,7 @@ export default function ProductVariantForm() {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [productTitle, setProductTitle] = useState("");
+  const [galleryItems, setGalleryItems] = useState<BlogGalleryItem[]>([]);
   const [attributes, setAttributes] = useState<ProductAttributeOption[]>([]);
   const [valuesByAttribute, setValuesByAttribute] = useState<
     Record<number, AttributeValueOption[]>
@@ -129,6 +135,7 @@ export default function ProductVariantForm() {
     fetchProductVariantById(Number(id))
       .then(({ data }) => {
         const values = (data.valueLinks || []).map((l) => String(l.attribute_value_id));
+        setGalleryItems(blogImagesToGalleryItems(data.images));
         form.reset({
           attribute_value_ids: values,
           sku: data.sku || "",
@@ -171,6 +178,7 @@ export default function ProductVariantForm() {
       formData.append("product_id", String(productId));
       formData.append("sort_order", (sort_order || "1").toString());
       formData.append("is_active", (is_active ?? true).toString());
+      appendGalleryToFormData(formData, galleryItems);
 
       if (media_path instanceof File) {
         formData.append("media_path", media_path);
@@ -320,7 +328,7 @@ export default function ProductVariantForm() {
                   <FormItem>
                     <FormLabel>SKU (optional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Auto-generated from product and attributes if left blank" {...field} />
+                      <Input placeholder="Auto-generated from product and attributes if left blank" disabled={isEditing} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -330,7 +338,7 @@ export default function ProductVariantForm() {
                 <FormFileUploadField
                   form={form}
                   name="media_path"
-                  label="Variant Image (optional)"
+                  label="Variant Image (optional, shown first)"
                   placeholder="Upload image"
                   accept="image/*"
                 />
@@ -360,6 +368,12 @@ export default function ProductVariantForm() {
                     <FormMessage />
                   </FormItem>
                 )}
+              />
+              <BlogGalleryField
+                items={galleryItems}
+                onChange={setGalleryItems}
+                label="More Images"
+                description="Shown after the variant image in the product page slider. Leave the variant image and this list empty to use the product's images."
               />
             </CardContent>
           </Card>

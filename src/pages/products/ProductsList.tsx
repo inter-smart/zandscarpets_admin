@@ -243,9 +243,9 @@ export default function ProductsList() {
       cell: ({ row }) => <div className="font-mono">{(itemsPage - 1) * itemsLimit + row.index + 1}</div>,
     },
     {
-      accessorKey: "main_media_path",
+      accessorKey: "list_media_path",
       header: "Image",
-      cell: ({ row }) => <MediaThumbnail path={row.original.main_media_path} alt={row.original.media_alt || row.original.title} />,
+      cell: ({ row }) => <MediaThumbnail path={row.original.list_media_path} alt={row.original.list_media_alt || row.original.title} />,
     },
     {
       accessorKey: "title",

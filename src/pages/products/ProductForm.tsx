@@ -47,6 +47,11 @@ import { AttributeSelection } from "@/utils/variantCombinations";
 import { productSchema, ProductFormData } from "@/schemas/productSchema";
 import { buildCategoryPathOptions } from "@/utils/productCategoryTree";
 import { uploadEditorImage } from "@/services/editor/editorImageApi";
+import BlogGalleryField, {
+  BlogGalleryItem,
+  appendGalleryToFormData,
+  blogImagesToGalleryItems,
+} from "@/components/blogs/BlogGalleryField";
 
 const toOptions = (rows: { id: number; title: string }[]): MultiSelectOption[] =>
   rows.map((r) => ({ id: r.id, name: r.title }));
@@ -85,6 +90,7 @@ export default function ProductForm() {
   const [specificationIds, setSpecificationIds] = useState<(number | string)[]>([]);
   const [attributeIds, setAttributeIds] = useState<(number | string)[]>([]);
   const [relatedIds, setRelatedIds] = useState<(number | string)[]>([]);
+  const [galleryItems, setGalleryItems] = useState<BlogGalleryItem[]>([]);
   const [attributeValueRecords, setAttributeValueRecords] = useState<AttributeValueOption[]>([]);
   const [generateSelections, setGenerateSelections] = useState<Record<number, (number | string)[]>>({});
   const [existingVariantCount, setExistingVariantCount] = useState(0);
@@ -123,9 +129,6 @@ export default function ProductForm() {
       short_description_ar: "",
       product_description: "",
       product_description_ar: "",
-      main_media_path: "",
-      media_alt: "",
-      media_alt_ar: "",
       list_media_path: "",
       list_media_alt: "",
       list_media_alt_ar: "",
@@ -198,9 +201,6 @@ export default function ProductForm() {
         short_description_ar: data.short_description_ar || "",
         product_description: data.product_description || "",
         product_description_ar: data.product_description_ar || "",
-        main_media_path: data.main_media_path || "",
-        media_alt: data.media_alt || "",
-        media_alt_ar: data.media_alt_ar || "",
         list_media_path: data.list_media_path || "",
         list_media_alt: data.list_media_alt || "",
         list_media_alt_ar: data.list_media_alt_ar || "",
@@ -219,6 +219,7 @@ export default function ProductForm() {
       );
       setAttributeIds((data.attributes || []).map((a) => a.id));
       setRelatedIds((data.relatedProducts || []).map((p) => p.id));
+      setGalleryItems(blogImagesToGalleryItems(data.images));
       setBadgeLabelId(data.badge_label_id ? data.badge_label_id.toString() : "");
       setBadgeFallback(
         data.badge ? { value: data.badge.id.toString(), label: data.badge.title } : null,
@@ -245,7 +246,7 @@ export default function ProductForm() {
   };
 
   const buildFormData = (data: ProductFormData) => {
-    const { main_media_path, list_media_path, price, sort_order, is_active, list_in_navbar, show_in_home, show_in_footer, ...text } =
+    const { list_media_path, price, sort_order, is_active, list_in_navbar, show_in_home, show_in_footer, ...text } =
       data;
 
     const formData = new FormData();
@@ -259,14 +260,10 @@ export default function ProductForm() {
     formData.append("show_in_footer", (show_in_footer ?? false).toString());
 
     // A File uploads a new file; a string sends back the existing path unchanged.
-    [
-      ["main_media_path", main_media_path],
-      ["list_media_path", list_media_path],
-    ].forEach(([key, value]) => {
-      if (value instanceof File || (typeof value === "string" && value)) {
-        formData.append(key as string, value);
-      }
-    });
+    if (list_media_path instanceof File || (typeof list_media_path === "string" && list_media_path)) {
+      formData.append("list_media_path", list_media_path);
+    }
+    appendGalleryToFormData(formData, galleryItems);
 
     formData.append("label_ids", JSON.stringify([...featureIds, ...tagIds, ...specificationIds]));
     formData.append("attribute_ids", JSON.stringify(attributeIds));
@@ -438,40 +435,31 @@ export default function ProductForm() {
               <CardTitle>Media</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <FormFileUploadField
+                form={form}
+                name="list_media_path"
+                label="Product Image"
+                placeholder="Upload product image"
+                accept="image/*"
+              />
+              <p className="-mt-2 text-xs text-muted-foreground">
+                Shown on listing cards and as the first image on the product page.
+              </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormFileUploadField
-                  form={form}
-                  name="main_media_path"
-                  label="Main Image"
-                  placeholder="Upload product image"
-                  accept="image/*"
-                />
-                <FormFileUploadField
-                  form={form}
-                  name="list_media_path"
-                  label="Listing Image (optional)"
-                  placeholder="Upload listing image"
-                  accept="image/*"
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormTextField form={form} name="media_alt" label="Main Image Alt" placeholder="Describe the image" />
-                <FormTextField
-                  form={form}
-                  name="media_alt_ar"
-                  label="Main Image Alt (Arabic)"
-                  placeholder="وصف الصورة"
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormTextField form={form} name="list_media_alt" label="Listing Image Alt" placeholder="Describe the image" />
+                <FormTextField form={form} name="list_media_alt" label="Product Image Alt" placeholder="Describe the image" />
                 <FormTextField
                   form={form}
                   name="list_media_alt_ar"
-                  label="Listing Image Alt (Arabic)"
+                  label="Product Image Alt (Arabic)"
                   placeholder="وصف الصورة"
                 />
               </div>
+              <BlogGalleryField
+                items={galleryItems}
+                onChange={setGalleryItems}
+                label="More Images"
+                description="Extra images shown after the product image in the product page slider. Variants without their own images show these too."
+              />
             </CardContent>
           </Card>
 

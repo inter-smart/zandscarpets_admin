@@ -54,11 +54,22 @@ export function blogImagesToGalleryItems(records: BlogImageRecord[] = []): BlogG
 interface BlogGalleryFieldProps {
   items: BlogGalleryItem[];
   onChange: Dispatch<SetStateAction<BlogGalleryItem[]>>;
+  // the product / variant forms reuse this editor with their own wording
+  label?: string;
+  description?: string;
 }
+
+const BLOG_GALLERY_DESCRIPTION =
+  'Shown as a swiper in the article. Use the "Gallery" button in the content editor to choose where it appears; without it, the swiper shows after the article.';
 
 // Gallery editor for the blog form: images with alt text (EN / AR) and up / down ordering. The
 // gallery shows as a swiper on the blog page, where the "[gallery]" marker sits in the content.
-export default function BlogGalleryField({ items, onChange }: BlogGalleryFieldProps) {
+export default function BlogGalleryField({
+  items,
+  onChange,
+  label = "Gallery (swiper)",
+  description = BLOG_GALLERY_DESCRIPTION,
+}: BlogGalleryFieldProps) {
   const [dragActive, setDragActive] = useState(false);
 
   const addFiles = (files: FileList | null) => {
@@ -100,11 +111,8 @@ export default function BlogGalleryField({ items, onChange }: BlogGalleryFieldPr
 
   return (
     <div className="space-y-2">
-      <Label>Gallery (swiper)</Label>
-      <p className="text-xs text-muted-foreground">
-        Shown as a swiper in the article. Use the "Gallery" button in the content editor to choose where it
-        appears; without it, the swiper shows after the article.
-      </p>
+      <Label>{label}</Label>
+      <p className="text-xs text-muted-foreground">{description}</p>
 
       <div className="space-y-2">
         {items.map((item, index) => (

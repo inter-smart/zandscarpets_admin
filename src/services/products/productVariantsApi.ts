@@ -44,6 +44,13 @@ export interface ProductVariantRecord {
   is_active: boolean;
   sort_order: number;
   valueLinks?: VariantValueLink[];
+  images?: {
+    id: number;
+    media_path: string;
+    media_alt: string | null;
+    media_alt_ar: string | null;
+    sort_order: number;
+  }[];
   product?: { id: number; title: string; title_ar?: string } | null;
   createdAt?: string;
   updatedAt?: string;
