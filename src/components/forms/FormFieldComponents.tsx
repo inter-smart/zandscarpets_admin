@@ -43,6 +43,7 @@ export function FormTextField<T extends FieldValues>({
   form,
   name,
   label,
+  required,
   placeholder,
   type = "text",
 }: FormTextFieldProps<T>) {
@@ -53,7 +54,10 @@ export function FormTextField<T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel>
+            {label}
+            {required && <span className="text-destructive"> *</span>}
+          </FormLabel>
           <FormControl>
             <Input {...field} type={type} placeholder={placeholder} dir={isArabic ? "rtl" : undefined} className={isArabic ? "text-right" : undefined} />
           </FormControl>
@@ -74,6 +78,7 @@ export function FormNumberField<T extends FieldValues>({
   form,
   name,
   label,
+  required,
   placeholder,
   description,
   min,
@@ -85,7 +90,10 @@ export function FormNumberField<T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel>
+            {label}
+            {required && <span className="text-destructive"> *</span>}
+          </FormLabel>
           <FormControl>
             <Input
               {...field}
@@ -112,6 +120,7 @@ export function FormTextareaField<T extends FieldValues>({
   form,
   name,
   label,
+  required,
   placeholder,
   rows = 6,
 }: FormTextareaFieldProps<T>) {
@@ -122,7 +131,10 @@ export function FormTextareaField<T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel>
+            {label}
+            {required && <span className="text-destructive"> *</span>}
+          </FormLabel>
           <FormControl>
             <Textarea {...field} placeholder={placeholder} rows={rows} dir={isArabic ? "rtl" : undefined} className={isArabic ? "text-right" : undefined} />
           </FormControl>
@@ -142,6 +154,7 @@ export function FormSelectField<T extends FieldValues>({
   form,
   name,
   label,
+  required,
   placeholder,
   options,
 }: FormSelectFieldProps<T>) {
@@ -151,7 +164,10 @@ export function FormSelectField<T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel>
+            {label}
+            {required && <span className="text-destructive"> *</span>}
+          </FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
               <SelectTrigger>
@@ -277,6 +293,7 @@ export function FormRichTextField<T extends FieldValues>({
   form,
   name,
   label,
+  required,
   placeholder,
   height,
   maxLength,
@@ -291,7 +308,10 @@ export function FormRichTextField<T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel>
+            {label}
+            {required && <span className="text-destructive"> *</span>}
+          </FormLabel>
           <FormControl>
             <RichTextEditor
               value={field.value}
@@ -317,6 +337,7 @@ export function FormDateField<T extends FieldValues>({
   form,
   name,
   label,
+  required,
 }: BaseFormFieldProps<T>) {
   return (
     <FormField
@@ -324,7 +345,10 @@ export function FormDateField<T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel>
+            {label}
+            {required && <span className="text-destructive"> *</span>}
+          </FormLabel>
           <FormControl>
             <Input {...field} type="datetime-local" />
           </FormControl>
@@ -345,6 +369,7 @@ export function FormSlugField<T extends FieldValues>({
   form,
   name,
   label,
+  required,
   placeholder,
   sourceField,
   generateSlug,
@@ -364,7 +389,10 @@ export function FormSlugField<T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel>
+            {label}
+            {required && <span className="text-destructive"> *</span>}
+          </FormLabel>
           <FormControl>
             <div className="flex gap-2">
               <Input {...field} placeholder={placeholder} />
@@ -391,6 +419,7 @@ export function FormKeywordsField<T extends FieldValues>({
   form,
   name,
   label,
+  required,
   placeholder,
 }: BaseFormFieldProps<T>) {
   const [inputValue, setInputValue] = React.useState("");
@@ -428,7 +457,10 @@ export function FormKeywordsField<T extends FieldValues>({
 
         return (
           <FormItem>
-            <FormLabel>{label}</FormLabel>
+            <FormLabel>
+            {label}
+            {required && <span className="text-destructive"> *</span>}
+          </FormLabel>
             <FormControl>
               <div className="space-y-2">
                 {keywords.length > 0 && (

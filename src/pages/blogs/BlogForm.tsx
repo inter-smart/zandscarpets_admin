@@ -35,13 +35,13 @@ import {
   fetchBlogList,
   createBlog,
   updateBlog,
-  uploadBlogContentImage,
   ApiError,
 } from "@/services/blogs/blogApi";
 import { fetchActiveBlogTags } from "@/services/blogs/blogTagApi";
 import { fetchActiveProductCategories } from "@/services/products/productCategoryApi";
 import { buildCategoryPathOptions } from "@/utils/productCategoryTree";
 import { blogSchema, BlogFormData } from "@/schemas/blogSchema";
+import { uploadEditorImage } from "@/services/editor/editorImageApi";
 
 // ISO date <-> the value of an <input type="datetime-local"> (local time, no seconds)
 const toLocalInput = (iso?: string | null) => {
@@ -290,7 +290,7 @@ export default function BlogForm() {
                 placeholder="Write the article"
                 checkList
                 galleryMarker
-                uploadImage={uploadBlogContentImage}
+                uploadImage={uploadEditorImage}
               />
               <FormRichTextField
                 form={form}
@@ -299,7 +299,7 @@ export default function BlogForm() {
                 placeholder="اكتب المقال"
                 checkList
                 galleryMarker
-                uploadImage={uploadBlogContentImage}
+                uploadImage={uploadEditorImage}
               />
               <p className="text-xs text-muted-foreground">
                 Bullet lists show with check icons. The Arabic content is optional: when it is empty the Arabic page

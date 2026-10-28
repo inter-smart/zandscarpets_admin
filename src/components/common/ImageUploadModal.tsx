@@ -19,12 +19,14 @@ import {
 } from "@/components/ui/tabs";
 import { FileUpload } from "./FileUpload";
 
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const MAX_SIZE_BYTES = 5 * 1024 * 1024;
+
 interface ImageUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   onInsertImage: (src: string, alt: string, title?: string) => void;
-  // When given, an uploaded file is stored through it and the returned URL is inserted (a plain
-  // object URL would not survive saving). Without it the upload tab keeps its old behaviour.
+  // Stores an uploaded file and returns the URL to insert (a plain object URL would not survive saving).
   uploadImage?: (file: File) => Promise<string>;
 }
 
@@ -55,21 +57,33 @@ export function ImageUploadModal({ isOpen, onClose, onInsertImage, uploadImage }
     setUploadError("");
 
     if (activeTab === "upload" && uploadedFile) {
-      if (uploadImage) {
-        try {
-          setUploading(true);
-          src = await uploadImage(uploadedFile);
-        } catch (error) {
-          setUploadError(error instanceof Error ? error.message : "Failed to upload the image");
-          return;
-        } finally {
-          setUploading(false);
-        }
-      } else {
-        src = URL.createObjectURL(uploadedFile);
+      if (!uploadImage) {
+        setUploadError("Image upload is not available here");
+        return;
+      }
+      if (!ALLOWED_TYPES.includes(uploadedFile.type)) {
+        setUploadError("Only JPEG, PNG or WebP images are allowed");
+        return;
+      }
+      if (uploadedFile.size > MAX_SIZE_BYTES) {
+        setUploadError("Image must be 5MB or smaller");
+        return;
+      }
+      try {
+        setUploading(true);
+        src = await uploadImage(uploadedFile);
+      } catch (error) {
+        setUploadError(error instanceof Error ? error.message : "Failed to upload the image");
+        return;
+      } finally {
+        setUploading(false);
       }
     } else if (activeTab === "url" && imageUrl.trim()) {
       src = imageUrl.trim();
+      if (!/^https?:\/\//i.test(src)) {
+        setUploadError("Image URL must start with http:// or https://");
+        return;
+      }
     }
 
     if (src && altText.trim()) {
@@ -118,7 +132,7 @@ export function ImageUploadModal({ isOpen, onClose, onInsertImage, uploadImage }
                 <FileUpload
                   value={uploadedFile}
                   onChange={setUploadedFile}
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/webp"
                   placeholder="Drop an image file here or click to browse"
                   preview={true}
                   className="mt-2"

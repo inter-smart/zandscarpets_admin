@@ -223,13 +223,13 @@ export default function ContactCmsForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="title"
                   label="Title"
                   placeholder="Enter contact title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="title_ar"
                   label="Title (Arabic)"
@@ -238,13 +238,13 @@ export default function ContactCmsForm() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="description"
                   label="Description"
                   placeholder="Enter contact description"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="description_ar"
                   label="Description (Arabic)"
@@ -259,7 +259,7 @@ export default function ContactCmsForm() {
               <CardTitle>Phone Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <FormFileUploadField
+              <FormFileUploadField required
                 form={form}
                 name="phone_icon_media_path"
                 label="Icon"
@@ -267,43 +267,43 @@ export default function ContactCmsForm() {
                 accept="image/*"
               />
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="phone_icon_media_alt"
                   label="Icon Alt Text"
                   placeholder="Enter alt text"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="phone_icon_media_alt_ar"
                   label="Icon Alt Text (Arabic)"
                   placeholder="أدخل النص البديل"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="phone_title"
                   label="Title"
                   placeholder="Enter title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="phone_title_ar"
                   label="Title (Arabic)"
                   placeholder="أدخل العنوان"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="phone_description"
                   label="Description"
                   placeholder="Enter description"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="phone_description_ar"
                   label="Description (Arabic)"
                   placeholder="أدخل الوصف"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="phone_value"
                   label="Phone Value"
@@ -318,7 +318,7 @@ export default function ContactCmsForm() {
               <CardTitle>Email Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <FormFileUploadField
+              <FormFileUploadField required
                 form={form}
                 name="email_icon_media_path"
                 label="Icon"
@@ -326,43 +326,43 @@ export default function ContactCmsForm() {
                 accept="image/*"
               />
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="email_icon_media_alt"
                   label="Icon Alt Text"
                   placeholder="Enter alt text"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="email_icon_media_alt_ar"
                   label="Icon Alt Text (Arabic)"
                   placeholder="أدخل النص البديل"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="email_title"
                   label="Title"
                   placeholder="Enter title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="email_title_ar"
                   label="Title (Arabic)"
                   placeholder="أدخل العنوان"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="email_description"
                   label="Description"
                   placeholder="Enter description"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="email_description_ar"
                   label="Description (Arabic)"
                   placeholder="أدخل الوصف"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="email_value"
                   label="Email Value"
@@ -377,7 +377,7 @@ export default function ContactCmsForm() {
               <CardTitle>Office Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <FormFileUploadField
+              <FormFileUploadField required
                 form={form}
                 name="office_icon_media_path"
                 label="Icon"
@@ -385,49 +385,49 @@ export default function ContactCmsForm() {
                 accept="image/*"
               />
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="office_icon_media_alt"
                   label="Icon Alt Text"
                   placeholder="Enter alt text"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="office_icon_media_alt_ar"
                   label="Icon Alt Text (Arabic)"
                   placeholder="أدخل النص البديل"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="office_title"
                   label="Title"
                   placeholder="Enter title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="office_title_ar"
                   label="Title (Arabic)"
                   placeholder="أدخل العنوان"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="office_description"
                   label="Description"
                   placeholder="Enter description"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="office_description_ar"
                   label="Description (Arabic)"
                   placeholder="أدخل الوصف"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="office_value"
                   label="Address"
                   placeholder="Enter office address"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="office_value_ar"
                   label="Address (Arabic)"
@@ -443,13 +443,13 @@ export default function ContactCmsForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="form_title"
                   label="Form Title"
                   placeholder="Enter form title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="form_title_ar"
                   label="Form Title (Arabic)"
@@ -465,13 +465,13 @@ export default function ContactCmsForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="social_media_title"
                   label="Social Media Title"
                   placeholder="Enter social media title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="social_media_title_ar"
                   label="Social Media Title (Arabic)"
@@ -487,7 +487,7 @@ export default function ContactCmsForm() {
               <CardTitle>Map Section</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <FormTextareaField
+              <FormTextareaField required
                 form={form}
                 name="map_url"
                 label="Map URL"
@@ -500,7 +500,7 @@ export default function ContactCmsForm() {
             </CardContent>
           </Card>
 
-          <div className="flex justify-end">
+          <div className="sticky bottom-0 z-10 -mx-6 flex justify-end border-t bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
             <Button type="submit" disabled={loading}>
               <Save className="h-4 w-4 mr-2" />
               {loading ? "Saving..." : "Save Changes"}

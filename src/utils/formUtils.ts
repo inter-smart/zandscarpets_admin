@@ -6,11 +6,12 @@ const HTML_TAG_PATTERN = /<[^>]*>/;
 // Shared base for short text inputs (title, name, label, etc.): required,
 // trimmed, and rejects HTML/script tags. Chain further rules (e.g. `.max()`)
 // on the returned schema for per-form custom constraints.
-const safeText = (fieldName: string, min = 1) =>
+const safeText = (fieldName: string, min = 1, max?: number) =>
   z
     .string()
     .trim()
     .min(min, `${fieldName} is required`)
+    .refine((val) => max === undefined || val.length <= max, `${fieldName} must be at most ${max} characters`)
     .refine((val) => !HTML_TAG_PATTERN.test(val), `${fieldName} must not contain HTML or script tags`);
 
 // Same tag rejection, but optional (no min-length requirement).
@@ -23,13 +24,44 @@ const optionalSafeText = z
 // Common validation patterns
 export const commonValidations = {
   // String validations
-  requiredString: (fieldName: string) => safeText(fieldName),
+  requiredString: (fieldName: string, max?: number) => safeText(fieldName, 1, max),
 
   optionalString: z.string().optional(),
 
+  // Required internal path ("/products") or absolute http(s) URL, within the VARCHAR(255) column.
+  linkOrPath: (fieldName: string, max = 255) =>
+    z
+      .string()
+      .trim()
+      .min(1, `${fieldName} is required`)
+      .max(max, `${fieldName} must be at most ${max} characters`)
+      .refine(
+        (val) => /^(\/|https?:\/\/)\S*$/i.test(val),
+        `${fieldName} must start with / or http(s)://`,
+      ),
+
+  // Required phone number: digits, spaces and + - ( ) only, at least 5 digits.
+  phone: (fieldName: string, max = 255) =>
+    z
+      .string()
+      .trim()
+      .min(1, `${fieldName} is required`)
+      .max(max, `${fieldName} must be at most ${max} characters`)
+      .refine((val) => /^[\d\s+\-()]+$/.test(val), `${fieldName} can only contain digits, spaces and + - ( )`)
+      .refine((val) => (val.match(/\d/g) ?? []).length >= 5, `${fieldName} must have at least 5 digits`),
+
+  // Required email within the VARCHAR(255) column.
+  email: (fieldName: string, max = 255) =>
+    z
+      .string()
+      .trim()
+      .min(1, `${fieldName} is required`)
+      .max(max, `${fieldName} must be at most ${max} characters`)
+      .email(`${fieldName} must be a valid email`),
+
   optionalSafeText,
 
-  requiredText: (fieldName: string) => safeText(fieldName),
+  requiredText: (fieldName: string, max?: number) => safeText(fieldName, 1, max),
   
   // Number validations
   sortOrder: z

@@ -46,6 +46,7 @@ import VariantGeneratePreview from "@/components/products/VariantGeneratePreview
 import { AttributeSelection } from "@/utils/variantCombinations";
 import { productSchema, ProductFormData } from "@/schemas/productSchema";
 import { buildCategoryPathOptions } from "@/utils/productCategoryTree";
+import { uploadEditorImage } from "@/services/editor/editorImageApi";
 
 const toOptions = (rows: { id: number; title: string }[]): MultiSelectOption[] =>
   rows.map((r) => ({ id: r.id, name: r.title }));
@@ -417,12 +418,14 @@ export default function ProductForm() {
                 <FormRichTextField
                   form={form}
                   name="product_description"
+                  uploadImage={uploadEditorImage}
                   label="Product Description"
                   placeholder="Full product description"
                 />
                 <FormRichTextField
                   form={form}
                   name="product_description_ar"
+                  uploadImage={uploadEditorImage}
                   label="Product Description (Arabic)"
                   placeholder="وصف المنتج"
                 />

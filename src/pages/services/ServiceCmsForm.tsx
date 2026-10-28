@@ -134,14 +134,14 @@ export default function ServiceCmsForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:col-span-2">
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="title"
                   label="Title"
                   placeholder="Enter section title"
                 />
 
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="title_ar"
                   label="Title (Arabic)"
@@ -149,14 +149,14 @@ export default function ServiceCmsForm() {
                 />
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:col-span-2">
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="description"
                   label="Description"
                   placeholder="Enter section description"
                 />
 
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="description_ar"
                   label="Description (Arabic)"
@@ -164,14 +164,14 @@ export default function ServiceCmsForm() {
                 />
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:col-span-2">
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="service_title"
                   label="Services List Title"
                   placeholder="Enter services list heading"
                 />
 
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="service_title_ar"
                   label="Services List Title (Arabic)"
@@ -179,14 +179,14 @@ export default function ServiceCmsForm() {
                 />
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:col-span-2">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="process_steps_title"
                   label="Process Steps Title"
                   placeholder="Enter process steps heading"
                 />
 
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="process_steps_title_ar"
                   label="Process Steps Title (Arabic)"
@@ -194,14 +194,14 @@ export default function ServiceCmsForm() {
                 />
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:col-span-2">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="process_steps_bg_title"
                   label="Process Steps Background Title"
                   placeholder="e.g. OUR PROCESS (faint text behind the heading)"
                 />
 
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="process_steps_bg_title_ar"
                   label="Process Steps Background Title (Arabic)"
@@ -211,7 +211,7 @@ export default function ServiceCmsForm() {
             </CardContent>
           </Card>
 
-          <div className="flex justify-end">
+          <div className="sticky bottom-0 z-10 -mx-6 flex justify-end border-t bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
             <Button type="submit" disabled={loading}>
               <Save className="h-4 w-4 mr-2" />
               {loading ? "Saving..." : "Save Changes"}

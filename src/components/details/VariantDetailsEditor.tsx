@@ -35,6 +35,7 @@ import {
   ResolvedFieldEntry,
 } from "@/services/details/variantDetailsApi";
 import { MediaRecord, mediaThumbnailPath } from "@/services/details/mediaApi";
+import { uploadEditorImage } from "@/services/editor/editorImageApi";
 
 const TYPE_LABELS: Record<string, string> = { rich_text: "Rich Text", image: "Image", video: "Video" };
 
@@ -333,11 +334,11 @@ export default function VariantDetailsEditor({ productId, variantId }: VariantDe
           <div className="min-h-0 flex-1 space-y-4 overflow-y-auto pr-1">
           <div className="space-y-2">
             <Label>English</Label>
-            <RichTextEditor value={textValue} onChange={setTextValue} height="250px" />
+            <RichTextEditor value={textValue} onChange={setTextValue} height="250px" uploadImage={uploadEditorImage} />
           </div>
           <div className="space-y-2">
             <Label>Arabic</Label>
-            <RichTextEditor value={textValueAr} onChange={setTextValueAr} height="250px" />
+            <RichTextEditor value={textValueAr} onChange={setTextValueAr} height="250px" uploadImage={uploadEditorImage} />
           </div>
           </div>
           <DialogFooter>

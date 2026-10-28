@@ -99,6 +99,18 @@ const ToolbarButton = ({ onClick, isActive, disabled, title, children }: {
   );
 };
 
+// Uploaded images are saved as relative `/uploads/...` paths (the storefront API resolves them) but
+// the editor needs a loadable URL, so the host is added on the way in and removed on the way out.
+const IMAGE_BASE_URL = ((import.meta.env.VITE_IMAGE_URL as string | undefined) ?? "").replace(/\/$/, "");
+
+const toEditorHtml = (html: string) =>
+  IMAGE_BASE_URL ? html.replace(/(<img\b[^>]*?\bsrc=")\/uploads\//gi, `$1${IMAGE_BASE_URL}/uploads/`) : html;
+
+const toStoredHtml = (html: string) =>
+  IMAGE_BASE_URL
+    ? html.split(`src="${IMAGE_BASE_URL}/uploads/`).join('src="/uploads/')
+    : html;
+
 interface RichTextEditorProps {
   label?: string;
   value?: string;
@@ -149,7 +161,7 @@ export function RichTextEditor({
       }),
       Image.configure({
         inline: false,
-        allowBase64: true,
+        allowBase64: false,
       }),
       Link.configure({
         openOnClick: false,
@@ -160,7 +172,7 @@ export function RichTextEditor({
       TextStyle,
       Color,
     ],
-    content: value,
+    content: toEditorHtml(value),
     onUpdate: ({ editor }) => {
       const content = editor.getHTML();
       const textContent = editor.getText();
@@ -172,7 +184,7 @@ export function RichTextEditor({
         return;
       }
       
-      onChange(content);
+      onChange(toStoredHtml(content));
     },
     editorProps: {
       attributes: {
@@ -216,8 +228,8 @@ export function RichTextEditor({
   });
 
   React.useEffect(() => {
-    if (editor && value !== editor.getHTML()) {
-      editor.commands.setContent(value);
+    if (editor && toEditorHtml(value) !== editor.getHTML()) {
+      editor.commands.setContent(toEditorHtml(value));
     }
   }, [value, editor]);
 
@@ -479,12 +491,15 @@ export function RichTextEditor({
             <Separator orientation="vertical" className="mx-1 h-8" />
 
             {/* Media & Links */}
-            <ToolbarButton
-              onClick={() => setShowImageModal(true)}
-              title="Insert image (upload or paste a URL)"
-            >
-              <ImageIcon className="h-4 w-4" />
-            </ToolbarButton>
+            {/* only where images are stored (uploadImage) and shown on the storefront */}
+            {uploadImage && (
+              <ToolbarButton
+                onClick={() => setShowImageModal(true)}
+                title="Insert image (upload or paste a URL)"
+              >
+                <ImageIcon className="h-4 w-4" />
+              </ToolbarButton>
+            )}
 
             <ToolbarButton
               onClick={() => setShowIconSelector(true)}

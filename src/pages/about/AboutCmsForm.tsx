@@ -256,25 +256,25 @@ export default function AboutCmsForm() {
               <CardTitle>About Section</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormTextField
+              <FormTextField required
                 form={form}
                 name="about_title"
                 label="About Title"
                 placeholder="Enter about title"
               />
-              <FormTextField
+              <FormTextField required
                 form={form}
                 name="about_title_ar"
                 label="About Title (Arabic)"
                 placeholder="أدخل عنوان نبذة عنا"
               />
-              <FormRichTextField
+              <FormRichTextField required
                 form={form}
                 name="about_description"
                 label="About Description"
                 placeholder="Enter about description"
               />
-              <FormRichTextField
+              <FormRichTextField required
                 form={form}
                 name="about_description_ar"
                 label="About Description (Arabic)"
@@ -282,7 +282,7 @@ export default function AboutCmsForm() {
               />
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:col-span-2">
                 <div className="md:col-span-2">
-                  <FormFileUploadField
+                  <FormFileUploadField required
                     form={form}
                     name="media_path"
                     label="Image"
@@ -290,13 +290,13 @@ export default function AboutCmsForm() {
                     accept="image/*"
                   />
                 </div>
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="media_alt"
                   label="Image Alt Text"
                   placeholder="Describe the media"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="media_alt_ar"
                   label="Image Alt Text (Arabic)"
@@ -311,44 +311,44 @@ export default function AboutCmsForm() {
               <CardTitle>Trust Section</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormTextField
+              <FormTextField required
                 form={form}
                 name="trust_title"
                 label="Trust Title"
                 placeholder="Enter trust title"
               />
-              <FormTextField
+              <FormTextField required
                 form={form}
                 name="trust_title_ar"
                 label="Trust Title (Arabic)"
                 placeholder="أدخل عنوان الثقة"
               />
-              <FormRichTextField
+              <FormRichTextField required
                 form={form}
                 name="trust_description"
                 label="Trust Description"
                 placeholder="Enter trust description"
               />
-              <FormRichTextField
+              <FormRichTextField required
                 form={form}
                 name="trust_description_ar"
                 label="Trust Description (Arabic)"
                 placeholder="أدخل وصف الثقة"
               />
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:col-span-2">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="trust_button_text"
                   label="Button Text"
                   placeholder="e.g. Get a Quote"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="trust_button_text_ar"
                   label="Button Text (Arabic)"
                   placeholder="مثال: اطلب عرض سعر"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="trust_button_link"
                   label="Button Link"
@@ -364,25 +364,25 @@ export default function AboutCmsForm() {
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:col-span-2">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="mission_title"
                   label="Mission Title"
                   placeholder="Enter mission title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="mission_title_ar"
                   label="Mission Title (Arabic)"
                   placeholder="أدخل عنوان الرسالة"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="vision_title"
                   label="Vision Title"
                   placeholder="Enter vision title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="vision_title_ar"
                   label="Vision Title (Arabic)"
@@ -391,25 +391,25 @@ export default function AboutCmsForm() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:col-span-2">
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="mission_description"
                   label="Mission Description"
                   placeholder="Enter mission description"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="mission_description_ar"
                   label="Mission Description (Arabic)"
                   placeholder="أدخل وصف الرسالة"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="vision_description"
                   label="Vision Description"
                   placeholder="Enter vision description"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="vision_description_ar"
                   label="Vision Description (Arabic)"
@@ -424,13 +424,13 @@ export default function AboutCmsForm() {
               <CardTitle>History Section</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormTextField
+              <FormTextField required
                 form={form}
                 name="history_title"
                 label="History Title"
                 placeholder="Enter history title"
               />
-              <FormTextField
+              <FormTextField required
                 form={form}
                 name="history_title_ar"
                 label="History Title (Arabic)"
@@ -445,25 +445,25 @@ export default function AboutCmsForm() {
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:col-span-2">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="message_title"
                   label="Message Title"
                   placeholder="Enter message title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="message_title_ar"
                   label="Message Title (Arabic)"
                   placeholder="أدخل عنوان الرسائل"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="message_subtitle"
                   label="Message Subtitle"
                   placeholder="Enter message subtitle"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="message_subtitle_ar"
                   label="Message Subtitle (Arabic)"
@@ -479,39 +479,39 @@ export default function AboutCmsForm() {
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:col-span-2">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="about_core_title"
                   label="About Core Title"
                   placeholder="Enter core values title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="about_core_title_ar"
                   label="Core Values Title (Arabic)"
                   placeholder="أدخل عنوان القيم الأساسية"
                 />
 
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="about_core_description"
                   label="About Core Description"
                   placeholder="Enter core values description"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="about_core_description_ar"
                   label="About Core Description (Arabic)"
                   placeholder="أدخل وصف القيم الأساسية"
                 />
 
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="about_core_media_alt"
                   label="Image Alt Text"
                   placeholder="Describe the media"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="about_core_media_alt_ar"
                   label="Image Alt Text (Arabic)"
@@ -520,7 +520,7 @@ export default function AboutCmsForm() {
               </div>
 
               <div className="md:col-span-2">
-                <FormFileUploadField
+                <FormFileUploadField required
                   form={form}
                   name="about_core_media_path"
                   label="Image"
@@ -536,25 +536,25 @@ export default function AboutCmsForm() {
               <CardTitle>Industry Section</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormTextField
+              <FormTextField required
                 form={form}
                 name="industry_title"
                 label="Industry Title"
                 placeholder="Enter industry title"
               />
-              <FormTextField
+              <FormTextField required
                 form={form}
                 name="industry_title_ar"
                 label="Industry Title (Arabic)"
                 placeholder="أدخل عنوان القطاع"
               />
-              <FormRichTextField
+              <FormRichTextField required
                 form={form}
                 name="industry_description"
                 label="Industry Description"
                 placeholder="Enter industry description"
               />
-              <FormRichTextField
+              <FormRichTextField required
                 form={form}
                 name="industry_description_ar"
                 label="Industry Description (Arabic)"
@@ -562,7 +562,7 @@ export default function AboutCmsForm() {
               />
               <div className="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
                 <div className="md:col-span-2">
-                  <FormFileUploadField
+                  <FormFileUploadField required
                     form={form}
                     name="industry_media_path"
                     label="Image"
@@ -570,13 +570,13 @@ export default function AboutCmsForm() {
                     accept="image/*"
                   />
                 </div>
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="industry_media_alt"
                   label="Image Alt Text"
                   placeholder="Describe the media"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="industry_media_alt_ar"
                   label="Image Alt Text (Arabic)"
@@ -586,7 +586,7 @@ export default function AboutCmsForm() {
             </CardContent>
           </Card>
 
-          <div className="flex justify-end">
+          <div className="sticky bottom-0 z-10 -mx-6 flex justify-end border-t bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
             <Button type="submit" disabled={loading}>
               <Save className="h-4 w-4 mr-2" />
               {loading ? "Saving..." : "Save Changes"}

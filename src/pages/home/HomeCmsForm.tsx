@@ -156,13 +156,13 @@ export default function HomeCmsForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="discover_title"
                   label="Discover Title"
                   placeholder="Enter discover title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="discover_title_ar"
                   label="Discover Title (Arabic)"
@@ -178,13 +178,13 @@ export default function HomeCmsForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="residential_title"
                   label="Residential Title"
                   placeholder="Enter residential title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="residential_title_ar"
                   label="Residential Title (Arabic)"
@@ -200,13 +200,13 @@ export default function HomeCmsForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="project_title"
                   label="Project Title"
                   placeholder="Enter project title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="project_title_ar"
                   label="Project Title (Arabic)"
@@ -225,13 +225,13 @@ export default function HomeCmsForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="testimonial_title"
                   label="Testimonial Title"
                   placeholder="Enter testimonial title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="testimonial_title_ar"
                   label="Testimonial Title (Arabic)"
@@ -247,13 +247,13 @@ export default function HomeCmsForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="brand_title"
                   label="Brand Title"
                   placeholder="Enter brand title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="brand_title_ar"
                   label="Brand Title (Arabic)"
@@ -269,14 +269,14 @@ export default function HomeCmsForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="cta_title"
                   label="CTA Title"
                   placeholder="Enter CTA title"
                   height="120px"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="cta_title_ar"
                   label="CTA Title (Arabic)"
@@ -293,8 +293,8 @@ export default function HomeCmsForm() {
                 accept="image/*"
               />
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormRichTextField form={form} name="cta_description" label="CTA Description" placeholder="Enter CTA description" height="160px" />
-                <FormRichTextField form={form} name="cta_description_ar" label="CTA Description (Arabic)" placeholder="أدخل وصف CTA" height="160px" />
+                <FormRichTextField required form={form} name="cta_description" label="CTA Description" placeholder="Enter CTA description" height="160px" />
+                <FormRichTextField required form={form} name="cta_description_ar" label="CTA Description (Arabic)" placeholder="أدخل وصف CTA" height="160px" />
               </div>
             </CardContent>
           </Card>
@@ -305,13 +305,13 @@ export default function HomeCmsForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="faq_title"
                   label="FAQ Title"
                   placeholder="Enter FAQ title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="faq_title_ar"
                   label="FAQ Title (Arabic)"
@@ -327,13 +327,13 @@ export default function HomeCmsForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="space_section_title"
                   label="Space Section Title"
                   placeholder="Enter space section title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="space_section_title_ar"
                   label="Space Section Title (Arabic)"
@@ -341,26 +341,26 @@ export default function HomeCmsForm() {
                 />
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="space_button_text"
                   label="Button Text"
                   placeholder="e.g. Explore Spaces"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="space_button_text_ar"
                   label="Button Text (Arabic)"
                   placeholder="مثال: استكشف المساحات"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="space_button_link"
                   label="Button Link"
                   placeholder="/products (leave empty to hide the button)"
                 />
               </div>
-              <FormFileUploadField
+              <FormFileUploadField required
                 form={form}
                 name="space_bg_image"
                 label="Background Image"
@@ -376,13 +376,13 @@ export default function HomeCmsForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="premium_title"
                   label="Premium Title"
                   placeholder="Enter premium title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="premium_title_ar"
                   label="Premium Title (Arabic)"
@@ -390,13 +390,13 @@ export default function HomeCmsForm() {
                 />
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormRichTextField form={form} name="premium_description" label="Premium Description" placeholder="Enter premium description" height="160px" />
-                <FormRichTextField form={form} name="premium_description_ar" label="Premium Description (Arabic)" placeholder="أدخل وصف البريميوم" height="160px" />
+                <FormRichTextField required form={form} name="premium_description" label="Premium Description" placeholder="Enter premium description" height="160px" />
+                <FormRichTextField required form={form} name="premium_description_ar" label="Premium Description (Arabic)" placeholder="أدخل وصف البريميوم" height="160px" />
               </div>
             </CardContent>
           </Card>
 
-          <div className="flex justify-end">
+          <div className="sticky bottom-0 z-10 -mx-6 flex justify-end border-t bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
             <Button type="submit" disabled={loading}>
               <Save className="h-4 w-4 mr-2" />
               {loading ? "Saving..." : "Save Changes"}

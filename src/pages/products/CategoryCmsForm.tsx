@@ -85,13 +85,13 @@ export default function CategoryCmsForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="title"
                   label="Heading"
                   placeholder="e.g. Explore Our Flooring Categories"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="title_ar"
                   label="Heading (Arabic)"
@@ -101,7 +101,7 @@ export default function CategoryCmsForm() {
             </CardContent>
           </Card>
 
-          <div className="flex justify-end">
+          <div className="sticky bottom-0 z-10 -mx-6 flex justify-end border-t bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
             <Button type="submit" disabled={loading}>
               <Save className="h-4 w-4 mr-2" />
               {loading ? "Saving..." : "Save Changes"}

@@ -19,6 +19,7 @@ import {
   fetchPrivacyPolicy,
   savePrivacyPolicy,
 } from "@/services/policies/privacyPolicyApi";
+import { uploadEditorImage } from "@/services/editor/editorImageApi";
 
 const defaultValues: PrivacyPolicyFormData = {
   title: "",
@@ -116,13 +117,13 @@ export default function PrivacyPolicyForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="title"
                   label="Title"
                   placeholder="Enter privacy policy title"
                 />
-                <FormTextField
+                <FormTextField required
                   form={form}
                   name="title_ar"
                   label="Title (Arabic)"
@@ -131,15 +132,17 @@ export default function PrivacyPolicyForm() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="content"
+                  uploadImage={uploadEditorImage}
                   label="Content"
                   placeholder="Enter privacy policy content"
                 />
-                <FormRichTextField
+                <FormRichTextField required
                   form={form}
                   name="content_ar"
+                  uploadImage={uploadEditorImage}
                   label="Content (Arabic)"
                   placeholder="أدخل محتوى سياسة الخصوصية"
                 />
@@ -147,7 +150,7 @@ export default function PrivacyPolicyForm() {
             </CardContent>
           </Card>
 
-          <div className="flex justify-end">
+          <div className="sticky bottom-0 z-10 -mx-6 flex justify-end border-t bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
             <Button type="submit" disabled={loading}>
               <Save className="h-4 w-4 mr-2" />
               {loading ? "Saving..." : "Save Changes"}
