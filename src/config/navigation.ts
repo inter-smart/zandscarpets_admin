@@ -110,6 +110,9 @@ export const NAV: NavSection[] = [
               { title: "Brands", url: "/home-brands", icon: RadioTower },
               { title: "Testimonials", url: "/home-testimonials", icon: Monitor },
               { title: "Side Images", url: "/home-side-images", icon: SlidersHorizontal },
+              { title: "Why Choose Us (Shared)", url: "/common-features", icon: Sparkles },
+              { title: "How It Works (Shared)", url: "/common-how-it-works", icon: ListChecks },
+              { title: "Milestones (Shared)", url: "/milestones", icon: Layers },
             ],
           },
           {
@@ -122,6 +125,9 @@ export const NAV: NavSection[] = [
               { title: "History", url: "/about-history", icon: Clock },
               { title: "Industries", url: "/about-industries", icon: Factory },
               { title: "Messages", url: "/about-messages", icon: MessageSquare },
+              { title: "Why Choose Us (Shared)", url: "/common-features", icon: Sparkles },
+              { title: "How It Works (Shared)", url: "/common-how-it-works", icon: ListChecks },
+              { title: "Milestones (Shared)", url: "/milestones", icon: Layers },
             ],
           },
           {
@@ -248,7 +254,6 @@ export const NAV: NavSection[] = [
         title: "Shared Blocks",
         icon: Layers,
         items: [
-          { title: "Content", url: "/common-content", icon: FileText },
           { title: "Common Features", url: "/common-features", icon: Sparkles },
           { title: "How It Works", url: "/common-how-it-works", icon: ListChecks },
           { title: "Milestones", url: "/milestones", icon: Layers },

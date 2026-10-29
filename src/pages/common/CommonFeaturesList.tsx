@@ -19,6 +19,7 @@ import { useStatusToggle } from "@/hooks/useStatusToggle";
 import { usePaginatedList } from "@/hooks/usePaginatedList";
 import DeleteDialogue from "@/components/common/DeleteDialogue";
 import StatusChangeDialogue from "@/components/common/StatusChangeDialogue";
+import SharedBlockNotice from "@/components/common/SharedBlockNotice";
 
 export default function CommonFeaturesList() {
   const navigate = useNavigate();
@@ -165,6 +166,9 @@ export default function CommonFeaturesList() {
 
   return (
     <>
+      <div className="mb-4">
+        <SharedBlockNotice />
+      </div>
       <DataTable
         columns={columns}
         data={features}

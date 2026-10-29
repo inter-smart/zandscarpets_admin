@@ -16,8 +16,9 @@ import { aboutCmsSchema, AboutCmsFormData } from "@/schemas/aboutCmsSchema";
 import {
   fetchAboutCms,
   saveAboutCms,
-  ApiError,
 } from "@/services/about/aboutCmsApi";
+import { useSharedContentForm } from "@/hooks/useSharedContentForm";
+import SharedContentSections from "@/components/common/SharedContentSections";
 
 const defaultValues: AboutCmsFormData = {
   about_title: "",
@@ -69,6 +70,8 @@ export default function AboutCmsForm() {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [recordId, setRecordId] = useState<number | undefined>(undefined);
+
+  const shared = useSharedContentForm();
 
   const form = useForm<AboutCmsFormData>({
     resolver: zodResolver(aboutCmsSchema),
@@ -148,6 +151,15 @@ export default function AboutCmsForm() {
   };
 
   const onSubmit = async (data: AboutCmsFormData) => {
+    if (!(await shared.validate())) {
+      toast({
+        title: "Shared content incomplete",
+        description: "Fix the errors in the shared Why Choose Us / Side / How It Works sections.",
+        variant: "destructive",
+      });
+      return;
+    }
+    let pageSaved = false;
     try {
       setLoading(true);
 
@@ -218,6 +230,8 @@ export default function AboutCmsForm() {
       if (response.data?.id) {
         setRecordId(response.data.id);
       }
+      pageSaved = true;
+      await shared.save();
       toast({
         title: "Success",
         description: "About page content saved successfully",
@@ -226,9 +240,8 @@ export default function AboutCmsForm() {
       toast({
         title: "Error",
         description:
-          error instanceof ApiError
-            ? error.message
-            : "Failed to save About page content",
+          (pageSaved ? "About page saved, but the shared content failed: " : "") +
+          (error instanceof Error ? error.message : "Failed to save About page content"),
         variant: "destructive",
       });
     } finally {
@@ -236,7 +249,7 @@ export default function AboutCmsForm() {
     }
   };
 
-  if (initialLoading) {
+  if (initialLoading || shared.initialLoading) {
     return <PageLoader />;
   }
 
@@ -586,8 +599,10 @@ export default function AboutCmsForm() {
             </CardContent>
           </Card>
 
+          <SharedContentSections shared={shared} otherPage="Home" />
+
           <div className="sticky bottom-0 z-10 -mx-6 flex justify-end border-t bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading || shared.loading}>
               <Save className="h-4 w-4 mr-2" />
               {loading ? "Saving..." : "Save Changes"}
             </Button>

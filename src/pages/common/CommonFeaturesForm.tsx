@@ -13,6 +13,7 @@ import { Save, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { fetchCommonFeatureById, createCommonFeature, updateCommonFeature, ApiError } from "@/services/common/commonFeaturesApi";
 import { commonFeatureSchema, CommonFeatureFormData } from "@/schemas/commonFeaturesSchema";
+import SharedBlockNotice from "@/components/common/SharedBlockNotice";
 
 export default function CommonFeaturesForm() {
   const { toast } = useToast();
@@ -107,6 +108,7 @@ export default function CommonFeaturesForm() {
 
   return (
     <div className="space-y-6">
+      <SharedBlockNotice />
       <div className="flex items-center gap-4">
         <Button variant="outline" size="icon" onClick={() => navigate("/common-features")}>
           <ArrowLeft className="h-4 w-4" />

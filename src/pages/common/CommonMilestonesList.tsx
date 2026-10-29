@@ -31,6 +31,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import SharedBlockNotice from "@/components/common/SharedBlockNotice";
 
 export default function CommonMilestoneList() {
   const navigate = useNavigate();
@@ -228,6 +229,9 @@ export default function CommonMilestoneList() {
 
   return (
     <>
+      <div className="mb-4">
+        <SharedBlockNotice />
+      </div>
       <DataTable
         columns={columns}
         data={milestones}

@@ -13,6 +13,7 @@ import { Save, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { fetchCommonHowItWorksById, createCommonHowItWorks, updateCommonHowItWorks, ApiError } from "@/services/common/commonHowItWorksApi";
 import { commonHowItWorksSchema, CommonHowItWorksFormData } from "@/schemas/commonHowItWorksSchema";
+import SharedBlockNotice from "@/components/common/SharedBlockNotice";
 
 export default function CommonHowItWorksForm() {
   const { toast } = useToast();
@@ -107,6 +108,7 @@ export default function CommonHowItWorksForm() {
 
   return (
     <div className="space-y-6">
+      <SharedBlockNotice />
       <div className="flex items-center gap-4">
         <Button variant="outline" size="icon" onClick={() => navigate("/common-how-it-works")}>
           <ArrowLeft className="h-4 w-4" />

@@ -13,6 +13,7 @@ import { Save, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { fetchCommonMilestoneById, createCommonMilestone, updateCommonMilestone, ApiError } from "@/services/common/commonMilestonesApi";
 import { commonMilestoneSchema, CommonMilestoneFormData } from "@/schemas/commonMilestonesSchema";
+import SharedBlockNotice from "@/components/common/SharedBlockNotice";
 
 export default function CommonMilestoneForm() {
   const { toast } = useToast();
@@ -122,6 +123,7 @@ export default function CommonMilestoneForm() {
 
   return (
     <div className="space-y-6">
+      <SharedBlockNotice />
       <div className="flex items-center gap-4">
         <Button variant="outline" size="icon" onClick={() => navigate("/milestones")}>
           <ArrowLeft className="h-4 w-4" />

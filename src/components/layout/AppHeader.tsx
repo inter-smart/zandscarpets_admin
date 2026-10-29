@@ -31,8 +31,6 @@ export function AppHeader() {
 
         <NavSearchTrigger variant="header" />
 
-    
-
         <div className="flex items-end gap-3 ml-auto">
           {/* User menu */}
           <DropdownMenu>
@@ -51,12 +49,10 @@ export function AppHeader() {
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none">{user?.username ?? "Admin"}</p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {user?.email ?? "—"}
-                  </p>
+                  <p className="text-xs leading-none text-muted-foreground">{user?.email ?? "—"}</p>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator />
+              {/* <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4" />
                 <span>Profile</span>
@@ -65,7 +61,7 @@ export function AppHeader() {
                 <Settings className="mr-2 h-4 w-4" />
                 <span>Settings</span>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator /> */}
               <DropdownMenuItem className="text-destructive" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log out</span>
