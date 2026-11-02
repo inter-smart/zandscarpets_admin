@@ -13,6 +13,7 @@ const ADS_BANNER_URL = `${API_BASE_URL}/masters/ads-banner`;
 export interface AdsBannerRecord {
   id: number;
   media_path: string | null;
+  mobile_media_path?: string | null;
   media_alt: string | null;
   media_alt_ar?: string | null;
   link?: string | null;

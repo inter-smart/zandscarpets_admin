@@ -3,6 +3,7 @@ import { commonValidations } from "@/utils/formUtils";
 
 export const adsBannerSchema = z.object({
   media_path: commonValidations.requiredFile("Banner Image"),
+  mobile_media_path: commonValidations.requiredFile("Mobile Banner Image"),
   media_alt: commonValidations.requiredString("Alt text"),
   media_alt_ar: commonValidations.requiredString("Alt text (Arabic)"),
   // where the banner leads (a site path like /en/products or a full URL); optional

@@ -42,6 +42,7 @@ export default function AdsBannerForm() {
     resolver: zodResolver(adsBannerSchema),
     defaultValues: {
       media_path: "",
+      mobile_media_path: "",
       media_alt: "",
       media_alt_ar: "",
       link: "",
@@ -68,6 +69,7 @@ export default function AdsBannerForm() {
       if (data) {
         form.reset({
           media_path: data.media_path || "",
+          mobile_media_path: data.mobile_media_path || "",
           media_alt: data.media_alt || "",
           media_alt_ar: data.media_alt_ar || "",
           link: data.link || "",
@@ -110,6 +112,15 @@ export default function AdsBannerForm() {
         formData.append("media_path", data.media_path);
       } else if (typeof data.media_path === "string" && data.media_path) {
         formData.append("media_path", data.media_path);
+      }
+
+      if (data.mobile_media_path instanceof File) {
+        formData.append("mobile_media_path", data.mobile_media_path);
+      } else if (
+        typeof data.mobile_media_path === "string" &&
+        data.mobile_media_path
+      ) {
+        formData.append("mobile_media_path", data.mobile_media_path);
       }
 
       if (isEditing && id) {
@@ -177,6 +188,13 @@ export default function AdsBannerForm() {
                 name="media_path"
                 label="Banner image"
                 placeholder="Upload banner image"
+                accept="image/*"
+              />
+              <FormFileUploadField
+                form={form}
+                name="mobile_media_path"
+                label="Mobile banner image"
+                placeholder="Upload mobile banner image (shown on small screens)"
                 accept="image/*"
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
