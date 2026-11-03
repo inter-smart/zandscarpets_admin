@@ -111,6 +111,9 @@ export default function HomeTestimonialsForm() {
         data.profile_media_path
       ) {
         formData.append("profile_media_path", data.profile_media_path);
+      } else if (isEditing) {
+        // image was removed in the form: empty value tells the server to delete it
+        formData.append("profile_media_path", "");
       }
 
       if (isEditing && id) {
@@ -235,6 +238,7 @@ export default function HomeTestimonialsForm() {
                 label="Profile Image"
                 placeholder="Upload profile image"
                 accept="image/*"
+                description="Optional. If no image is provided, a placeholder image will be shown."
               />
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
