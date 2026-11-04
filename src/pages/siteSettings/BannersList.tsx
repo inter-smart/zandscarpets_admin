@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/common/DataTable";
@@ -7,6 +7,8 @@ import RowActionsMenu from "@/components/common/RowActionsMenu";
 import DeleteDialogue from "@/components/common/DeleteDialogue";
 import { useToast } from "@/hooks/use-toast";
 import { usePaginatedList } from "@/hooks/usePaginatedList";
+import { BANNER_EXCLUDED_PAGE_SLUGS } from "@/constants/bannerPages";
+import { fetchActivePages } from "@/services/masters/pagesApi";
 import {
   fetchBannersList,
   deleteBanner,
@@ -35,6 +37,34 @@ export default function BannersList() {
     itemsLimit,
     refetch,
   } = usePaginatedList<Banner>(fetchBannersList);
+
+  // Disable "Add" once every bannerable page (all active pages except the
+  // excluded ones) already has a banner.
+  const [allPagesHaveBanner, setAllPagesHaveBanner] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const [activePages, bannersRes] = await Promise.all([
+          fetchActivePages(),
+          fetchBannersList(1, 100, undefined, ["page_id"]),
+        ]);
+        const used = new Set(bannersRes.data.data.map((b) => b.page_id));
+        const remaining = activePages.filter(
+          (p) =>
+            !BANNER_EXCLUDED_PAGE_SLUGS.includes(p.page_slug) &&
+            !used.has(p.id),
+        );
+        if (!cancelled) setAllPagesHaveBanner(remaining.length === 0);
+      } catch {
+        if (!cancelled) setAllPagesHaveBanner(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [banners]);
 
   const confirmDelete = async () => {
     if (!deleteItemId) return;
@@ -145,6 +175,7 @@ export default function BannersList() {
         searchPlaceholder="Search banners by pages..."
         onAdd={() => navigate("/banners/new")}
         addButtonText="Add Banner"
+        addDisabled={allPagesHaveBanner}
         loading={loading}
         searching={searching}
         searchQuery={searchInput}

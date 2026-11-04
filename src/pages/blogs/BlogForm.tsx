@@ -302,8 +302,7 @@ export default function BlogForm() {
                 uploadImage={uploadEditorImage}
               />
               <p className="text-xs text-muted-foreground">
-                Bullet lists show with check icons. The Arabic content is optional: when it is empty the Arabic page
-                shows the English content.
+                Bullet lists show with check icons.
               </p>
             </CardContent>
           </Card>

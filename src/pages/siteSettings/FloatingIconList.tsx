@@ -2,8 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/common/DataTable";
-import { Button } from "@/components/ui/button";
-import { ExternalLink } from "lucide-react";
 import MediaThumbnail from "@/components/common/MediaThumbnail";
 import SortOrderCell from "@/components/common/SortOrderCell";
 import StatusToggleCell from "@/components/common/StatusToggleCell";
@@ -130,15 +128,6 @@ export default function FloatingIconList() {
             <div className="font-mono text-sm mx text-muted-foreground max-w-[200px] truncate">
               {link}
             </div>
-            {link && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => window.open(link, "_blank")}
-              >
-                <ExternalLink className="h-3 w-3" />
-              </Button>
-            )}
           </div>
         );
       },

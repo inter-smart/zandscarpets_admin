@@ -28,6 +28,7 @@ import {
   ApiError,
 } from "@/services/siteSettings/bannerApi";
 import { fetchActivePages, PageRecord } from "@/services/masters/pagesApi";
+import { BANNER_EXCLUDED_PAGE_SLUGS } from "@/constants/bannerPages";
 import { bannerSchema, BannerFormData } from "@/schemas/bannerSchema";
 
 export default function BannersForm() {
@@ -128,6 +129,7 @@ export default function BannersForm() {
   // Only offer active pages, except the page already assigned to this banner
   // (in edit mode) so an existing, since-deactivated assignment still shows.
   const pageOptions: ComboboxOption[] = pages
+    .filter((p) => !BANNER_EXCLUDED_PAGE_SLUGS.includes(p.page_slug))
     .filter((p) => p.is_active || String(p.id) === currentPageId)
     .map((p) => ({ value: String(p.id), label: p.page }));
 

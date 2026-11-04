@@ -97,6 +97,7 @@ interface DataTableProps<TData, TValue> {
   searchPlaceholder?: string;
   onAdd?: () => void;
   addButtonText?: string;
+  addDisabled?: boolean;
   showAddButton?: boolean;
   filters?: FilterOption[];
   onExport?: (type: "csv" | "excel" | "pdf", selectedRows?: any[]) => void;
@@ -126,6 +127,7 @@ export function DataTable<TData, TValue>({
   searchPlaceholder = "Search...",
   onAdd,
   addButtonText = "Add New",
+  addDisabled = false,
   showAddButton = true,
   filters = [],
   onExport,
@@ -267,7 +269,11 @@ export function DataTable<TData, TValue>({
         <div className="flex flex-wrap items-center justify-end gap-2">
           {headerExtra}
           {onAdd && showAddButton && canManage && (
-            <Button onClick={onAdd} className="bg-primary hover:bg-primary/90">
+            <Button
+              onClick={onAdd}
+              disabled={addDisabled}
+              className="bg-primary hover:bg-primary/90"
+            >
               {addButtonText}
             </Button>
           )}

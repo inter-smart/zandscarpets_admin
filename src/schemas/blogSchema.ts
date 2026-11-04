@@ -11,14 +11,14 @@ export const blogSchema = z.object({
     .regex(/^[a-z0-9-]*$/i, "Use letters, numbers and hyphens only")
     .optional(),
   excerpt: commonValidations.requiredString("Excerpt"),
-  excerpt_ar: commonValidations.optionalString,
+  excerpt_ar: commonValidations.requiredString("Excerpt (Arabic)"),
   content: commonValidations.richText("Content"),
-  content_ar: commonValidations.optionalRichText,
+  content_ar: commonValidations.richText("Content (Arabic)"),
   author_name: commonValidations.optionalString,
   author_name_ar: commonValidations.optionalString,
   media_path: commonValidations.requiredFile("Hero image"),
   media_alt: commonValidations.requiredString("Hero image alt text"),
-  media_alt_ar: commonValidations.optionalString,
+  media_alt_ar: commonValidations.requiredString("Hero image alt text (Arabic)"),
   // `datetime-local` value (yyyy-MM-ddTHH:mm); empty = publish now
   published_at: z.string().optional(),
   is_active: commonValidations.booleanStatus,

@@ -183,6 +183,28 @@ export default function AdsBannerForm() {
               <CardTitle>Banner Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="rounded-md border bg-muted/50 p-3 text-sm text-muted-foreground">
+                <p className="font-medium text-foreground">
+                  How ads banners appear on the blog listing page
+                </p>
+                <ul className="mt-1 list-disc space-y-1 pl-5">
+                  <li>
+                    A banner is shown after every 4 blogs (after the 4th, 8th,
+                    12th blog and so on). It is not shown after an incomplete
+                    group of blogs.
+                  </li>
+                  <li>
+                    All active banners (ordered by sort order) are used, and
+                    they are shown in turn: Banner 1, Banner 2, Banner 3...
+                    then back to Banner 1 when they run out.
+                  </li>
+                  <li>
+                    The offer text should be part of the banner image. Only the
+                    button label can be edited here, and the button appears
+                    only when a link is set.
+                  </li>
+                </ul>
+              </div>
               <FormFileUploadField
                 form={form}
                 name="media_path"
