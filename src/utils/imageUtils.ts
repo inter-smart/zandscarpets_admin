@@ -1,4 +1,9 @@
 // Image and file utilities
+// Client-side cap for every image upload in the admin (300KB).
+export const MAX_IMAGE_UPLOAD_BYTES = 300 * 1024;
+// Client-side cap for every video upload in the admin (10MB).
+export const MAX_VIDEO_UPLOAD_BYTES = 10 * 1024 * 1024;
+
 export const formatFileSize = (bytes: number): string => {
   const mb = bytes / (1024 * 1024);
   return mb >= 1 ? `${Math.round(mb)}MB` : `${Math.round(bytes / 1024)}KB`;

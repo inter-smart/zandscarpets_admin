@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Upload, X, Eye, Download, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { generatePlaceholderWithSizes } from "@/utils/imageUtils";
+import { generatePlaceholderWithSizes, formatFileSize, MAX_IMAGE_UPLOAD_BYTES, MAX_VIDEO_UPLOAD_BYTES } from "@/utils/imageUtils";
 
 interface FileUploadProps {
   label?: string;
@@ -33,8 +33,8 @@ export function FileUpload({
   onChange,
   accept = "image/*",
   maxSize = 5242880, // 5MB
-  maxImageSize = 1024 * 1024, // Default 1MB for images
-  maxVideoSize = 5 * 1024 * 1024, // Default 5MB for videos
+  maxImageSize = MAX_IMAGE_UPLOAD_BYTES, // Default 300KB for images
+  maxVideoSize = MAX_VIDEO_UPLOAD_BYTES, // Default 10MB for videos
   placeholder = "Drop files here or click to browse",
   preview = true,
   altText = "",
@@ -65,12 +65,7 @@ export function FileUpload({
       if (isImage && file.size > maxImageSize) {
         return {
           code: "file-too-large",
-          message: `Image size must be under ${(
-            maxImageSize /
-            (1024 * 1024)
-          ).toFixed(0)}MB. Current size: ${(file.size / (1024 * 1024)).toFixed(
-            2
-          )}MB`,
+          message: `Image size must be under ${formatFileSize(maxImageSize)}. Current size: ${formatFileSize(file.size)}`,
         };
       }
 

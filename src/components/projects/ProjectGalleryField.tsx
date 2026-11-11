@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowUp, ArrowDown, Loader2, X } from "lucide-react";
 import { resolveImageUrl } from "@/lib/resolveImageUrl";
 import { captureVideoThumbnail } from "@/utils/videoThumbnail";
+import { toast } from "@/hooks/use-toast";
+import { MAX_IMAGE_UPLOAD_BYTES, MAX_VIDEO_UPLOAD_BYTES, formatFileSize } from "@/utils/imageUtils";
 import { ProjectMediaItem } from "@/services/masters/projectsApi";
 
 const GALLERY_ACCEPT =
@@ -81,7 +83,19 @@ export default function ProjectGalleryField({ items, onChange }: ProjectGalleryF
   const addFiles = (files: FileList | null) => {
     if (!files || !files.length) return;
 
-    const next: Extract<GalleryItem, { kind: "new" }>[] = Array.from(files).map((file) => {
+    const limitFor = (file: File) => (isVideoFile(file) ? MAX_VIDEO_UPLOAD_BYTES : MAX_IMAGE_UPLOAD_BYTES);
+    const accepted = Array.from(files).filter((file) => file.size <= limitFor(file));
+    const rejected = Array.from(files).length - accepted.length;
+    if (rejected) {
+      toast({
+        title: "File too large",
+        description: `${rejected} file${rejected === 1 ? "" : "s"} exceed${rejected === 1 ? "s" : ""} the limit (images ${formatFileSize(MAX_IMAGE_UPLOAD_BYTES)}, videos ${formatFileSize(MAX_VIDEO_UPLOAD_BYTES)}) and ${rejected === 1 ? "was" : "were"} skipped.`,
+        variant: "destructive",
+      });
+    }
+    if (!accepted.length) return;
+
+    const next: Extract<GalleryItem, { kind: "new" }>[] = accepted.map((file) => {
       const video = isVideoFile(file);
       return {
         kind: "new",
@@ -182,7 +196,13 @@ export default function ProjectGalleryField({ items, onChange }: ProjectGalleryF
                     className="hidden"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
-                      if (file) replaceThumbnail(index, file);
+                      if (file && file.size > MAX_IMAGE_UPLOAD_BYTES) {
+                        toast({
+                          title: "Image too large",
+                          description: `Thumbnail must be ${formatFileSize(MAX_IMAGE_UPLOAD_BYTES)} or smaller.`,
+                          variant: "destructive",
+                        });
+                      } else if (file) replaceThumbnail(index, file);
                       e.target.value = "";
                     }}
                   />

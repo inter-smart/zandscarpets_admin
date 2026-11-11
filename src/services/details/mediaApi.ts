@@ -1,5 +1,6 @@
 import { apiFetch, parseEnvelope, ApiError, DETAILS_API_URL, listParams, PaginatedListResponse } from "./detailsApiClient";
 import { commonValidations } from "@/utils/formUtils";
+import { MAX_IMAGE_UPLOAD_BYTES, MAX_VIDEO_UPLOAD_BYTES, formatFileSize } from "@/utils/imageUtils";
 
 // Dynamic Details > Media — the central, reusable media table behind
 // image/video detail items. Backed by `/api/backend/details/media`.
@@ -12,14 +13,14 @@ export type MediaKind = "image" | "video";
 // Mirrors the server's per-kind limits (mediaController.js / mediaLimits.js)
 // so the client can reject oversized files immediately instead of waiting
 // on a round trip.
-export const MAX_IMAGE_SIZE_BYTES = 1 * 1024 * 1024; // 1MB
-export const MAX_VIDEO_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
+export const MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_UPLOAD_BYTES; // 300KB (client-side cap, stricter than the server)
+export const MAX_VIDEO_SIZE_BYTES = MAX_VIDEO_UPLOAD_BYTES; // 10MB
 export const MAX_BULK_UPLOAD_COUNT = 20;
 
 export const maxSizeForKind = (kind: MediaKind) =>
   kind === "image" ? MAX_IMAGE_SIZE_BYTES : MAX_VIDEO_SIZE_BYTES;
 
-export const formatMb = (bytes: number) => `${(bytes / (1024 * 1024)).toFixed(0)}MB`;
+export const formatMb = (bytes: number) => formatFileSize(bytes);
 
 export const kindFromMimetype = (mimetype: string): MediaKind | null => {
   if (mimetype.startsWith("image/")) return "image";

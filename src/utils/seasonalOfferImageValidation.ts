@@ -1,18 +1,19 @@
 // Validation for the seasonal offer popup images. The popup card is ~800x400 (2:1) and the
 // badge is cropped to a 132px circle, so both need predictable proportions.
 import { toast } from "@/hooks/use-toast";
+import { MAX_IMAGE_UPLOAD_BYTES } from "@/utils/imageUtils";
 
 export const SEASONAL_IMAGE_ACCEPT = "image/jpeg,image/png,image/webp";
 
-export const SEASONAL_MAIN_MAX_BYTES = 2 * 1024 * 1024; // 2MB
-export const SEASONAL_BADGE_MAX_BYTES = 500 * 1024; // 500KB
+export const SEASONAL_MAIN_MAX_BYTES = MAX_IMAGE_UPLOAD_BYTES; // 300KB
+export const SEASONAL_BADGE_MAX_BYTES = MAX_IMAGE_UPLOAD_BYTES; // 300KB
 
 export const SEASONAL_MAIN_RECOMMENDED =
-  "JPG, PNG or WebP, 2:1 ratio, 1600×800 to 3200×1600px, max 2MB";
+  "JPG, PNG or WebP, 2:1 ratio, 1600×800 to 3200×1600px, max 300KB";
 export const SEASONAL_MOBILE_RECOMMENDED =
-  "JPG, PNG or WebP, 9:10 ratio, 720×800 to 1800×2000px, max 2MB";
+  "JPG, PNG or WebP, 9:10 ratio, 720×800 to 1800×2000px, max 300KB";
 export const SEASONAL_BADGE_RECOMMENDED =
-  "JPG, PNG or WebP, square (1:1), 264×264 to 600×600px, max 500KB";
+  "JPG, PNG or WebP, square (1:1), 264×264 to 600×600px, max 300KB";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 

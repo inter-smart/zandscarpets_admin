@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader2, Upload, Copy, CheckCircle2, XCircle, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { MAX_IMAGE_UPLOAD_BYTES, formatFileSize } from "@/utils/imageUtils";
 import {
   uploadBulkMedia,
   listBulkMedia,
@@ -91,10 +92,18 @@ export default function MediaBulkUpload() {
 
   const onDrop = useCallback(
     async (accepted: File[]) => {
-      if (!accepted.length) return;
+      const valid = accepted.filter((f) => f.size <= MAX_IMAGE_UPLOAD_BYTES);
+      if (valid.length !== accepted.length) {
+        toast({
+          title: "Some images skipped",
+          description: `${accepted.length - valid.length} file(s) exceed the ${formatFileSize(MAX_IMAGE_UPLOAD_BYTES)} limit.`,
+          variant: "destructive",
+        });
+      }
+      if (!valid.length) return;
       setUploading(true);
       try {
-        const files = await uploadBulkMedia(type, accepted);
+        const files = await uploadBulkMedia(type, valid);
         setResults((prev) => [...files, ...prev]);
         const failedCount = files.filter((f) => f.status === "failed").length;
         toast({
@@ -149,7 +158,7 @@ export default function MediaBulkUpload() {
       <Alert>
         <AlertTitle>Important notes</AlertTitle>
         <AlertDescription>
-          Only jpg, png and webp are accepted. One bad file won't fail the rest of the batch — failed files are
+          Only jpg, png and webp up to 300KB are accepted. One bad file won't fail the rest of the batch — failed files are
           listed with a reason below.
         </AlertDescription>
       </Alert>

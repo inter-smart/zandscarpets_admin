@@ -4,6 +4,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ArrowUp, ArrowDown, X } from "lucide-react";
 import { resolveImageUrl } from "@/lib/resolveImageUrl";
+import { toast } from "@/hooks/use-toast";
+import { MAX_IMAGE_UPLOAD_BYTES, formatFileSize } from "@/utils/imageUtils";
 import type { BlogImageRecord } from "@/services/blogs/blogApi";
 
 export type BlogGalleryItem =
@@ -75,8 +77,18 @@ export default function BlogGalleryField({
   const addFiles = (files: FileList | null) => {
     if (!files || !files.length) return;
 
-    const next: BlogGalleryItem[] = Array.from(files)
-      .filter((file) => file.type.startsWith("image/"))
+    const images = Array.from(files).filter((file) => file.type.startsWith("image/"));
+    const oversized = images.filter((file) => file.size > MAX_IMAGE_UPLOAD_BYTES);
+    if (oversized.length) {
+      toast({
+        title: "Image too large",
+        description: `${oversized.map((f) => f.name).join(", ")} exceed${oversized.length === 1 ? "s" : ""} the ${formatFileSize(MAX_IMAGE_UPLOAD_BYTES)} limit.`,
+        variant: "destructive",
+      });
+    }
+
+    const next: BlogGalleryItem[] = images
+      .filter((file) => file.size <= MAX_IMAGE_UPLOAD_BYTES)
       .map((file) => ({
         kind: "new" as const,
         tempId: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
@@ -184,7 +196,7 @@ export default function BlogGalleryField({
             e.target.value = "";
           }}
         />
-        <p className="mt-2 text-xs text-muted-foreground">Images only (jpeg, png, webp, svg), up to 5MB each.</p>
+        <p className="mt-2 text-xs text-muted-foreground">Images only (jpeg, png, webp, svg), up to 300KB each.</p>
       </div>
     </div>
   );

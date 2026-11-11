@@ -18,9 +18,10 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { FileUpload } from "./FileUpload";
+import { MAX_IMAGE_UPLOAD_BYTES, formatFileSize } from "@/utils/imageUtils";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
-const MAX_SIZE_BYTES = 5 * 1024 * 1024;
+const MAX_SIZE_BYTES = MAX_IMAGE_UPLOAD_BYTES;
 
 interface ImageUploadModalProps {
   isOpen: boolean;
@@ -66,7 +67,7 @@ export function ImageUploadModal({ isOpen, onClose, onInsertImage, uploadImage }
         return;
       }
       if (uploadedFile.size > MAX_SIZE_BYTES) {
-        setUploadError("Image must be 5MB or smaller");
+        setUploadError(`Image must be ${formatFileSize(MAX_SIZE_BYTES)} or smaller`);
         return;
       }
       try {
