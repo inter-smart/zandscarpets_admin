@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PageLoader from "@/components/layout/PageLoader";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -23,6 +23,7 @@ import { projectsSchema, ProjectsFormData } from "@/schemas/projectsSchema";
 export default function ProjectsForm() {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
   const isEditing = Boolean(id);
 
@@ -268,7 +269,7 @@ export default function ProjectsForm() {
           </div>
         </div>
         {isEditing && id && (
-          <Button type="button" variant="outline" onClick={() => navigate(`/meta-tags?type=project&project_id=${id}`)}>
+          <Button type="button" variant="outline" onClick={() => navigate(`/meta-tags/new?type=project&project_id=${id}`, { state: { from: location.pathname + location.search } })}>
             <Tags className="mr-2 h-4 w-4" />
             SEO Meta
           </Button>

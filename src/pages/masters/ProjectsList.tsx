@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/common/DataTable";
 import RowActionsMenu from "@/components/common/RowActionsMenu";
@@ -52,6 +52,7 @@ const HOME_OPTIONS = [
 
 export default function ProjectsList() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
   const [industryOptions, setIndustryOptions] = useState<ComboboxOption[]>([]);
@@ -249,7 +250,7 @@ export default function ProjectsList() {
         return (
           <RowActionsMenu
             extraItems={
-              <DropdownMenuItem onClick={() => navigate(`/meta-tags?type=project&project_id=${item.id}`)}>
+              <DropdownMenuItem onClick={() => navigate(`/meta-tags/new?type=project&project_id=${item.id}`, { state: { from: location.pathname + location.search } })}>
                 <Tags className="mr-2 h-4 w-4" />
                 SEO Meta
               </DropdownMenuItem>

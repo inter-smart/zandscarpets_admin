@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PageLoader from "@/components/layout/PageLoader";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -55,6 +55,7 @@ const toLocalInput = (iso?: string | null) => {
 export default function BlogForm() {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
   const isEditing = Boolean(id);
 
@@ -224,7 +225,10 @@ export default function BlogForm() {
         </div>
         {isEditing && savedSlug && (
           <Button variant="outline" asChild>
-            <Link to={`/meta-tags/new?type=blog&blog_id=${encodeURIComponent(savedSlug)}`}>
+            <Link
+              to={`/meta-tags/new?type=blog&blog_id=${encodeURIComponent(savedSlug)}`}
+              state={{ from: location.pathname + location.search }}
+            >
               <ExternalLink className="mr-2 h-4 w-4" />
               SEO meta data
             </Link>

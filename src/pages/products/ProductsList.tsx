@@ -342,7 +342,7 @@ export default function ProductsList() {
                   <LayoutList className="mr-2 h-4 w-4" />
                   Details
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate(`/meta-tags?type=product&product_id=${item.id}`, returnState)}>
+                <DropdownMenuItem onClick={() => navigate(`/meta-tags/new?type=product&product_id=${item.id}`, returnState)}>
                   <Tags className="mr-2 h-4 w-4" />
                   SEO Meta
                 </DropdownMenuItem>

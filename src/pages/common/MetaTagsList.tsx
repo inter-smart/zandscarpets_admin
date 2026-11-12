@@ -1,7 +1,7 @@
 import { useMemo } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
-import { Edit } from "lucide-react";
+import { Edit, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/common/DataTable";
 import { Combobox } from "@/components/ui/combobox";
@@ -23,7 +23,9 @@ const TYPE_OPTIONS = [
 
 export const MetaTagsList: React.FC = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const navState = { state: location.state };
 
   const { filters: listFilters, setFilter } = useUrlFilters({ type: ALL });
   const typeFilter = listFilters.type as string;
@@ -63,6 +65,20 @@ export const MetaTagsList: React.FC = () => {
     loading,
     searching,
   } = usePaginatedList<MetaTag, MetaTagFilters>(fetchMetaTagsList, 15, filters);
+
+  const hasTargetFilter = Boolean(
+    pageNameParam || productIdParam || variantIdParam || blogIdParam || projectIdParam,
+  );
+  const clearTargetFilter = () => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        ["page_name", "product_id", "variant_id", "blog_id", "project_id"].forEach((k) => next.delete(k));
+        return next;
+      },
+      { replace: true },
+    );
+  };
 
   const addQuery = () => {
     const params = new URLSearchParams();
@@ -124,7 +140,9 @@ export const MetaTagsList: React.FC = () => {
         }
         return (
           <div className="font-medium max-w-[240px] truncate">
-            {item.variant?.label || "-"}
+            {item.variant?.product?.title && item.variant?.label
+              ? `${item.variant.product.title} — ${item.variant.label}`
+              : item.variant?.label || "-"}
           </div>
         );
       },
@@ -176,7 +194,7 @@ export const MetaTagsList: React.FC = () => {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate(`/meta-tags/${row.original.id}/edit`)}
+          onClick={() => navigate(`/meta-tags/${row.original.id}/edit`, navState)}
         >
           <Edit className="h-4 w-4 mr-1" />
           Edit
@@ -196,9 +214,16 @@ export const MetaTagsList: React.FC = () => {
         searchPlaceholder="Search by target or title..."
         searchQuery={searchInput}
         onSearchChange={setSearchInput}
-        onAdd={() => navigate(`/meta-tags/new${addQuery()}`)}
+        onAdd={() => navigate(`/meta-tags/new${addQuery()}`, navState)}
         addButtonText="Add Meta Tag"
         headerExtra={
+          <div className="flex items-center gap-2">
+            {hasTargetFilter && (
+              <Button variant="secondary" size="sm" onClick={clearTargetFilter}>
+                Filtered to one target
+                <X className="h-3.5 w-3.5 ml-1" />
+              </Button>
+            )}
           <Combobox
             maxVisibleItems={4}
             autoWidth
@@ -206,8 +231,12 @@ export const MetaTagsList: React.FC = () => {
             options={TYPE_OPTIONS}
             placeholder="All types"
             searchPlaceholder="Search type..."
-            onChange={(value) => setFilter("type", value)}
+            onChange={(value) => {
+              if (hasTargetFilter) clearTargetFilter();
+              setFilter("type", value);
+            }}
           />
+          </div>
         }
         pagination={{
           currentPage: page,

@@ -213,7 +213,7 @@ export default function ProductVariantsList() {
                 <LayoutList className="mr-2 h-4 w-4" />
                 Details
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate(`/meta-tags?type=product-variant&variant_id=${row.original.id}`)}>
+              <DropdownMenuItem onClick={() => navigate(`/meta-tags/new?type=product-variant&variant_id=${row.original.id}`, { state: { from: location.pathname + location.search } })}>
                 <Tags className="mr-2 h-4 w-4" />
                 SEO Meta
               </DropdownMenuItem>

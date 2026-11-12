@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import PageLoader from "@/components/layout/PageLoader";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { z } from "zod";
 import { Save, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,10 +12,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormTextField, FormTextareaField, FormKeywordsField } from "@/components/forms/FormFieldComponents";
 import { useToast } from "@/hooks/use-toast";
 import { fetchMetaTagById, fetchMetaTagsList, createMetaTag, updateMetaTag, MetaTag } from "@/services/common/metaTagsApi";
-import { fetchActiveProducts } from "@/services/products/productsApi";
-import { fetchActiveProductVariants } from "@/services/products/productVariantsApi";
-import { fetchActiveBlogs } from "@/services/common/blogsApi";
-import { fetchActiveProjects } from "@/services/masters/projectsApi";
+import { AsyncCombobox } from "@/components/ui/async-combobox";
+import {
+  searchProducts,
+  searchVariants,
+  searchBlogs,
+  searchProjects,
+  getProductOption,
+  getVariantOption,
+  getBlogOption,
+  getProjectOption,
+} from "@/services/common/metaTargetPickerApi";
 import { PAGE_NAMES, pageLabel } from "@/constants/pagenames";
 
 const METATAG_TYPES = [
@@ -38,15 +45,15 @@ const metaTagSchema = z
 
     meta_title: z.string().min(1, "Meta title is required").max(60, "Meta title should be under 60 characters"),
 
-    meta_title_ar: z.string().min(1, "Arabic meta title is required").max(60, "Arabic meta title should be under 60 characters"),
+    meta_title_ar: z.string().max(60, "Arabic meta title should be under 60 characters").optional().nullable(),
 
     meta_description: z.string().min(1, "Meta description is required").max(160, "Meta description should be under 160 characters"),
 
-    meta_description_ar: z.string().min(1, "Arabic meta description is required").max(160, "Arabic meta description should be under 160 characters"),
+    meta_description_ar: z.string().max(160, "Arabic meta description should be under 160 characters").optional().nullable(),
 
     meta_keywords: z.string().min(1, "Meta keywords is required").max(255, "Meta keywords should be under 255 characters"),
 
-    meta_keywords_ar: z.string().min(1, "Arabic meta keywords is required").max(255, "Arabic meta keywords should be under 255 characters"),
+    meta_keywords_ar: z.string().max(255, "Arabic meta keywords should be under 255 characters").optional().nullable(),
 
     other_meta: z.string().optional().nullable(),
     other_meta_ar: z.string().optional().nullable(),
@@ -77,6 +84,9 @@ export default function MetaTagsForm() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [searchParams] = useSearchParams();
+  const location = useLocation();
+  // Set by the "SEO Meta" buttons on product/variant/project/blog screens.
+  const cameFrom = (location.state as { from?: string } | null)?.from;
   const isEditing = Boolean(id);
 
   // Deep-links (the "SEO Meta" buttons and filtered list rows) pre-select and
@@ -101,10 +111,8 @@ export default function MetaTagsForm() {
   );
   const [initialLoading, setInitialLoading] = useState(isEditing || hasDeepLinkTarget);
   const [metaTag, setMetaTag] = useState<MetaTag | null>(null);
-  const [productOptions, setProductOptions] = useState<{ value: string; label: string }[]>([]);
-  const [variantOptions, setVariantOptions] = useState<{ value: string; label: string }[]>([]);
-  const [blogOptions, setBlogOptions] = useState<{ value: string; label: string }[]>([]);
-  const [projectOptions, setProjectOptions] = useState<{ value: string; label: string }[]>([]);
+  // Labels for pre-selected (deep-linked / edited) targets, keyed "<type>:<id>".
+  const [targetLabels, setTargetLabels] = useState<Record<string, string>>({});
 
   const form = useForm<MetaTagFormData>({
     resolver: zodResolver(metaTagSchema),
@@ -128,29 +136,6 @@ export default function MetaTagsForm() {
 
   const pageOptions = useMemo(() => PAGE_NAMES.map((page) => ({ value: page.slug, label: page.label })), []);
 
-  useEffect(() => {
-    fetchActiveProducts()
-      .then((res) => setProductOptions(res.data.map((product) => ({ value: String(product.id), label: product.title }))))
-      .catch(() => setProductOptions([]));
-    fetchActiveProductVariants()
-      .then((res) =>
-        setVariantOptions(
-          res.data.map((variant) => ({
-            value: String(variant.id),
-            // Labels repeat across products, so show the parent product too.
-            label: variant.product?.title ? `${variant.label} — ${variant.product.title}` : variant.label,
-          })),
-        ),
-      )
-      .catch(() => setVariantOptions([]));
-    fetchActiveBlogs()
-      .then((res) => setBlogOptions(res.data.map((blog) => ({ value: blog.id, label: blog.id }))))
-      .catch(() => setBlogOptions([]));
-    fetchActiveProjects()
-      .then((res) => setProjectOptions(res.data.map((project) => ({ value: String(project.id), label: project.title }))))
-      .catch(() => setProjectOptions([]));
-  }, []);
-
   // Deep-linked "add" with a target that already has meta data: jump to its
   // edit screen so the saved values prefill instead of creating a duplicate.
   useEffect(() => {
@@ -168,7 +153,7 @@ export default function MetaTagsForm() {
         if (cancelled) return;
         const existing = res.data?.data?.[0];
         if (existing) {
-          navigate(`/meta-tags/${existing.id}/edit${entryQuery}`, { replace: true });
+          navigate(`/meta-tags/${existing.id}/edit${entryQuery}`, { replace: true, state: location.state });
         } else {
           setInitialLoading(false);
         }
@@ -230,24 +215,53 @@ export default function MetaTagsForm() {
   const watchedBlogId = form.watch("blog_id");
   const watchedProjectId = form.watch("project_id");
 
+  // Pickers are server-paged, so a locked (deep-linked or edited) target is
+  // labelled by fetching just that one record instead of loading every option.
+  useEffect(() => {
+    const lookups = {
+      product: { id: watchedProductId, locked: lockProduct, get: getProductOption },
+      "product-variant": { id: watchedVariantId, locked: lockVariant, get: getVariantOption },
+      blog: { id: watchedBlogId, locked: lockBlog, get: getBlogOption },
+      project: { id: watchedProjectId, locked: lockProject, get: getProjectOption },
+    } as const;
+    const entry = lookups[watchedType as keyof typeof lookups];
+    if (!entry || !entry.locked || !entry.id) return;
+    const key = `${watchedType}:${entry.id}`;
+    if (targetLabels[key]) return;
+    let cancelled = false;
+    entry
+      .get(entry.id)
+      .then((option) => {
+        if (!cancelled && option) setTargetLabels((prev) => ({ ...prev, [key]: option.label }));
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchedType, watchedProductId, watchedVariantId, watchedBlogId, watchedProjectId]);
+
+  const labelFor = (type: string, id?: string | null, fallback?: string) =>
+    (id && targetLabels[`${type}:${id}`]) || fallback || undefined;
+
   const targetCaption = useMemo(() => {
     if (watchedType === "page") {
       return watchedPageName ? pageLabel(watchedPageName) || watchedPageName : "";
     }
     if (watchedType === "product") {
-      return metaTag?.product?.title || watchedProductId || "";
+      return metaTag?.product?.title || labelFor("product", watchedProductId) || watchedProductId || "";
     }
     if (watchedType === "product-variant") {
-      return metaTag?.variant?.label || watchedVariantId || "";
+      return labelFor("product-variant", watchedVariantId) || metaTag?.variant?.label || watchedVariantId || "";
     }
     if (watchedType === "blog") {
-      return blogOptions.find((option) => option.value === watchedBlogId)?.label || watchedBlogId || "";
+      return labelFor("blog", watchedBlogId) || watchedBlogId || "";
     }
     if (watchedType === "project") {
-      return metaTag?.project?.title || watchedProjectId || "";
+      return metaTag?.project?.title || labelFor("project", watchedProjectId) || watchedProjectId || "";
     }
     return "";
-  }, [watchedType, watchedPageName, watchedProductId, watchedVariantId, watchedBlogId, watchedProjectId, blogOptions, metaTag]);
+  }, [watchedType, watchedPageName, watchedProductId, watchedVariantId, watchedBlogId, watchedProjectId, targetLabels, metaTag]);
 
   // Return URL = the query params this form was opened with (deep-links from
   // product/variant screens, or the list's own filter) — NOT the current
@@ -265,6 +279,8 @@ export default function MetaTagsForm() {
     return qs ? `?${qs}` : "";
   }, [urlType, urlPageName, urlProductId, urlVariantId, urlBlogId, urlProjectId]);
 
+  const backTo = cameFrom || `/meta-tags${entryQuery}`;
+
   const onSubmit = async (data: MetaTagFormData) => {
     const payload = {
       type: data.type as "page" | "product" | "product-variant" | "blog" | "project",
@@ -274,11 +290,11 @@ export default function MetaTagsForm() {
       blog_id: data.type === "blog" && data.blog_id ? data.blog_id.trim() : null,
       project_id: data.type === "project" && data.project_id ? Number(data.project_id) : null,
       meta_title: data.meta_title,
-      meta_title_ar: data.meta_title_ar,
+      meta_title_ar: data.meta_title_ar || "",
       meta_description: data.meta_description,
-      meta_description_ar: data.meta_description_ar,
+      meta_description_ar: data.meta_description_ar || "",
       meta_keywords: data.meta_keywords,
-      meta_keywords_ar: data.meta_keywords_ar,
+      meta_keywords_ar: data.meta_keywords_ar || "",
       other_meta: data.other_meta || "",
       other_meta_ar: data.other_meta_ar || "",
     };
@@ -292,7 +308,7 @@ export default function MetaTagsForm() {
         await createMetaTag(payload);
         toast({ title: "Success", description: "Meta tag created successfully" });
       }
-      navigate(`/meta-tags${entryQuery}`);
+      navigate(backTo);
     } catch (error) {
       toast({
         title: "Error",
@@ -316,7 +332,7 @@ export default function MetaTagsForm() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="outline" size="icon" onClick={() => navigate(`/meta-tags${entryQuery}`)}>
+        <Button variant="outline" size="icon" onClick={() => navigate(backTo)}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
@@ -339,7 +355,7 @@ export default function MetaTagsForm() {
                 name="type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Type</FormLabel>
+                    <FormLabel className="block">Type</FormLabel>
                     <FormControl>
                       <Combobox
                         maxVisibleItems={4}
@@ -371,7 +387,7 @@ export default function MetaTagsForm() {
                   name="page_name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Page</FormLabel>
+                      <FormLabel className="block">Page</FormLabel>
                       <FormControl>
                         <Combobox
                           maxVisibleItems={7}
@@ -397,14 +413,14 @@ export default function MetaTagsForm() {
                   name="blog_id"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Blog Post</FormLabel>
+                      <FormLabel className="block">Blog Post</FormLabel>
                       <FormControl>
-                        <Combobox
+                        <AsyncCombobox
                           maxVisibleItems={6}
-                          autoWidth
-                          options={blogOptions}
+                          fetchPage={searchBlogs}
                           value={field.value || ""}
                           onChange={field.onChange}
+                          selectedLabel={labelFor("blog", field.value)}
                           placeholder="Select a blog post"
                           searchPlaceholder="Search blog posts..."
                           disabled={lockBlog}
@@ -423,14 +439,14 @@ export default function MetaTagsForm() {
                   name="product_id"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Product</FormLabel>
+                      <FormLabel className="block">Product</FormLabel>
                       <FormControl>
-                        <Combobox
+                        <AsyncCombobox
                           maxVisibleItems={8}
-                          autoWidth
-                          options={productOptions}
+                          fetchPage={searchProducts}
                           value={field.value || ""}
                           onChange={field.onChange}
+                          selectedLabel={labelFor("product", field.value, metaTag?.product?.title)}
                           placeholder="Select a product"
                           searchPlaceholder="Search products..."
                           disabled={lockProduct}
@@ -449,14 +465,14 @@ export default function MetaTagsForm() {
                   name="variant_id"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Product Variant</FormLabel>
+                      <FormLabel className="block">Product Variant</FormLabel>
                       <FormControl>
-                        <Combobox
+                        <AsyncCombobox
                           maxVisibleItems={8}
-                          autoWidth
-                          options={variantOptions}
+                          fetchPage={searchVariants}
                           value={field.value || ""}
                           onChange={field.onChange}
+                          selectedLabel={labelFor("product-variant", field.value, metaTag?.variant ? (metaTag.variant.product?.title ? `${metaTag.variant.label} — ${metaTag.variant.product.title}` : metaTag.variant.label) : undefined)}
                           placeholder="Select a variant"
                           searchPlaceholder="Search variants..."
                           disabled={lockVariant}
@@ -475,14 +491,14 @@ export default function MetaTagsForm() {
                   name="project_id"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Project</FormLabel>
+                      <FormLabel className="block">Project</FormLabel>
                       <FormControl>
-                        <Combobox
+                        <AsyncCombobox
                           maxVisibleItems={8}
-                          autoWidth
-                          options={projectOptions}
+                          fetchPage={searchProjects}
                           value={field.value || ""}
                           onChange={field.onChange}
+                          selectedLabel={labelFor("project", field.value, metaTag?.project?.title)}
                           placeholder="Select a project"
                           searchPlaceholder="Search projects..."
                           disabled={lockProject}
@@ -567,7 +583,7 @@ export default function MetaTagsForm() {
           </Card>
 
           <div className="flex justify-end gap-4">
-            <Button type="button" variant="outline" onClick={() => navigate(`/meta-tags${entryQuery}`)}>
+            <Button type="button" variant="outline" onClick={() => navigate(backTo)}>
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>

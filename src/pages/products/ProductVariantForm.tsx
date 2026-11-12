@@ -228,7 +228,7 @@ export default function ProductVariantForm() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => navigate(`/meta-tags?type=product-variant&variant_id=${id}`)}
+            onClick={() => navigate(`/meta-tags/new?type=product-variant&variant_id=${id}`, { state: { from: location.pathname + location.search } })}
           >
             <Tags className="mr-2 h-4 w-4" />
             SEO Meta

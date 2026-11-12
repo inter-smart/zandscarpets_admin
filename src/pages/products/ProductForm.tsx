@@ -351,7 +351,7 @@ export default function ProductForm() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => navigate(`/meta-tags?type=product&product_id=${productId}`, { state: location.state })}
+            onClick={() => navigate(`/meta-tags/new?type=product&product_id=${productId}`, { state: { from: location.pathname + location.search } })}
           >
             <Tags className="mr-2 h-4 w-4" />
             SEO Meta

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "@/hooks/use-toast";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 
 interface PaginatedResponse<T> {
@@ -108,6 +109,12 @@ export function usePaginatedList<T, F = undefined>(
       setItemsLimit(limit);
       setTotalCount(response.data.pagination.totalCount);
       setTotalPages(response.data.pagination.totalPages);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to load data",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }

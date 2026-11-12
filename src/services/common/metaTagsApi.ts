@@ -9,7 +9,7 @@ export interface MetaTag {
   blog_id?: string | null;
   project_id?: number | null;
   product?: { id: number; title: string } | null;
-  variant?: { id: number; label: string } | null;
+  variant?: { id: number; label: string; product?: { id: number; title: string } | null } | null;
   project?: { id: number; title: string } | null;
   meta_title: string;
   meta_title_ar?: string | null;
